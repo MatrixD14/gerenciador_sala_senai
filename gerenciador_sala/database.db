@@ -1,5 +1,0 @@
-create database gerenciadorSala;
-use gerenciadorSala;
-create table login(id int PRIMARY, user varchar(100), email varchar(255));
-create table sala(id int PRIMARY,typeSala varchar(100), nomeSala varchar(100));
-create table agendar_sala(id int PRIMARY,dia date, idSala int, FOREIGN key(idUser) REFERENCES sala(id), idUser int, FOREIGN key(idUser) REFERENCES login(id))
