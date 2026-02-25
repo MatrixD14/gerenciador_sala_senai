@@ -57,7 +57,7 @@ class AuthLogin
             else if (strlen($pass) == 0) log_error("preenchao campo senha");
              else if (strlen($email) == 0) log_error("preenchao campo email");
             else {
-                if (!User::checkPassword($user, $pass)) {
+                if (!User::criar_login($user, $pass, $email)) {
                     $_SESSION['log_create'] = 'Usuário ou senha inválidos';
                     header('Location: /');
                     exit;

@@ -1,6 +1,7 @@
 <?php
 class User
 {
+    private $connect;
     public static function checkPassword(string $user, string $pass): bool
     {
         $database = Env::get('database');
@@ -17,7 +18,7 @@ class User
     }
      public static function criar_login(string $user, string $pass, string $email): bool
     {
-        $accounts = Env::get('accounts');
+        $accounts = Env::get('database');
 
         if (!is_array($accounts))
             return false;
@@ -28,5 +29,10 @@ class User
 
         if (!isset($accounts[$user])) return false;
         return trim($accounts[$user]) === $pass;
+    }
+      public function connects($database){
+        $this->connect=new mysqli($database["host"]);
+        if($this->connect->connect_error) die("error connect on database".$this->connect->connect_error);
+        return $this->connect;
     }
 }
