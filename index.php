@@ -39,6 +39,7 @@ if ($uri === '/') {
     exit;
 }
 if ($uri === '/login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    User::connects();
     AuthLogin::login();
     exit;
 }
@@ -47,11 +48,16 @@ if ($uri === '/logout') {
     AuthLogin::logout();
     exit;
 }
+if ($uri === '/admin') {
+    require __DIR__ . '/app/view/vendor/admin/admin.php';
+    exit;
+}
 if ($uri === '/cadastrar') {
-    require __DIR__.'/app/view/vendor/cadastro/cadastar.php';
+    require __DIR__ . '/app/view/vendor/cadastro/cadastar.php';
     exit;
 }
 if ($uri === '/cadastro') {
+    User::connects();
     AuthLogin::cadastro();
     exit;
 }

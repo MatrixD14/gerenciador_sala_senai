@@ -1,5 +1,5 @@
 body {
-  background-color: #1e1e1e;
+  background-color: #5f62ce;
   font-family:
     system-ui,
     -apple-system,
@@ -23,8 +23,7 @@ body {
   min-height: 100vh;
 }
 .center {
-  /* background-color: #465fc7; */
-  background-image: linear-gradient(to right, #465fc7, #b06ee6);
+  background-image: linear-gradient(to right, #214aae, #8069db);
   color: #fff;
   padding: 0 20px 10px 20px;
   margin: 0 20px 10px 20px;
@@ -43,7 +42,7 @@ body {
 }
 .link-a {
   text-decoration: none;
-  color: #1e1e1e;
+  color: #d6592b;
   &:hover,
   &:active {
     color: #fff;

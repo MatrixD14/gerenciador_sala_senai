@@ -9,7 +9,6 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
     <link rel="icon" href="data:," type="image/x-icon" />
     <link rel="stylesheet" href="app/view/css/global.css" />
     <link rel="stylesheet" href="app/view/css/component/button.css" />
-    <link rel="stylesheet" href="app/view/vendor/cadastro/css/style.css">
     <title>login</title>
     <style>
         input::-webkit-calendar-picker-indicator {
@@ -38,7 +37,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>
-                   <a class="link-a" href="/">login</a>
+                    <a class="link-a" href="/">login</a>
                 </div>
             </form>
         </div>

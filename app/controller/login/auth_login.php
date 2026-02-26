@@ -17,14 +17,14 @@ class AuthLogin
             if (strlen($user) == 0) log_error("preencha o campo nome");
             else if (strlen($pass) == 0) log_error("preenchao campo senha");
             else {
-                if (!User::checkPassword($user, $pass)) {
-                    $_SESSION['log_create'] = 'Usuário ou senha inválidos';
-                    header('Location: /');
-                    exit;
-                }
+                if (!User::checkPassword($user, $pass))
+                    log_error("não existe nenhum registro seu crie um");
                 $_SESSION['nome'] = $user;
-                header('Location: /gerenciador_sala');
+                if ($user["privilegio"] === "admin") header('Location: /admin');
+                else header('Location: /gerenciador_sala');
                 exit;
+
+                User::close();
             }
         }
     }
@@ -47,24 +47,25 @@ class AuthLogin
             exit;
         }
     }
-    public static function cadastro(){
-         if (session_status() === PHP_SESSION_NONE) session_start();
-         $user = $_POST['nome'] ?? '';
+    public static function cadastro()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $user = $_POST['nome'] ?? '';
         $pass = $_POST['senha'] ?? '';
-        $email= $_POST['email'] ?? '';
+        $email = $_POST['email'] ?? '';
         if (isset($user, $pass, $email)) {
             if (strlen($user) == 0) log_error("preencha o campo nome");
             else if (strlen($pass) == 0) log_error("preenchao campo senha");
-             else if (strlen($email) == 0) log_error("preenchao campo email");
+            else if (strlen($email) == 0) log_error("preenchao campo email");
             else {
-                if (!User::criar_login($user, $pass, $email)) {
-                    $_SESSION['log_create'] = 'Usuário ou senha inválidos';
-                    header('Location: /');
+                if (!User::checkPassword($user, $pass))
+                    log_error("canta ja existe");
+                elseif (User::checkCadastro($user, $pass, $email)) {
+                    $_SESSION['nome'] = $user;
+                    header('Location: /admin');
                     exit;
-                }
-                $_SESSION['nome'] = $user;
-                header('Location: /gerenciador_sala');
-                exit;
+                } else log_error("erro ao create conta");
+                User::close();
             }
         }
     }
