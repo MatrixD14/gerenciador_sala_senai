@@ -2,29 +2,32 @@
 
 class AuthLogin
 {
+    public static function log_error($log)
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $_SESSION["log_create"] = $log;
+        header('location: /');
+        exit;
+    }
     public static function login()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        function log_error($log)
-        {
-            $_SESSION["log_create"] = $log;
-            header('location: /');
-            exit;
-        }
+
         $user = $_POST['nome'] ?? '';
         $pass = $_POST['senha'] ?? '';
         if (isset($user, $pass)) {
-            if (strlen($user) == 0) log_error("preencha o campo nome");
-            else if (strlen($pass) == 0) log_error("preenchao campo senha");
+            if (strlen($user) == 0) self::log_error("preencha o campo nome");
+            else if (strlen($pass) == 0) self::log_error("preenchao campo senha");
             else {
                 if (!User::checkPassword($user, $pass))
-                    log_error("não existe nenhum registro seu crie um");
+                    self::log_error("não existe nenhum registro seu crie um");
                 $_SESSION['nome'] = $user;
-                if ($user["privilegio"] === "admin") header('Location: /admin');
+                if (User::checkPrivilegio($user) === "admin")
+                    header('Location: /admin');
                 else header('Location: /gerenciador_sala');
                 exit;
 
-                User::close();
+                Database::close();
             }
         }
     }
@@ -54,18 +57,18 @@ class AuthLogin
         $pass = $_POST['senha'] ?? '';
         $email = $_POST['email'] ?? '';
         if (isset($user, $pass, $email)) {
-            if (strlen($user) == 0) log_error("preencha o campo nome");
-            else if (strlen($pass) == 0) log_error("preenchao campo senha");
-            else if (strlen($email) == 0) log_error("preenchao campo email");
+            if (strlen($user) == 0) self::log_error("preencha o campo nome");
+            else if (strlen($pass) == 0) self::log_error("preenchao campo senha");
+            else if (strlen($email) == 0) self::log_error("preenchao campo email");
             else {
-                if (!User::checkPassword($user, $pass))
-                    log_error("canta ja existe");
-                elseif (User::checkCadastro($user, $pass, $email)) {
-                    $_SESSION['nome'] = $user;
-                    header('Location: /admin');
+                if (User::conectioncheck($user)->num_rows > 0) {
+                    $_SESSION["log_create"] = "usuario ja existe";
+                    header('Location: /cadastrar');
                     exit;
-                } else log_error("erro ao create conta");
-                User::close();
+                } elseif (User::checkCadastro($user, $pass, $email)) {
+                    self::log_error("conta criada com sucesso");
+                } else self::log_error("erro ao create conta");
+                Database::close();
             }
         }
     }

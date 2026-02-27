@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 define('APP', true);
 if (session_status() === PHP_SESSION_NONE)
     session_start();
@@ -39,7 +39,7 @@ if ($uri === '/') {
     exit;
 }
 if ($uri === '/login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    User::connects();
+    // Database::connects();
     AuthLogin::login();
     exit;
 }
@@ -57,7 +57,7 @@ if ($uri === '/cadastrar') {
     exit;
 }
 if ($uri === '/cadastro') {
-    User::connects();
+    Database::connects();
     AuthLogin::cadastro();
     exit;
 }
@@ -70,3 +70,4 @@ if ($uri === '/gerenciador_sala') {
 
 http_response_code(404);
 echo 'Página não encontrada';
+ob_end_flush();

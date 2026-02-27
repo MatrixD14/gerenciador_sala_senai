@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8" />
@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
     <link rel="icon" href="data:," type="image/x-icon" />
     <link rel="stylesheet" href="app/view/css/global.css" />
     <link rel="stylesheet" href="app/view/css/component/button.css" />
-    <title>login</title>
+    <title>cadastro</title>
     <style>
         input::-webkit-calendar-picker-indicator {
             display: none;
