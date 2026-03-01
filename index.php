@@ -61,7 +61,25 @@ if ($uri === '/cadastro') {
     AuthLogin::cadastro();
     exit;
 }
-
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+if ($uri === '/usuarios') {
+    AuthLogin::check();
+    if ($isAjax) require __DIR__ . '/app/view/vendor/tabelas/usuarios.php';
+    else require __DIR__ . '/app/view/vendor/admin/admin.php';
+    exit;
+}
+if ($uri === '/salas') {
+    AuthLogin::check();
+    if ($isAjax) require __DIR__ . '/app/view/vendor/tabelas/salas.php';
+    else require __DIR__ . '/app/view/vendor/admin/admin.php';
+    exit;
+}
+if ($uri === '/agendamentos') {
+    AuthLogin::check();
+    if ($isAjax) require __DIR__ . '/app/view/vendor/tabelas/agendamentos.php';
+    else require __DIR__ . '/app/view/vendor/admin/admin.php';
+    exit;
+}
 if ($uri === '/gerenciador_sala') {
     AuthLogin::check();
     require __DIR__ . '/app/view/vendor/gerenciador_sala/gerenciador_sala.php';

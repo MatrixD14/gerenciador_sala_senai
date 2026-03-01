@@ -12,3 +12,4 @@ Env::load(__DIR__ . '/.editorConf');
 require_once __DIR__ . '/app/controller/login/auth_login.php';
 require_once __DIR__ . '/app/model/connectDataBase.php';
 require_once __DIR__ . '/app/model/login.php';
+require_once __DIR__ . '/app/controller/tabela/tabelas.php';

@@ -20,11 +20,13 @@ class AuthLogin
             else if (strlen($pass) == 0) self::log_error("preenchao campo senha");
             else {
                 if (!User::checkPassword($user, $pass))
-                    self::log_error("não existe nenhum registro seu crie um");
+                    self::log_error("não existe nenhum <br>registro seu crie um");
+
                 $_SESSION['nome'] = $user;
                 if (User::checkPrivilegio($user) === "admin")
                     header('Location: /admin');
                 else header('Location: /gerenciador_sala');
+                $_SESSION["privilegio"] = User::checkPrivilegio($user);
                 exit;
 
                 Database::close();
@@ -61,7 +63,7 @@ class AuthLogin
             else if (strlen($pass) == 0) self::log_error("preenchao campo senha");
             else if (strlen($email) == 0) self::log_error("preenchao campo email");
             else {
-                if (User::conectioncheck($user)->num_rows > 0) {
+                if (User::SelectUsercheck("usuario", $user)->num_rows > 0 || User::SelectUsercheck("email", $email)->num_rows > 0) {
                     $_SESSION["log_create"] = "usuario ja existe";
                     header('Location: /cadastrar');
                     exit;

@@ -1,0 +1,140 @@
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+}
+.NameSite {
+    text-decoration: none;
+    font-size: 24px;
+    padding-left: 10px;
+    font-weight: bold;
+    color: #fff;
+}
+.menu-login,
+.menu-tabela,
+.menu-sms,
+.menu-oculto {
+    position: relative;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.menu-icon {
+    display: none;
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+.menu {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 10px;
+}
+.icon {
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+
+.menu-list li,
+.menu-tabela-list li {
+    border-bottom: #f4f4f4 1px solid;
+    padding: 10px 40px 10px 10px;
+}
+
+.menu-list li:not(.menu-info):hover,
+.menu-tabela-list li:hover {
+    background-color: #555;
+}
+.menu-login-list,
+.menu-tabela-list {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #333;
+    color: #fff;
+    padding: 1px 0;
+    margin: 0;
+    border: #fff 1px solid;
+    border-radius: 0 0 5px 5px;
+    min-width: 150px;
+    list-style: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.menu-login.open .menu-login-list,
+.menu-tabela.open .menu-tabela-list {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.effect-button-link {
+    text-decoration: none;
+    color: #fff;
+}
+.button-menu {
+    border: #000 1px solid;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+}
+.icon-seta-baixa {
+    width: 12px;
+    height: 12px;
+    color: white;
+    transition: transform 0.3s ease;
+}
+.menu-tabela.open .icon-seta-baixa {
+    transform: rotate(180deg);
+}
+
+.menu-list li a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.menu-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    font-weight: bold;
+    border-bottom: 1px solid #444;
+    cursor: default;
+}
+/* Esconde o menu no mobile */
+@media (max-width: 768px) {
+    .menu {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #333;
+        flex-direction: column;
+        width: 220px;
+        padding: 10px;
+        border-radius: 8px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: 0.3s ease;
+    }
+
+    .menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .menu-icon {
+        display: block;
+        cursor: pointer;
+    }
+}
