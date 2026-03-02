@@ -48,10 +48,6 @@ if ($uri === '/logout') {
     AuthLogin::logout();
     exit;
 }
-if ($uri === '/admin') {
-    require __DIR__ . '/app/view/vendor/admin/admin.php';
-    exit;
-}
 if ($uri === '/cadastrar') {
     require __DIR__ . '/app/view/vendor/cadastro/cadastar.php';
     exit;
@@ -61,23 +57,19 @@ if ($uri === '/cadastro') {
     AuthLogin::cadastro();
     exit;
 }
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-if ($uri === '/usuarios') {
+
+$rotasAdmin = ['/usuarios', '/salas', '/agendamentos', '/admin'];
+
+if (in_array($uri, $rotasAdmin)) {
     AuthLogin::check();
-    if ($isAjax) require __DIR__ . '/app/view/vendor/tabelas/usuarios.php';
-    else require __DIR__ . '/app/view/vendor/admin/admin.php';
-    exit;
-}
-if ($uri === '/salas') {
-    AuthLogin::check();
-    if ($isAjax) require __DIR__ . '/app/view/vendor/tabelas/salas.php';
-    else require __DIR__ . '/app/view/vendor/admin/admin.php';
-    exit;
-}
-if ($uri === '/agendamentos') {
-    AuthLogin::check();
-    if ($isAjax) require __DIR__ . '/app/view/vendor/tabelas/agendamentos.php';
-    else require __DIR__ . '/app/view/vendor/admin/admin.php';
+    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+
+    if ($isAjax) {
+        $arquivo = ltrim($uri, '/');
+        require __DIR__ . "/app/view/vendor/tabelas/{$arquivo}.php";
+    } else {
+        require __DIR__ . '/app/view/vendor/admin/admin.php';
+    }
     exit;
 }
 if ($uri === '/gerenciador_sala') {

@@ -1,7 +1,17 @@
-<?php $Toptabela = Tabelas::geraTopTabela("salas");
-$Bodytabela = Tabelas::geraBodyTabela("salas"); ?>
-
-<table border="1">
-    <?= $Toptabela ?>
-    <?= $Bodytabela ?>
-</table>
+<?php
+$tipoTabela = "salas";
+$Toptabela = Tabelas::geraTopTabela($tipoTabela);
+$Bodytabela = Tabelas::geraBodyTabela($tipoTabela); ?>
+<div>
+    <?php require_once __DIR__ . "/menuTop/topBar.php"; ?>
+    <div class="table">
+        <table class="tabela">
+            <thead>
+                <?= $Toptabela ?>
+            </thead>
+            <tbody>
+                <?= $Bodytabela ?>
+            </tbody>
+        </table>
+    </div>
+</div>

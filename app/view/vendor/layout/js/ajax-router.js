@@ -7,7 +7,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-async function loadPage(url) {
+async function loadPage(url, push = true) {
     const mainContent = document.querySelector('.content');
     mainContent.style.opacity = '0.5';
 
@@ -22,7 +22,7 @@ async function loadPage(url) {
 
         const html = await response.text();
         mainContent.innerHTML = html;
-        window.history.pushState(null, '', url);
+        if (push) window.history.pushState(null, '', url);
         mainContent.style.opacity = '1';
     } catch (error) {
         console.error('Falha na navegação:', error);
@@ -31,5 +31,5 @@ async function loadPage(url) {
     }
 }
 window.addEventListener('popstate', () => {
-    loadPage(window.location.pathname);
+    loadPage(window.location.pathname, false);
 });

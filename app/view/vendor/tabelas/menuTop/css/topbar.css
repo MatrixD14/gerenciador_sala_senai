@@ -1,0 +1,18 @@
+.menu-table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #004aad;
+    padding: 8px;
+    font-size: 24px;
+    color: #fff;
+}
+.icon-menu-table {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 5px;
+}
+.icon-table-lupa {
+    width: 30px;
+    height: 30px;
+}

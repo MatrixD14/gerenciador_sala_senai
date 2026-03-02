@@ -10,5 +10,9 @@ body {
     background-color: #f4f4f4;
 }
 .content {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 1;
 }
