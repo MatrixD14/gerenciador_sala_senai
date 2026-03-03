@@ -58,8 +58,13 @@ if ($uri === '/cadastro') {
     exit;
 }
 
-$rotasAdmin = ['/usuarios', '/salas', '/agendamentos', '/admin'];
+$rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
 
+if ($uri == "/admin") {
+    AuthLogin::check();
+    require __DIR__ . '/app/view/vendor/admin/admin.php';
+    exit;
+}
 if (in_array($uri, $rotasAdmin)) {
     AuthLogin::check();
     $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';

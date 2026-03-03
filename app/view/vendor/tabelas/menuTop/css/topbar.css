@@ -10,9 +10,16 @@
 .icon-menu-table {
     display: flex;
     flex-direction: row-reverse;
-    gap: 5px;
 }
-.icon-table-lupa {
+.local-icon-reload {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.icon-table {
     width: 30px;
     height: 30px;
+    margin-left: 10px;
+    &:hover {
+        color: orangered;
+    }
 }

@@ -39,7 +39,8 @@ class Tabelas
         if ($tabeleSelect === null) return "Tabela não encontrada";
         $html = "";
         while ($lina = $listDate->fetch_assoc()) {
-            $html .= "<tr>";
+            $id = $lina['id'] ?? '';
+            $html .= "<tr data-id='$id'>";
             foreach ($tabeleSelect as $coluna) {
                 $html .= "<td>" . $lina[$coluna] . "</td>";
             }

@@ -13,3 +13,5 @@ require_once __DIR__ . '/app/controller/login/auth_login.php';
 require_once __DIR__ . '/app/model/connectDataBase.php';
 require_once __DIR__ . '/app/model/login.php';
 require_once __DIR__ . '/app/controller/tabela/tabelas.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/TableTop.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/functionIcons.php';

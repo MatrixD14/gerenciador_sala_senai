@@ -55,7 +55,12 @@
                     </svg> menssagem
                 </a></p>
         </div>
+        <div class="menu-calendario">
+            <p><a class="effect-button-link button-menu" href="/calendario">
+                    <svg class="icon">
+                        <use href="#icon-calendario"></use>
+                    </svg> Calendario
+                </a></p>
+        </div>
     </div>
 </nav>
-<script src="app/view/vendor/layout/js/button.js"></script>
-<script src="app/view/vendor/layout/js/ajax-router.js"></script>

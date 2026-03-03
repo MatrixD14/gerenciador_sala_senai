@@ -15,7 +15,8 @@
 .menu-login,
 .menu-tabela,
 .menu-sms,
-.menu-oculto {
+.menu-oculto,
+.menu-calendario {
     position: relative;
     margin-left: 10px;
     margin-right: 10px;

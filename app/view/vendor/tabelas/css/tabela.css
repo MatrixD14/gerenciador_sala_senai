@@ -23,6 +23,7 @@
 .tabela td {
     padding: 5px 10px 5px 10px;
 }
-.tabela tr:nth-child(even) {
-    background-color: #a5a3a3;
+.selected {
+    box-shadow: inset 0 0 0 5px #00bb29;
+    color: #00bb29;
 }
