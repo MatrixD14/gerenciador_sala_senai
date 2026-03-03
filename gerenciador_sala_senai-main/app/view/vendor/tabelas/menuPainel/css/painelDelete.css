@@ -1,0 +1,38 @@
+.Painel-delete {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    background-color: blue;
+    width: 250px;
+    align-items: center;
+    color: #fff;
+    border-radius: 10px;
+}
+.top-delete {
+    width: 90%;
+    text-align: center;
+}
+.button_delete {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    padding: 10px;
+}
+#cancel-delete,
+#confirm-delete {
+    outline: none;
+    padding: 2px 5px;
+    border-radius: 5px;
+    box-shadow: none;
+    color: #fff;
+}
+#cancel-delete {
+    background-color: red;
+}
+#confirm-delete {
+    background-color: green;
+}

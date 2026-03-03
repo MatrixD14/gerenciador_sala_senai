@@ -1,0 +1,25 @@
+.menu-table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #004aad;
+    padding: 8px;
+    font-size: 24px;
+    color: #fff;
+}
+.icon-menu-table {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.local-icon-reload {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.icon-table {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    &:hover {
+        color: orangered;
+    }
+}
