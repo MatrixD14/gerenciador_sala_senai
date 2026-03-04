@@ -4,6 +4,13 @@ $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 $Bodytabela = Tabelas::geraBodyJoinTabela($tipoTabela);
 ?>
 <div>
+    <?php
+    if (isset($_SESSION["erro_table"])) { ?>
+        <div class="menssage">
+            <?= $_SESSION["erro_table"] ?>
+        </div>
+    <?php }
+    unset($_SESSION["erro_table"]); ?>
     <?php require_once __DIR__ . "/menuTop/topBar.php"; ?>
     <div class="table">
         <table class="tabela">

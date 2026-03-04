@@ -38,19 +38,15 @@ if (!$isAjax) {
 
         if (isset($tabelas[$uri])) {
             require __DIR__ . "/../tabelas/" . $tabelas[$uri];
+        } elseif ($uri === "/delete") {
+            require_once __DIR__ . "/app/view/vendor/tabelas/menuPainel/delete.php";
         } else {
-            // echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
-            require_once __DIR__ . "/../tabelas/menuPainel/delete.php";
+            echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
         }
         ?>
     </main>
     <?php if (!$isAjax) {
         require_once __DIR__ . '/../../../../app/view/vendor/layout/footer.php'; ?>
-        <script src="app/view/vendor/tabelas/js/selectDate.js"></script>
-        <script src="app/view/vendor/layout/js/button.js"></script>
-        <script src="app/view/vendor/layout/js/ajax-router.js"></script>
-        <script src="app/view/vendor/tabelas/js/cliceIcon.js"></script>
-        <script src="app/view/vendor/tabelas/menuPainel/js/painelDelete.js"></script>
     </body>
 
     </html>
