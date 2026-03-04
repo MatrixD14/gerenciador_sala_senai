@@ -13,7 +13,7 @@ return [
     ],
     "usuario" => [
         "tabela" => "usuario",
-        "colunas" => ["id", "name", "email"]
+        "colunas" => ["id", "name", "email", 'previlegio']
     ],
     "salas" => [
         "tabela" => "sala",

@@ -1,4 +1,9 @@
 <?php
+if (php_sapi_name() === 'cli-server') {
+    $file = __DIR__ . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+    if (is_file($file))
+        return false;
+}
 ob_start();
 define('APP', true);
 if (session_status() === PHP_SESSION_NONE)
@@ -7,7 +12,7 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $staticDirs = ['css', 'js', 'img', 'fonts'];
 
 foreach ($staticDirs as $dir) {
-    if (strpos($path, "/$dir/") === 0) {
+    if (strpos($path, "/$dir/") !== false) {
         $base = realpath(__DIR__ . '/app/view');
 
         $file = realpath($base . $path);
@@ -39,7 +44,6 @@ if ($uri === '/') {
     exit;
 }
 if ($uri === '/login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Database::connects();
     AuthLogin::login();
     exit;
 }
@@ -60,9 +64,14 @@ if ($uri === '/cadastro') {
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
 
-if ($uri == "/admin") {
+if ($uri === "/admin") {
     AuthLogin::check();
     require __DIR__ . '/app/view/vendor/admin/admin.php';
+    exit;
+}
+if ($uri === '/delete') {
+    AuthLogin::check();
+    require_once __DIR__ . "/app/view/vendor/tabelas/menuPainel/delete.php";
     exit;
 }
 if (in_array($uri, $rotasAdmin)) {

@@ -40,7 +40,8 @@ class Tabelas
         $html = "";
         while ($lina = $listDate->fetch_assoc()) {
             $id = $lina['id'] ?? '';
-            $html .= "<tr data-id='$id'>";
+            $name = $lina['name'] ?? '';
+            $html .= "<tr data-id='$id' data-name='$name' >";
             foreach ($tabeleSelect as $coluna) {
                 $html .= "<td>" . $lina[$coluna] . "</td>";
             }
@@ -62,7 +63,9 @@ class Tabelas
         $listDate = Tabelas::list_All($sql);
         $html = "";
         while ($lina = $listDate->fetch_assoc()) {
-            $html .= "<tr>";
+            $id = $lina['id'] ?? '';
+            $name = $lina['name'] ?? '';
+            $html .= "<tr data-id='$id' data-name='$name' >";
             foreach ($lina as $valor) {
                 $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";
             }

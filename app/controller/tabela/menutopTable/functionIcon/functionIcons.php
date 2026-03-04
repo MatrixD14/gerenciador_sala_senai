@@ -1,8 +1,10 @@
 <?php
 class FucntIcons
 {
-    public static function delete($table, $id): bool
+    public static function delete()
     {
+        $table = $_POST["table"];
+        $id = $_POST["id"];
         $connect = Database::connects();
         $tmp = $connect->prepare("delete from $table  where id=?");
         $tmp->bind_param("i", $id);

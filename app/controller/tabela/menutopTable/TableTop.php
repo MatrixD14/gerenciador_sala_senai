@@ -16,8 +16,7 @@ class menuTable
         if ($icons == null) return "Tabela não encontrada";
         $addIcon = "";
         foreach ($icons as $listIcon) {
-            $addIcon .= "<svg class='icon-table' data-action='{$listIcon}'
-             data-table='{$table}'><use href='#$listIcon'></use></svg>";
+            $addIcon .= "<svg class='icon-table' data-action='{$listIcon}' data-table='{$table}'><use href='#$listIcon'></use></svg>";
         }
         return $addIcon;
     }

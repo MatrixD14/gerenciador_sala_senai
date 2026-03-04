@@ -5,3 +5,4 @@
         <span>Desing: Anderson e Claudio</span>
         <span>Autor: Anderson</span>
     </footer>
+    <?php require_once __DIR__ . '/../bundle/bundle.php'; ?>
