@@ -2,7 +2,7 @@
 $tipoTabela = "salas";
 $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 $Bodytabela = Tabelas::geraBodyTabela($tipoTabela); ?>
-<div>
+<div class="body-Table">
     <?php
     if (isset($_SESSION["erro_table"])) { ?>
         <div class="menssage">
@@ -12,13 +12,15 @@ $Bodytabela = Tabelas::geraBodyTabela($tipoTabela); ?>
     unset($_SESSION["erro_table"]); ?>
     <?php require_once __DIR__ . "/menuTop/topBar.php"; ?>
     <div class="table">
-        <table class="tabela">
-            <thead>
-                <?= $Toptabela ?>
-            </thead>
-            <tbody>
-                <?= $Bodytabela ?>
-            </tbody>
-        </table>
+        <div class="table-center">
+            <table class="tabela">
+                <thead>
+                    <?= $Toptabela ?>
+                </thead>
+                <tbody>
+                    <?= $Bodytabela ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

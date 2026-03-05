@@ -58,26 +58,32 @@ if ($uri === '/cadastrar') {
     exit;
 }
 if ($uri === '/cadastro') {
+    Database::connects();
     AuthLogin::cadastro();
     exit;
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
+$rotaAcao = ['/delete', '/editar'];
 
 if ($uri === "/admin") {
     AuthLogin::check();
     require __DIR__ . '/app/view/vendor/admin/admin.php';
     exit;
 }
-
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-if ($uri === '/delete') {
+if (in_array($uri, $rotaAcao)) {
     AuthLogin::check();
-    if ($isAjax) require __DIR__ . "/app/view/vendor/tabelas/menuPainel/delete.php";
-    else
+
+    if ($isAjax) {
+        $arquivo = ltrim($uri, '/');
+        require __DIR__ . "/app/view/vendor/tabelas/menuPainel/{$arquivo}.php";
+    } else {
         require __DIR__ . '/app/view/vendor/admin/admin.php';
+    }
     exit;
 }
+
 if (in_array($uri, $rotasAdmin)) {
     AuthLogin::check();
 

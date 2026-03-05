@@ -13,7 +13,7 @@ $id = $_POST["id"];
     <input type="hidden" name="table" id="table" value="<?= $table ?>">
     <input type="hidden" name="name" id="name" value="<?= htmlspecialchars($name) ?>">
     <div class="button_delete">
-        <button type="button" window. id="cancel-delete">Cancelar</button>
+        <button type="button" onclick="window.history.back();" id="cancel-delete">Cancelar</button>
         <button id="confirm-delete">Confirmar</button>
     </div>
 </form>
