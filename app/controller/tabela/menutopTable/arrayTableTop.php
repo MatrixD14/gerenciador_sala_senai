@@ -13,7 +13,7 @@ return [
             'icon-reload'
         ]
     ],
-    "usuario" => [
+    "usuarios" => [
         "admin" => [
             'icon-lupa',
             'icon-mais',

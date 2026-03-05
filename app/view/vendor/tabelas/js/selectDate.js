@@ -17,7 +17,9 @@ document.addEventListener('click', function (e) {
             return;
         }
         const id = selectedRow ? selectedRow.getAttribute('data-id') : null;
-        const name = selectedRow ? icon.getAttribute('data-name') : null;
+        const name = selectedRow
+            ? selectedRow.getAttribute('data-name') || selectedRow.getAttribute('data-user')
+            : null;
 
         executarAcao(action, table, id, name);
     }

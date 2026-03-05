@@ -11,7 +11,7 @@ return [
         "colunas" => ["id", "usuario", "sala", "bloco", "dia", "periodo"],
         "especifico" => ["agendar_sala.id", "usuario.name as usuario", "sala.name as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.periodo"]
     ],
-    "usuario" => [
+    "usuarios" => [
         "tabela" => "usuario",
         "colunas" => ["id", "name", "email", 'previlegio']
     ],

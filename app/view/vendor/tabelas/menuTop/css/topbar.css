@@ -7,6 +7,12 @@
     font-size: 24px;
     color: #fff;
 }
+.menssage {
+    text-align: center;
+    background-color: #fff;
+    border: 2px #004aad solid;
+    padding: 8px;
+}
 .icon-menu-table {
     display: flex;
     flex-direction: row-reverse;

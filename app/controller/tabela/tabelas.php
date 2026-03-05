@@ -41,7 +41,8 @@ class Tabelas
         while ($lina = $listDate->fetch_assoc()) {
             $id = $lina['id'] ?? '';
             $name = $lina['name'] ?? '';
-            $html .= "<tr data-id='$id' data-name='$name' >";
+            $usuario = $lina['usuario'] ?? '';
+            $html .= "<tr data-id='$id' data-name='$name' data-user='$usuario'>";
             foreach ($tabeleSelect as $coluna) {
                 $html .= "<td>" . $lina[$coluna] . "</td>";
             }
@@ -65,7 +66,8 @@ class Tabelas
         while ($lina = $listDate->fetch_assoc()) {
             $id = $lina['id'] ?? '';
             $name = $lina['name'] ?? '';
-            $html .= "<tr data-id='$id' data-name='$name' >";
+            $usuario = $lina['usuario'];
+            $html .= "<tr data-id='$id' data-name='$name' data-user='$usuario'>";
             foreach ($lina as $valor) {
                 $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";
             }

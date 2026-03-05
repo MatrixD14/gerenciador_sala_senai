@@ -5,6 +5,7 @@ if (php_sapi_name() === 'cli-server') {
         return false;
 }
 ob_start();
+header('Content-Type: text/html; charset=UTF-8');
 define('APP', true);
 if (session_status() === PHP_SESSION_NONE)
     session_start();
@@ -20,8 +21,8 @@ foreach ($staticDirs as $dir) {
         if ($file && str_starts_with($file, $base) && is_file($file)) {
             $ext = pathinfo($file, PATHINFO_EXTENSION);
             $mime = [
-                'css'  => 'text/css',
-                'js'   => 'application/javascript',
+                'css'  => 'text/css; charset=UTF-8',
+                'js'   => 'application/javascript; charset=UTF-8',
                 'png'  => 'image/png',
                 'jpg'  => 'image/jpeg',
                 'jpeg' => 'image/jpeg',
@@ -69,14 +70,16 @@ if ($uri === "/admin") {
     require __DIR__ . '/app/view/vendor/admin/admin.php';
     exit;
 }
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
 if ($uri === '/delete') {
     AuthLogin::check();
-    require_once __DIR__ . "/app/view/vendor/tabelas/menuPainel/delete.php";
+    if ($isAjax) require __DIR__ . "/app/view/vendor/tabelas/menuPainel/delete.php";
+    else
+        require __DIR__ . '/app/view/vendor/admin/admin.php';
     exit;
 }
 if (in_array($uri, $rotasAdmin)) {
     AuthLogin::check();
-    $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
 
     if ($isAjax) {
         $arquivo = ltrim($uri, '/');
@@ -84,6 +87,10 @@ if (in_array($uri, $rotasAdmin)) {
     } else {
         require __DIR__ . '/app/view/vendor/admin/admin.php';
     }
+    exit;
+}
+if ($uri === "/deleted") {
+    FucntIcons::delete();
     exit;
 }
 if ($uri === '/gerenciador_sala') {

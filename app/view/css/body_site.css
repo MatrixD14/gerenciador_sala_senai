@@ -10,9 +10,13 @@ body {
     background-color: #f4f4f4;
 }
 .content {
-    height: 100vh;
+    min-height: 90vh;
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    text-align: center;
     justify-content: center;
+    padding: 60px;
+    flex-direction: column;
+    box-sizing: border-box;
     flex: 1;
 }
