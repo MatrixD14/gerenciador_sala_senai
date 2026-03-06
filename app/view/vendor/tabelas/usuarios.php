@@ -2,8 +2,7 @@
 $tipoTabela = "usuarios";
 $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 $Bodytabela = Tabelas::geraBodyTabela($tipoTabela); ?>
-
-<div>
+<div class="body-Table">
     <?php
     if (isset($_SESSION["erro_table"])) { ?>
         <div class="menssage">

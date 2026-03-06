@@ -29,11 +29,11 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
             </p>
             <form action="/cadastro" method="post" autocomplete="off">
                 <label for="nome">nome</label><br />
-                <input type="text" name="nome" /><br />
+                <input type="text" name="nome" id='nome' /><br />
                 <label for="email">email</label><br />
-                <input type="email" name="email" /><br />
+                <input type="email" name="email" id='email' /><br />
                 <label for="senha">senha</label><br />
-                <input type="password" name="senha" /><br /><br />
+                <input type="password" name="senha" id='senha' /><br /><br />
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>

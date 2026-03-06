@@ -19,6 +19,7 @@ if (!$isAjax) {
         <link rel="stylesheet" href="app/view/vendor/tabelas/css/tabela.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuTop/css/topbar.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelDelete.css">
+        <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelEditor.css">
         <title>admin</title>
     </head>
 
@@ -38,8 +39,6 @@ if (!$isAjax) {
 
         if (isset($tabelas[$uri])) {
             require __DIR__ . "/../tabelas/" . $tabelas[$uri];
-        } elseif ($uri === "/delete") {
-            require_once __DIR__ . "/app/view/vendor/tabelas/menuPainel/delete.php";
         } else {
             echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
         }

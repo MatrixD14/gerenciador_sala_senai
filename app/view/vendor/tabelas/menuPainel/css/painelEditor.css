@@ -1,4 +1,4 @@
-.Painel-delete {
+.Painel-editor {
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -12,27 +12,38 @@
     color: #fff;
     border-radius: 10px;
 }
-.top-delete {
+.top-editor {
     width: 90%;
     text-align: center;
 }
-.button_delete {
+.editar-dados {
+    width: 90%;
+    text-align: start;
+    & select {
+        width: 100%;
+    }
+    & input {
+        outline: none;
+        width: 95%;
+    }
+}
+.button_editor {
     display: flex;
     justify-content: space-between;
     width: 90%;
     padding: 10px;
 }
-#cancel-delete,
-#confirm-delete {
+#cancel-editor,
+#confirm-editor {
     outline: none;
     padding: 2px 5px;
     border-radius: 5px;
     box-shadow: none;
     color: #fff;
 }
-#cancel-delete {
+#cancel-editor {
     background-color: red;
 }
-#confirm-delete {
+#confirm-editor {
     background-color: green;
 }

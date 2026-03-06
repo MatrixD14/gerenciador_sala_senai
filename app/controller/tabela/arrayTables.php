@@ -8,15 +8,22 @@ return [
             inner join sala 
                 on agendar_sala.idSala = sala.id
         ",
-        "colunas" => ["id", "usuario", "sala", "bloco", "dia", "periodo"],
+        "colunas" => [
+            "id" => 'number',
+            "usuario" => ["tabela" => "usuario", "coluna" => "name", "campo_real" => "idUser"],
+            "sala"    => ["tabela" => "sala",    "coluna" => "name", "campo_real" => "idSala"],
+            "bloco" =>  ["tabela" => "sala", "coluna" => "bloco", "visual" => true],
+            "dia" => 'date',
+            "periodo" => ['tarde', 'demanhã', 'noite']
+        ],
         "especifico" => ["agendar_sala.id", "usuario.name as usuario", "sala.name as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.periodo"]
     ],
     "usuarios" => [
         "tabela" => "usuario",
-        "colunas" => ["id", "name", "email", 'previlegio']
+        "colunas" => ["id" => 'number', "name" => 'text', "email" => 'email', 'previlegio' => ['admin', 'normal']]
     ],
     "salas" => [
         "tabela" => "sala",
-        "colunas" => ["id", "name", "bloco", "type"]
+        "colunas" => ["id" => 'number', "name" => 'text', "bloco" => 'text', "type" => 'text']
     ]
 ];

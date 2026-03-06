@@ -11,6 +11,7 @@ class Database
             }
             self::$connect = new mysqli($database["HOST"], $database["USER"], $database["PASSWORD"], $database["DATABASE"], $database["PORT"]);
             if (self::$connect->connect_error) die("error connect on database" . self::$connect->connect_error);
+            self::$connect->set_charset("utf8mb4");
         }
         return self::$connect;
     }

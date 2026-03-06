@@ -8,6 +8,11 @@ class Tabelas
         if (!self::$inforDate)
             self::$inforDate = require __DIR__ . '/arrayTables.php';
     }
+    public static function log_error_table($log)
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $_SESSION["erro_table"] = $log;
+    }
     public static function geraTopTabela($tabela): string
     {
         self::loadConfig();
@@ -15,7 +20,7 @@ class Tabelas
         $html = "<tr>";
         $tabeleSelect = self::$inforDate[$tabela]['colunas'] ?? null;
         if ($tabeleSelect === null) return "Tabela não encontrada";
-        foreach ($tabeleSelect as $coluna) {
+        foreach ($tabeleSelect as $coluna => $tipe) {
             $html .= "<th>$coluna</th>";
         }
         return $html . "</tr>";
@@ -34,7 +39,7 @@ class Tabelas
         if (!isset(self::$inforDate[$tabela]))
             return "Tabela não encontrada";
 
-        $listDate = Tabelas::list_All("select * from " . self::$inforDate[$tabela]["tabela"]);
+        $listDate = Tabelas::list_All("select * from " . self::$inforDate[$tabela]["tabela"] . " LIMIT 1000");
         $tabeleSelect = self::$inforDate[$tabela]["colunas"] ?? null;
         if ($tabeleSelect === null) return "Tabela não encontrada";
         $html = "";
@@ -43,8 +48,8 @@ class Tabelas
             $name = $lina['name'] ?? '';
             $usuario = $lina['usuario'] ?? '';
             $html .= "<tr data-id='$id' data-name='$name' data-user='$usuario'>";
-            foreach ($tabeleSelect as $coluna) {
-                $html .= "<td>" . $lina[$coluna] . "</td>";
+            foreach ($tabeleSelect as $coluna => $tipe) {
+                $html .= "<td>" . htmlspecialchars($lina[$coluna] ?? '') . "</td>";
             }
             $html .= "</tr>";
         }
@@ -60,13 +65,13 @@ class Tabelas
         $nomeTabela = $config["tabela"];
         $joins = $config["join"];
         $especificos = implode(", ", $config["especifico"]);
-        $sql = "select $especificos from $nomeTabela $joins";
+        $sql = "select $especificos from $nomeTabela $joins LIMIT 1000";
         $listDate = Tabelas::list_All($sql);
         $html = "";
         while ($lina = $listDate->fetch_assoc()) {
             $id = $lina['id'] ?? '';
             $name = $lina['name'] ?? '';
-            $usuario = $lina['usuario'];
+            $usuario = $lina['usuario'] ?? '';
             $html .= "<tr data-id='$id' data-name='$name' data-user='$usuario'>";
             foreach ($lina as $valor) {
                 $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";

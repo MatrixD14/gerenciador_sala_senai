@@ -3,6 +3,9 @@ body {
     height: 100%;
     margin: 0;
 }
+body.no-scroll {
+    overflow: hidden;
+}
 body {
     display: flex;
     flex-direction: column;
@@ -10,8 +13,9 @@ body {
     background-color: #f4f4f4;
 }
 .content {
-    min-height: 90vh;
+    min-height: 100vh;
     display: flex;
+    position: relative;
     align-items: stretch;
     text-align: center;
     justify-content: center;
