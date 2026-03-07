@@ -10,7 +10,7 @@ $id = $_POST["id"];
     <div class="editar-dados">
         <input type="hidden" name="id" id="id" value="<?= $id ?>">
         <input type="hidden" name="table" id="table" value="<?= $table ?>">
-        <?= editor::geraeditor($table, $id) ?>
+        <?= gerarFromDinamico::geraFrom($table, $id) ?>
     </div>
     <div class="button_editor">
         <button type="button" onclick="buttonVoltar()" id="cancel-editor">Cancelar</button>

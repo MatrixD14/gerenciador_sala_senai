@@ -1,16 +1,14 @@
 <?php
-$name = $_POST["name"];
 $table = $_POST["tabela"];
-$id = $_POST["id"];
 ?>
-<form action="/edito" method="post" class="Painel-editor">
+<form action="/inserted" method="post" class="Painel-editor">
     <div class="top-editor">
-        <h2>editar</h2>
+        <h2>adicionar informação na tabela</h2>
         <hr>
     </div>
     <div class="editar-dados">
-        <input type="hidden" name="id" id="id" value="<?= $id ?>">
-        <?= editor::geraeditor($table, $id) ?>
+        <input type="hidden" name="table" id="table" value="<?= $table ?>">
+        <?= gerarFromDinamico::geraFrom($table, null) ?>
     </div>
     <div class="button_editor">
         <button type="button" onclick="buttonVoltar()" id="cancel-editor">Cancelar</button>

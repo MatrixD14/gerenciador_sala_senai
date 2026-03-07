@@ -64,7 +64,7 @@ if ($uri === '/cadastro') {
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
-$rotaAcao = ['/delete', '/editar'];
+$rotaAcao = ['/delete', '/editar', '/insert'];
 
 if ($uri === "/admin") {
     AuthLogin::check();
@@ -101,6 +101,10 @@ if ($uri === "/deleted") {
 }
 if ($uri === '/edito') {
     editor::editoDados();
+    exit;
+}
+if ($uri === '/inserted') {
+    Inserted::inserted();
     exit;
 }
 if ($uri === '/gerenciador_sala') {

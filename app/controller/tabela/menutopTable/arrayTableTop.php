@@ -1,42 +1,50 @@
 <?php
 return [
+    "acoes" => [
+        "view" => "icon-lupa",
+        "add" => "icon-mais",
+        "reload" => "icon-reload",
+        "edite" => "icon-lapiz",
+        "delete" => "icon-lixeira",
+        "agenda" => 'icon-anotacao',
+    ],
     "agendamentos" => [
         "admin" => [
-            'icon-lupa',
-            'icon-anotacao',
-            'icon-reload',
-            "icon-lapiz",
-            'icon-lixeira'
+            'view',
+            'agenda',
+            'reload',
+            "edite",
+            'delete'
         ],
         "normal" => [
-            'icon-lupa',
-            'icon-reload'
+            'view',
+            'reload'
         ]
     ],
     "usuarios" => [
         "admin" => [
-            'icon-lupa',
-            'icon-mais',
-            'icon-reload',
-            "icon-lapiz",
-            'icon-lixeira'
+            'view',
+            'add',
+            'reload',
+            "edite",
+            'delete'
         ],
         "normal" => [
-            'icon-lupa',
-            'icon-reload'
+            'view',
+            'reload'
         ]
     ],
     "salas" => [
         "admin" => [
-            'icon-lupa',
-            'icon-mais',
-            'icon-reload',
-            "icon-lapiz",
-            'icon-lixeira'
+            'view',
+            'add',
+            'reload',
+            "edite",
+            'delete'
         ],
         "normal" => [
-            'icon-lupa',
-            'icon-reload'
+            'view',
+            'reload'
         ]
     ]
 ];

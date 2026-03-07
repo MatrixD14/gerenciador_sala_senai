@@ -12,12 +12,23 @@ class menuTable
     {
         self::iconMenu();
         if (!isset(self::$iconMenu[$table])) return "não existe essa table";
-        $icons = self::$iconMenu[$table][$previlegio];
-        if ($icons == null) return "Tabela não encontrada";
-        $addIcon = "";
-        foreach ($icons as $listIcon) {
-            $addIcon .= "<svg class='icon-table' data-action='{$listIcon}' data-table='{$table}'><use href='#$listIcon'></use></svg>";
+        $acoesTabela = self::$iconMenu[$table][$previlegio] ?? '';
+        if ($acoesTabela == null) return "Tabela não encontrada";
+        $mapIcons = self::$iconMenu["acoes"];
+
+        $html = "";
+        foreach ($acoesTabela as $acao) {
+            if (!isset($mapIcons[$acao])) continue;
+
+            $icon = $mapIcons[$acao];
+
+            $html .= "
+            <svg class='icon-table'
+                data-action='{$acao}'
+                data-table='{$table}'>
+                <use href='#{$icon}'></use>
+            </svg>";
         }
-        return $addIcon;
+        return $html;
     }
 }

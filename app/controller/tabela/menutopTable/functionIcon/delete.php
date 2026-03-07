@@ -16,44 +16,45 @@ class Delete
         $table = $_POST["table"];
         $id = $_POST["id"];
         $name = $_POST["name"];
-        if (!isset(self::$inforDate[$table]))
+        if (!isset(self::$inforDate[$table])) {
             Tabelas::log_error_table("Tabela não encontrada");
+            header("Location: /$table");
+            exit;
+        }
         $config = self::$inforDate[$table];
         $nomeTabela = $config["tabela"];
-        $count = 0;
-        if ($table === "usuarios")
-            $count = self::countWhere("agendar_sala", "idUser", $id);
-        if ($table === "salas")
-            $count = self::countWhere("agendar_sala", "idSala", $id);
-        if ($count > 0) {
-            Tabelas::log_error_table("Não é possível deletar, existem " . $count . " <a style='text-decoration:none;' href='/agendamentos'>agendamentos</a> vinculados.");
-        } else {
-            $tmp = $connect->prepare("delete from $nomeTabela  where id=?");
-            $tmp->bind_param("i", $id);
-            $tmp->execute();
-            $rows = $tmp->affected_rows;
-            $tmp->close();
-
-            if ($rows > 0) Tabelas::log_error_table("deleto como sucesso " . htmlspecialchars($name));
-            else Tabelas::log_error_table("Nenhum registro encontrado para deletar.");
+        if (!empty($config["dependencias"])) {
+            foreach ($config["dependencias"] as $dep) {
+                $tmp = self::countWhere($dep["tabela"], $dep["coluna"], $id);
+                if ($tmp > 0) {
+                    Tabelas::log_error_table(
+                        "Não é possível deletar, existem $tmp 
+                <a style='text-decoration:none;' href='/{$dep['link']}'>{$dep['mensagem']}</a> vinculados."
+                    );
+                    header("Location: /$table");
+                    exit;
+                }
+            }
         }
+        $stmt = $connect->prepare("delete from $nomeTabela  where id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) Tabelas::log_error_table("deleto como sucesso " . htmlspecialchars($name));
+        else Tabelas::log_error_table("Nenhum registro encontrado para deletar.");
+        $stmt->close();
         header("Location: /$table");
         exit;
     }
     public static function countWhere($table, $column, $value)
     {
         $connect = Database::connects();
-
         $sql = "SELECT COUNT(*) as total FROM $table WHERE $column=?";
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("i", $value);
         $stmt->execute();
-
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-
         $stmt->close();
-
         return $row["total"];
     }
 }

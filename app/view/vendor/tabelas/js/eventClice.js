@@ -5,15 +5,17 @@ function executarAcao(acao, tabela, id, name) {
     dados.append('id', id);
     dados.append('name', name);
     switch (acao) {
-        case 'icon-lixeira':
+        case 'delete':
             loadPagePost('/delete', dados);
             break;
-        case 'icon-lapiz':
+        case 'edite':
             loadPagePost('/editar', dados);
             break;
-        case 'icon-mais':
+        case 'add':
+        case 'agenda':
+            loadPagePost('/insert', dados);
             break;
-        case 'icon-reload':
+        case 'reload':
             location.reload();
             break;
     }
