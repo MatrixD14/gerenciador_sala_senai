@@ -33,7 +33,8 @@ return [
             ],
             "bloco" =>  [
                 'type' => 'hidden',
-                'depends' => 'sala'
+                'depends' => 'sala',
+                'virtual' => true
             ],
             "dia" => ['type' => 'date'],
             "periodo" => [

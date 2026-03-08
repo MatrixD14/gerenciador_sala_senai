@@ -15,6 +15,9 @@ function executarAcao(acao, tabela, id, name) {
         case 'agenda':
             loadPagePost('/insert', dados);
             break;
+        case 'view':
+            loadPagePost('/pesquisa', dados);
+            break;
         case 'reload':
             location.reload();
             break;

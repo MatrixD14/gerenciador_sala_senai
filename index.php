@@ -64,7 +64,7 @@ if ($uri === '/cadastro') {
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
-$rotaAcao = ['/delete', '/editar', '/insert'];
+$rotaAcao = ['/delete', '/editar', '/insert', '/pesquisa'];
 
 if ($uri === "/admin") {
     AuthLogin::check();
@@ -87,9 +87,9 @@ if (in_array($uri, $rotaAcao)) {
 if (in_array($uri, $rotasAdmin)) {
     AuthLogin::check();
 
+    $Tabelas = ltrim($uri, '/');
     if ($isAjax) {
-        $arquivo = ltrim($uri, '/');
-        require __DIR__ . "/app/view/vendor/tabelas/{$arquivo}.php";
+        require __DIR__ . "/app/view/vendor/tabelas/Table.php";
     } else {
         require __DIR__ . '/app/view/vendor/admin/admin.php';
     }

@@ -31,14 +31,10 @@ if (!$isAjax) {
     <main class="content">
         <?php
         $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-        $tabelas = [
-            '/usuarios' => 'usuarios.php',
-            '/salas' => 'salas.php',
-            '/agendamentos' => 'agendamentos.php'
-        ];
+        $rotasValidas = ['/usuarios', '/salas', '/agendamentos'];
 
-        if (isset($tabelas[$uri])) {
-            require __DIR__ . "/../tabelas/" . $tabelas[$uri];
+        if (in_array($uri, $rotasValidas)) {
+            require __DIR__ . "/../tabelas/Table.php";
         } else {
             echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
         }

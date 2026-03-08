@@ -17,11 +17,24 @@ class Tabelas
     {
         self::loadConfig();
         if (empty($tabela)) return "Nenhuma tabela selecionada";
+        $config = self::$inforDate[$tabela] ?? null;
+        if ($config === null) return "Tabela não encontrada";
         $html = "<tr>";
-        $tabeleSelect = self::$inforDate[$tabela]['colunas'] ?? null;
-        if ($tabeleSelect === null) return "Tabela não encontrada";
-        foreach ($tabeleSelect as $coluna => $tipe) {
-            $html .= "<th>$coluna</th>";
+        if (!empty($config['especifico'])) {
+            foreach ($config['especifico'] as $campo) {
+                $parts = explode(' as ', $campo);
+                $nomeExibicao = end($parts);
+
+                if (strpos($nomeExibicao, '.') !== false) {
+                    $nomeExibicao = explode('.', $nomeExibicao)[1];
+                }
+
+                $html .= "<th>" . ucfirst($nomeExibicao) . "</th>";
+            }
+        } else {
+            foreach ($config['colunas'] as $coluna => $dados) {
+                $html .= "<th>" . ucfirst($coluna) . "</th>";
+            }
         }
         return $html . "</tr>";
     }
@@ -33,51 +46,59 @@ class Tabelas
         return $tmg->get_result();
     }
 
-    public static function geraBodyTabela($tabela): string
+    public static function geraBodyTabela2($slug): string
     {
         self::loadConfig();
-        if (!isset(self::$inforDate[$tabela]))
-            return "Tabela não encontrada";
+        $config = self::$inforDate[$slug] ?? null;
+        if (!$config) return "<tr><td colspan='100%'>Configuração não encontrada</td></tr>";
 
-        $listDate = Tabelas::list_All("select * from " . self::$inforDate[$tabela]["tabela"] . " LIMIT 1000");
-        $tabeleSelect = self::$inforDate[$tabela]["colunas"] ?? null;
-        if ($tabeleSelect === null) return "Tabela não encontrada";
-        $html = "";
-        while ($lina = $listDate->fetch_assoc()) {
-            $id = $lina['id'] ?? '';
-            $name = $lina['name'] ?? '';
-            $usuario = $lina['usuario'] ?? '';
-            $html .= "<tr data-id='$id' data-name='$name' data-user='$usuario'>";
-            foreach ($tabeleSelect as $coluna => $tipe) {
-                $html .= "<td>" . htmlspecialchars($lina[$coluna] ?? '') . "</td>";
+        $tabelaPrincipal = $config["tabela"];
+        $searchTerm = $_POST['search'] ?? null;
+        $where = "";
+        if ($searchTerm) {
+            $filtros = [];
+            if (!empty($config["especifico"])) {
+                foreach ($config["especifico"] as $campo) {
+                    $parts = explode(' as ', $campo);
+                    $colunaFiltro = trim($parts[0]);
+                    $filtros[] = "$colunaFiltro LIKE '%$searchTerm%'";
+                }
+            } else {
+                foreach ($config["colunas"] as $coluna => $prop) {
+                    $filtros[] = "$coluna LIKE '%$searchTerm%'";
+                }
             }
-            $html .= "</tr>";
+            $where = " WHERE " . implode(" OR ", $filtros);
         }
-        return $html;
-    }
-    public static function geraBodyJoinTabela($tabela): string
-    {
-        self::loadConfig();
-        if (!isset(self::$inforDate[$tabela]))
-            return "Tabela não encontrada";
+        if (!empty($config["especifico"])) {
+            $campos = implode(", ", $config["especifico"]);
+            $joins = $config["join"] ?? "";
+            $sql = "SELECT $campos FROM $tabelaPrincipal $joins $where LIMIT 1000";
+        } else {
+            $sql = "SELECT * FROM $tabelaPrincipal $where LIMIT 1000";
+        }
 
-        $config = self::$inforDate[$tabela];
-        $nomeTabela = $config["tabela"];
-        $joins = $config["join"];
-        $especificos = implode(", ", $config["especifico"]);
-        $sql = "select $especificos from $nomeTabela $joins LIMIT 1000";
         $listDate = Tabelas::list_All($sql);
         $html = "";
-        while ($lina = $listDate->fetch_assoc()) {
-            $id = $lina['id'] ?? '';
-            $name = $lina['name'] ?? '';
-            $usuario = $lina['usuario'] ?? '';
-            $html .= "<tr data-id='$id' data-name='$name' data-user='$usuario'>";
-            foreach ($lina as $valor) {
-                $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";
+
+        while ($linha = $listDate->fetch_assoc()) {
+            $id = $linha['id'] ?? '';
+            $displayRef = $linha['name'] ?? $linha['usuario'] ?? $linha['sala'] ?? '';
+
+            $html .= "<tr data-id='$id' data-name='" . htmlspecialchars($displayRef) . "'>";
+
+            if (!empty($config["especifico"])) {
+                foreach ($linha as $valor) {
+                    $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";
+                }
+            } else {
+                foreach ($config["colunas"] as $coluna => $prop) {
+                    $html .= "<td>" . htmlspecialchars($linha[$coluna] ?? '') . "</td>";
+                }
             }
             $html .= "</tr>";
         }
+
         return $html;
     }
 }

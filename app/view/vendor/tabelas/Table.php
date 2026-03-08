@@ -1,7 +1,7 @@
 <?php
-$tipoTabela = "agendamentos";
+$tipoTabela = $Tabelas ?? '';
 $Toptabela = Tabelas::geraTopTabela($tipoTabela);
-$Bodytabela = Tabelas::geraBodyJoinTabela($tipoTabela);
+$Bodytabela = Tabelas::geraBodyTabela2($tipoTabela);
 ?>
 <div class="body-Table">
     <?php

@@ -18,6 +18,19 @@ document.addEventListener('change', (event) => {
 document.querySelectorAll('select').forEach((s) => {
     if (s.selectedIndex !== -1) s.dispatchEvent(new Event('change', { bubbles: true }));
 });
+document.addEventListener('submit', function (e) {
+    if (e.target && e.target.id === 'form-pesquisa') {
+        e.preventDefault();
+
+        const tabela = document.getElementById('table-search').value;
+        const termo = document.getElementById('search-input').value;
+
+        const dados = new FormData();
+        dados.append('search', termo);
+        loadPagePost('/' + tabela, dados);
+        buttonVoltar();
+    }
+});
 function buttonVoltar() {
     if (window.history.length > 1) window.history.back();
     else location.reload();
