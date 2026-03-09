@@ -11,15 +11,17 @@ if (!$isAjax) {
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="data:," type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
+        <link rel=" icon" href="data:," type="image/x-icon" />
         <link rel="stylesheet" href="app/view/css/body_site.css">
         <link rel="stylesheet" href="app/view/vendor/layout/css/hearder.css">
         <link rel="stylesheet" href="app/view/vendor/layout/css/footer.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/css/tabela.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuTop/css/topbar.css">
+        <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/buttonPainel.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelDelete.css">
-        <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/pinelEditor.css">
+        <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelEditor.css">
+        <link rel="stylesheet" href="app/view/vendor/agendamentos/css/calendario.css">
         <title>admin</title>
     </head>
 
@@ -31,20 +33,12 @@ if (!$isAjax) {
     <main class="content">
         <?php
         $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-        $tabelas = [
-            '/usuarios' => 'usuarios.php',
-            '/salas' => 'salas.php',
-            '/agendamentos' => 'agendamentos.php'
-        ];
-        $menuAcao = [
-            '/editar' => 'editor.php',
-            '/delete' => 'delete.php',
-        ];
+        $rotasValidas = ['/usuarios', '/salas', '/agendamentos'];
 
-        if (isset($tabelas[$uri])) {
-            require __DIR__ . "/../tabelas/" . $tabelas[$uri];
-            // } elseif (isset($menuAcao[$uri])) {
-
+        if (in_array($uri, $rotasValidas)) {
+            require __DIR__ . "/../tabelas/Table.php";
+        } elseif ($uri === '/calendario') {
+            require __DIR__ . '/../agendamentos/Calendario.php';
         } else {
             echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
         }

@@ -1,42 +1,50 @@
 <?php
 return [
+    "acoes" => [
+        "view" => ['type' => "icon-lupa", 'menssage' => 'pesquisar na table'],
+        "add" => ['type' => "icon-mais", 'menssage' => 'adicionar usuario'],
+        "reload" => ['type' => "icon-reload", 'menssage' => 'atualizar a tabela'],
+        "edite" => ['type' => "icon-lapiz", 'menssage' => 'editar dados'],
+        "delete" => ['type' => "icon-lixeira", 'menssage' => 'deletar itens'],
+        "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
+    ],
     "agendamentos" => [
         "admin" => [
-            'icon-lupa',
-            'icon-anotacao',
-            'icon-reload',
-            "icon-lapiz",
-            'icon-lixeira'
+            'view',
+            'agenda',
+            'reload',
+            "edite",
+            'delete'
         ],
         "normal" => [
-            'icon-lupa',
-            'icon-reload'
+            'view',
+            'reload'
         ]
     ],
     "usuarios" => [
         "admin" => [
-            'icon-lupa',
-            'icon-mais',
-            'icon-reload',
-            "icon-lapiz",
-            'icon-lixeira'
+            'view',
+            'add',
+            'reload',
+            "edite",
+            'delete'
         ],
         "normal" => [
-            'icon-lupa',
-            'icon-reload'
+            'view',
+            'reload'
         ]
     ],
     "salas" => [
         "admin" => [
-            'icon-lupa',
-            'icon-mais',
-            'icon-reload',
-            "icon-lapiz",
-            'icon-lixeira'
+            'view',
+            'add',
+            'reload',
+            "edite",
+            'delete'
         ],
         "normal" => [
-            'icon-lupa',
-            'icon-reload'
+            'view',
+            'reload'
         ]
     ]
 ];

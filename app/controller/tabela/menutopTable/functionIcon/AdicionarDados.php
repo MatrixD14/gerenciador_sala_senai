@@ -1,5 +1,5 @@
 <?php
-class editor
+class Inserted
 {
     private static $inforDate;
 
@@ -8,19 +8,18 @@ class editor
         if (!self::$inforDate)
             self::$inforDate = require_once __DIR__ . '/../../arrayTables.php';
     }
-    public static function editoDados()
+    public static function inserted()
     {
         self::loadConfig();
         $table = $_POST['table'] ?? null;
-        $id = $_POST['id'] ?? null;
-        if (!$table || !$id) return "Dados insuficientes para editar.";
+        if (!$table) return "Dados insuficientes para editar.";
         $config =  self::$inforDate[$table] ?? null;
         if (!$config) return "Configuração da tabela não encontrada.";
         $tabela = $config['tabela'] ?? null;
         $coluneSelect = $config['colunas'] ?? null;
         if ($coluneSelect === null) return "Configuração de colunas não encontrada.";
-
-        $camposParaAtualizar = [];
+        $colunasBanco = [];
+        $placeholders = [];
         $valores = [];
         $tipos = "";
 
@@ -31,25 +30,30 @@ class editor
             if (isset($_POST[$nomeNoForm])) {
                 $valor = $_POST[$nomeNoForm];
 
-                $camposParaAtualizar[] = "$nomeColunaBanco = ?";
+                $colunasBanco[] = $nomeColunaBanco;
+                $placeholders[] = "?";
                 $valores[] = $valor;
                 $tipos .= ($conf['type'] ?? '') === 'number' ? "i" : "s";
             }
         }
 
-        if (empty($camposParaAtualizar)) return "Nenhuma alteração detectada.";
+        if (empty($colunasBanco)) return "Nenhum dado enviado para inserção.";
 
         $db = Database::connects();
-        $sql = "UPDATE $tabela SET " . implode(", ", $camposParaAtualizar) . " WHERE id = ?";
-        $valores[] = $id;
-        $tipos .= "i";
+        $sql = "insert into $tabela (" . implode(", ", $colunasBanco) . ") values (" . implode(", ", $placeholders) . ")";
         $stmt = $db->prepare($sql);
-
+        if (!$stmt) {
+            Tabelas::log_error_table("Erro no Prepare: " . $db->error);
+            header("Location: /$table");
+            exit;
+        }
         $stmt->bind_param($tipos, ...$valores);
+
         if ($stmt->execute()) {
-            Tabelas::log_error_table("Editado com sucesso, ID: $id na tabela $table");
+            $novoId = $db->insert_id;
+            Tabelas::log_error_table("Inserido com sucesso na tabela $tabela, Novo ID: $novoId");
         } else {
-            Tabelas::log_error_table("Erro ao atualizar: " . $stmt->error);
+            Tabelas::log_error_table("Erro ao inserir na tabela: " . $stmt->error);
         }
         header("Location: /$table");
         exit;

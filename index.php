@@ -37,7 +37,8 @@ foreach ($staticDirs as $dir) {
     }
 }
 require_once __DIR__ . '/bootstrap.php';
-
+//essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
+TabelaCleanup::autoCleanup(365);
 $uri = rtrim($path, '/');
 if ($uri === '') $uri = '/';
 if ($uri === '/') {
@@ -64,7 +65,7 @@ if ($uri === '/cadastro') {
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
-$rotaAcao = ['/delete', '/editar'];
+$rotaAcao = ['/delete', '/editar', '/insert', '/pesquisa'];
 
 if ($uri === "/admin") {
     AuthLogin::check();
@@ -87,18 +88,36 @@ if (in_array($uri, $rotaAcao)) {
 if (in_array($uri, $rotasAdmin)) {
     AuthLogin::check();
 
+    $Tabelas = ltrim($uri, '/');
     if ($isAjax) {
-        $arquivo = ltrim($uri, '/');
-        require __DIR__ . "/app/view/vendor/tabelas/{$arquivo}.php";
+        require __DIR__ . "/app/view/vendor/tabelas/Table.php";
+    } else {
+        require __DIR__ . '/app/view/vendor/admin/admin.php';
+    }
+    exit;
+}
+if ($uri === "/calendario") {
+    // AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . '/app/view/vendor/agendamentos/Calendario.php';
     } else {
         require __DIR__ . '/app/view/vendor/admin/admin.php';
     }
     exit;
 }
 if ($uri === "/deleted") {
-    FucntIcons::delete();
+    Delete::delete();
     exit;
 }
+if ($uri === '/edito') {
+    editor::editoDados();
+    exit;
+}
+if ($uri === '/inserted') {
+    Inserted::inserted();
+    exit;
+}
+
 if ($uri === '/gerenciador_sala') {
     AuthLogin::check();
     require __DIR__ . '/app/view/vendor/gerenciador_sala/gerenciador_sala.php';

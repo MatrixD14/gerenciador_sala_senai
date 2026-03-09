@@ -71,7 +71,7 @@ class AuthLogin
                     header('Location: /cadastrar');
                     exit;
                 } elseif (User::checkCadastro($user, $pass, $email)) {
-                    self::log_error("<p style='color: orangered'>conta criada com sucesso");
+                    self::log_error("<p style='color: green'>conta criada com sucesso");
                 } else self::log_error("erro ao create conta");
                 Database::close();
             }
