@@ -4,3 +4,4 @@
 <script src="/app/view/vendor/tabelas/js/enviaDadoPost.js"></script>
 <script src="/app/view/vendor/tabelas/js/eventClice.js"></script>
 <script src="app/view/vendor/tabelas/menuPainel/js/buttonVolta.js"></script>
+<script src="app/view/vendor/tabelas/menuPainel/js/bloqueiaDate.js"></script>

@@ -11,13 +11,14 @@ if (!$isAjax) {
 
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="data:," type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
+        <link rel=" icon" href="data:," type="image/x-icon" />
         <link rel="stylesheet" href="app/view/css/body_site.css">
         <link rel="stylesheet" href="app/view/vendor/layout/css/hearder.css">
         <link rel="stylesheet" href="app/view/vendor/layout/css/footer.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/css/tabela.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuTop/css/topbar.css">
+        <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/buttonPainel.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelDelete.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelEditor.css">
         <title>admin</title>

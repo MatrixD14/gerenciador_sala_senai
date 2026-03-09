@@ -18,6 +18,11 @@ function executarAcao(acao, tabela, id, name) {
         case 'view':
             loadPagePost('/pesquisa', dados);
             break;
+        case 'back':
+            //              overscroll-behavior: contain;
+            // touch-action: pan-x pan-y;
+            // -webkit-overflow-scrolling: touch;
+            break;
         case 'reload':
             location.reload();
             break;

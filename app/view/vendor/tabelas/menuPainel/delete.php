@@ -3,17 +3,17 @@ $name = $_POST["name"];
 $table = $_POST["tabela"];
 $id = $_POST["id"];
 ?>
-<form action="/deleted" method="post" class="Painel-delete">
-    <div class="top-delete">
+<form action="/deleted" method="post" class="Painel">
+    <div class="top-Painel">
         <h2>Deleta</h2>
         <hr>
     </div>
-    <p id="delete-info">tem certesa, que vai deleta <?= $id . " - " . $name ?> da tabela <?= $table ?> </p>
+    <p class="delete-info">"<?= $name ?>" serar deletado da tabela <?= $table ?></p>
     <input type="hidden" name="id" id="id" value="<?= $id ?>">
     <input type="hidden" name="table" id="table" value="<?= $table ?>">
     <input type="hidden" name="name" id="name" value="<?= htmlspecialchars($name) ?>">
-    <div class="button_delete">
-        <button type="button" onclick="buttonVoltar()" id="cancel-delete">Cancelar</button>
-        <button id="confirm-delete">Confirmar</button>
+    <div class="buttons-cal-conf">
+        <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
+        <button id="confirm">Confirmar</button>
     </div>
 </form>

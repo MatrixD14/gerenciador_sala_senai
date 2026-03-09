@@ -18,3 +18,4 @@ require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/gerafro
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/delete.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/editor.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/AdicionarDados.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/deleteAgendamentoOld.php';

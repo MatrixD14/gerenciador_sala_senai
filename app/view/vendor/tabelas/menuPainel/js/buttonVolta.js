@@ -28,10 +28,16 @@ document.addEventListener('submit', function (e) {
         const dados = new FormData();
         dados.append('search', termo);
         loadPagePost('/' + tabela, dados);
-        buttonVoltar();
+        PainelVoltar();
     }
 });
 function buttonVoltar() {
     if (window.history.length > 1) window.history.back();
     else location.reload();
+}
+function PainelVoltar() {
+    const painel = document.querySelector('.Painel');
+    if (painel) {
+        painel.parentElement.innerHTML = '';
+    }
 }

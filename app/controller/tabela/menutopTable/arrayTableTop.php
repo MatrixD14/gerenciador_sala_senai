@@ -1,12 +1,12 @@
 <?php
 return [
     "acoes" => [
-        "view" => "icon-lupa",
-        "add" => "icon-mais",
-        "reload" => "icon-reload",
-        "edite" => "icon-lapiz",
-        "delete" => "icon-lixeira",
-        "agenda" => 'icon-anotacao',
+        "view" => ['type' => "icon-lupa", 'menssage' => 'pesquisar na table'],
+        "add" => ['type' => "icon-mais", 'menssage' => 'adicionar usuario'],
+        "reload" => ['type' => "icon-reload", 'menssage' => 'atualizar a tabela'],
+        "edite" => ['type' => "icon-lapiz", 'menssage' => 'editar dados'],
+        "delete" => ['type' => "icon-lixeira", 'menssage' => 'deletar itens'],
+        "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
     ],
     "agendamentos" => [
         "admin" => [

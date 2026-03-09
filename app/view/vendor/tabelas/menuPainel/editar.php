@@ -2,9 +2,9 @@
 $table = $_POST["tabela"];
 $id = $_POST["id"];
 ?>
-<form action="/edito" method="post" class="Painel-editor">
-    <div class="top-editor">
-        <h2>editar</h2>
+<form action="/edito" method="post" class="Painel">
+    <div class="top-Painel">
+        <h2>editar item da tabela <?= ucfirst($table) ?></h2>
         <hr>
     </div>
     <div class="editar-dados">
@@ -12,8 +12,8 @@ $id = $_POST["id"];
         <input type="hidden" name="table" id="table" value="<?= $table ?>">
         <?= gerarFromDinamico::geraFrom($table, $id) ?>
     </div>
-    <div class="button_editor">
-        <button type="button" onclick="buttonVoltar()" id="cancel-editor">Cancelar</button>
-        <button id="confirm-editor">Confirmar</button>
+    <div class="buttons-cal-conf">
+        <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
+        <button id="confirm">Confirmar</button>
     </div>
 </form>
