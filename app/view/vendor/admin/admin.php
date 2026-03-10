@@ -28,7 +28,7 @@ if (!$isAjax) {
     <body>
     <?php
     require_once __DIR__ . '/../../../../icon/newiconbase.html';
-    require_once __DIR__ . '/../../../../app/view/vendor/layout/Top_admin.php';
+    require_once __DIR__ . '/../../../../app/view/vendor/layout/' . ($_SESSION['privilegio'] === 'admin') ? 'Top_admin.php' : 'Top_public';
 } ?>
     <main class="content">
         <?php

@@ -1,5 +1,16 @@
 <?php
+$userData = [
+    'id' => $_SESSION['id'] ?? '',
+    'privilegio' => $_SESSION['privilegio']
+];
 $table = $_POST["tabela"];
+$dia = $_POST['dia'] ?? null;
+$mes = $_POST['mes'] ?? null;
+$ano = $_POST['ano'] ?? null;
+$dataParaOForm = null;
+if ($dia && $mes && $ano) {
+    $dataParaOForm = ['dia' => $dia, 'mes' => $mes, 'ano' => $ano];
+}
 ?>
 <form action="/inserted" method="post" class="Painel">
     <div class="top-Painel">
@@ -8,7 +19,7 @@ $table = $_POST["tabela"];
     </div>
     <div class="editar-dados">
         <input type="hidden" name="table" id="table" value="<?= $table ?>">
-        <?= gerarFromDinamico::geraFrom($table, null) ?>
+        <?= gerarFromDinamico::geraFrom($table, null, $dataParaOForm, $userData) ?>
     </div>
     <div class="buttons-cal-conf">
         <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>

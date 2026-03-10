@@ -1,10 +1,10 @@
-<div class="calendar-container">
-    <div class="day-name" data-feira="DOM">DOM</div>
-    <div class="day-name" data-feira="SEG">SEG</div>
-    <div class="day-name" data-feira="TER">TER</div>
-    <div class="day-name" data-feira="QUA">QUA</div>
-    <div class="day-name" data-feira="QUI">QUI</div>
-    <div class="day-name" data-feira="SEX">SEX</div>
-    <div class="day-name" data-feira="SAB">SÁB</div>
-    <?= Calendario::geraDia() ?>
+<div class="container">
+    <header class="top-calendario">
+        <button class="btn-ant" id="prevMonth">
+            < </button>
+                <h2 class="mes-top" id="mesNome"></h2>
+                <button class="btn-pro" id="nextMonth">></button>
+    </header>
+    <div class="calendar" id="calendarGrid">
+    </div>
 </div>

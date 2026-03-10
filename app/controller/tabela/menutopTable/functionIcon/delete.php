@@ -48,7 +48,7 @@ class Delete
     public static function countWhere($table, $column, $value)
     {
         $connect = Database::connects();
-        $sql = "SELECT COUNT(*) as total FROM $table WHERE $column=?";
+        $sql = "select COUNT(*) as total from $table where $column=?";
         $stmt = $connect->prepare($sql);
         $stmt->bind_param("i", $value);
         $stmt->execute();

@@ -72,6 +72,7 @@ if ($uri === "/admin") {
     require __DIR__ . '/app/view/vendor/admin/admin.php';
     exit;
 }
+
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
 if (in_array($uri, $rotaAcao)) {
     AuthLogin::check();
@@ -97,7 +98,7 @@ if (in_array($uri, $rotasAdmin)) {
     exit;
 }
 if ($uri === "/calendario") {
-    // AuthLogin::check();
+    AuthLogin::check();
     if ($isAjax) {
         require __DIR__ . '/app/view/vendor/agendamentos/Calendario.php';
     } else {
@@ -118,11 +119,6 @@ if ($uri === '/inserted') {
     exit;
 }
 
-if ($uri === '/gerenciador_sala') {
-    AuthLogin::check();
-    require __DIR__ . '/app/view/vendor/gerenciador_sala/gerenciador_sala.php';
-    exit;
-}
 
 http_response_code(404);
 echo 'Página não encontrada';

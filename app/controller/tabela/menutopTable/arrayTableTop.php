@@ -7,6 +7,7 @@ return [
         "edite" => ['type' => "icon-lapiz", 'menssage' => 'editar dados'],
         "delete" => ['type' => "icon-lixeira", 'menssage' => 'deletar itens'],
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
+        "revindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
     ],
     "agendamentos" => [
         "admin" => [
@@ -14,11 +15,13 @@ return [
             'agenda',
             'reload',
             "edite",
-            'delete'
+            'delete',
+            'revindicar',
         ],
         "normal" => [
             'view',
-            'reload'
+            'reload',
+            'revindicar',
         ]
     ],
     "usuarios" => [

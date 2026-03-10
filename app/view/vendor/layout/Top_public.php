@@ -1,4 +1,7 @@
-<nav class="topbar"><a class="NameSite" href="/admin">Gerenciador de Sala</a>
+<?php
+$privilegios = $_SESSION['privilegio'] ?? 'Nenhum';
+?>
+<nav class="topbar"><a class="NameSite" href="/gerenciador_sala">Gerenciador de Sala</a>
     <p class="menu-oculto"><svg class="menu-icon">
             <use href="#icon-menu"></use>
         </svg></p>
@@ -18,7 +21,7 @@
                         </svg>
                         <?php echo $_SESSION['nome'] ?? 'Login'; ?></p>
                     <p>
-                        privilegio: <?php echo $_SESSION['privilegio'] ?? 'Nenhum'; ?></p>
+                        privilegio: <?= $privilegios ?></p>
                 </li>
                 <li> <a class="effect-button-link" href="config">
                         <svg class="icon">
