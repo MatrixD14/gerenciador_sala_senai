@@ -19,3 +19,4 @@ require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/delete.
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/editor.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/AdicionarDados.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/deleteAgendamentoOld.php';
+require_once __DIR__ . '/app/controller/calendario/calendario.php';

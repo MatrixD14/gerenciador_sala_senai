@@ -33,6 +33,7 @@ class Tabelas
             }
         } else {
             foreach ($config['colunas'] as $coluna => $dados) {
+                if (!empty($dados['encryption'])) continue;
                 $html .= "<th>" . ucfirst($coluna) . "</th>";
             }
         }
@@ -65,6 +66,7 @@ class Tabelas
                 }
             } else {
                 foreach ($config["colunas"] as $coluna => $prop) {
+                    if (!empty($prop['encryption'])) continue;
                     $filtros[] = "$coluna LIKE '%$searchTerm%'";
                 }
             }
@@ -93,6 +95,7 @@ class Tabelas
                 }
             } else {
                 foreach ($config["colunas"] as $coluna => $prop) {
+                    if (!empty($prop['encryption'])) continue;
                     $html .= "<td>" . htmlspecialchars($linha[$coluna] ?? '') . "</td>";
                 }
             }

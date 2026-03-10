@@ -43,9 +43,8 @@
                 </svg>
             </p>
             <ul class=" menu-list menu-tabela-list">
-                <li><a class="effect-button-link" href="agendamentos">agendamentos</a></li>
-                <li><a class="effect-button-link" href="usuarios">usuários</a></li>
-                <li><a class="effect-button-link" href="salas">salas</a></li>
+                <li><a class="effect-button-link ajax-link" href="agendamentos">agendamentos</a></li>
+                <li><a class="effect-button-link ajax-link" href="salas">salas</a></li>
             </ul>
         </div>
         <div class="menu-sms">
@@ -53,6 +52,13 @@
                     <svg class="icon">
                         <use href="#icon-sinio"></use>
                     </svg> menssagem
+                </a></p>
+        </div>
+        <div class="menu-calendario">
+            <p><a class="effect-button-link button-menu ajax-link" href="calendario">
+                    <svg class="icon">
+                        <use href="#icon-calendario"></use>
+                    </svg> Calendario
                 </a></p>
         </div>
     </div>

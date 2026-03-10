@@ -8,7 +8,7 @@ $table = $_POST["tabela"];
     </div>
     <div class="editar-dados">
         <input type="hidden" name="table" id="table-search" value="<?= $table ?>">
-        <input type="text" name="search" id="search-input" placeholder="Digite sua busca..." autofocus>
+        <input type="text" name="search" class="input-dados" id="search-input" placeholder="Digite sua busca..." autofocus>
     </div>
     <div class="buttons-cal-conf">
         <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>

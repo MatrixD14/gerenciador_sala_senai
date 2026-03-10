@@ -40,7 +40,8 @@ return [
             "periodo" => [
                 'type' => 'select',
                 'options' => ['tarde', 'demanhã', 'noite']
-            ]
+            ],
+
         ],
         "especifico" => ["agendar_sala.id", "usuario.name as usuario", "sala.name as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.periodo"]
     ],
@@ -57,7 +58,7 @@ return [
         "colunas" => [
             "id" => ['type' => 'number', 'primary' => true],
             "name" => ['type' => 'text'],
-            "email" => ['type' => 'email'],
+            "email" => ['type' => 'email',],
             'previlegio' => ['type' => 'select', 'options' => ['admin', 'normal']]
         ]
     ],

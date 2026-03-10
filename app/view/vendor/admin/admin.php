@@ -21,6 +21,7 @@ if (!$isAjax) {
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/buttonPainel.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelDelete.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelEditor.css">
+        <link rel="stylesheet" href="app/view/vendor/agendamentos/css/calendario.css">
         <title>admin</title>
     </head>
 
@@ -36,6 +37,8 @@ if (!$isAjax) {
 
         if (in_array($uri, $rotasValidas)) {
             require __DIR__ . "/../tabelas/Table.php";
+        } elseif ($uri === '/calendario') {
+            require __DIR__ . '/../agendamentos/Calendario.php';
         } else {
             echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
         }

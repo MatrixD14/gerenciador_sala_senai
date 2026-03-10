@@ -96,6 +96,15 @@ if (in_array($uri, $rotasAdmin)) {
     }
     exit;
 }
+if ($uri === "/calendario") {
+    AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . '/app/view/vendor/agendamentos/Calendario.php';
+    } else {
+        require __DIR__ . '/app/view/vendor/admin/admin.php';
+    }
+    exit;
+}
 if ($uri === "/deleted") {
     Delete::delete();
     exit;
