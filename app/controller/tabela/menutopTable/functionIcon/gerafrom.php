@@ -8,7 +8,7 @@ class gerarFromDinamico
         if (!self::$inforDate)
             self::$inforDate = require_once __DIR__ . '/../../arrayTables.php';
     }
-    public static function geraFrom($table, $id = null): string
+    public static function geraFrom($table, $id = null, $data = null, $user = null): string
     {
         self::loadConfig();
         $config =  self::$inforDate[$table] ?? null;
@@ -16,6 +16,14 @@ class gerarFromDinamico
         $dados = [];
         $isRegistroPassado = false;
         $hoje = date('Y-m-d');
+        $userPrivilegio = $user['privilegio'] ?? 'normal';
+        $userId = $user['id'] ?? null;
+        $dataPredefinida = null;
+        if ($data && isset($data['ano'], $data['mes'], $data['dia'])) {
+            $dataPredefinida = $data['ano'] . '-' .
+                str_pad($data['mes'], 2, "0", STR_PAD_LEFT) . '-' .
+                str_pad($data['dia'], 2, "0", STR_PAD_LEFT);
+        }
         if ($id !== null) {
             $tabela = $config['tabela'] ?? null;
             $db = Database::connects();
@@ -36,13 +44,25 @@ class gerarFromDinamico
             $tipo = $config['type'] ?? 'text';
             $campoBanco = $config['maskname'] ?? $coluna;
             $valorBanco = $dados[$campoBanco] ?? '';
+            if ($campoBanco === 'idUser' && $userPrivilegio === 'normal') {
+                if ($id === null) {
+                    $valorBanco = $userId;
+                    $tipo = 'readonly_user';
+                }
+            }
+            if (empty($valorBanco) && $tipo === 'date' && $dataPredefinida)
+                $valorBanco = $dataPredefinida;
             $valorEscapado = htmlspecialchars($valorBanco);
 
             if ($tipo !== 'hidden') {
                 $html .= "<label for='$coluna'>" . ucfirst($coluna) . "</label><br>";
             }
             $readonlyAttr = $isRegistroPassado ? "readonly style='cursor: not-allowed;'" : "";
-            if ($tipo === 'date') {
+            if ($tipo === 'readonly_user') {
+                $nomeUsuario = $_SESSION['nome'] ?? 'Usuário Atual';
+                $html .= "<input type='hidden' name='$coluna' id='$coluna'   value='$valorEscapado'>";
+                $html .= "<input type='text' class='input-dados' value='$nomeUsuario' readonly>";
+            } elseif ($tipo === 'date') {
                 $minAttr = !$isRegistroPassado ? "min='$hoje'" : "";
                 $html .= "<input type='date' name='$coluna' id='$coluna' class='input-dados' value='$valorEscapado' $readonlyAttr $minAttr>";
             } elseif ($tipo === "readonly") {
@@ -117,8 +137,8 @@ class gerarFromDinamico
             } else {
                 $html .= "<input type='$tipo' name='$coluna' id='$coluna' class='input-dados' value='$valorEscapado' $readonlyAttr>";
             }
-
-            if ($tipo !== 'hidden') $html .= "<br><br>";
+            if ($tipo !== 'hidden' && $tipo !== 'readonly_user') $html .= "<br><br>";
+            elseif ($tipo === 'readonly_user') $html .= "<br><br>";
         }
         return $html;
     }

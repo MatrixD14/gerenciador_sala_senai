@@ -16,7 +16,6 @@ async function loadPagePost(url, formData) {
         const html = await response.text();
         mainContent.innerHTML = html;
         mainContent.style.opacity = '1';
-
         window.history.pushState(null, '', url);
     } catch (error) {
         console.error('Falha ao enviar POST:', error);

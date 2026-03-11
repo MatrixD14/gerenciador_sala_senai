@@ -77,7 +77,7 @@ class Tabelas
             $joins = $config["join"] ?? "";
             $sql = "SELECT $campos FROM $tabelaPrincipal $joins $where LIMIT 1000";
         } else {
-            $sql = "SELECT * FROM $tabelaPrincipal $where LIMIT 1000";
+            $sql = "select * from $tabelaPrincipal $where limit 1000";
         }
 
         $listDate = Tabelas::list_All($sql);

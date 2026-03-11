@@ -10,7 +10,8 @@
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+    grid-auto-rows: 1fr;
+    gap: 1px;
     width: 100%;
     border: 1px solid #ccc;
 }
@@ -21,6 +22,7 @@
     font-weight: bold;
     background-color: #f8f9fa;
 }
+
 .dias-btn {
     aspect-ratio: 16/9;
     width: 100%;
@@ -71,4 +73,13 @@
 .dias-btn.passado span {
     background: none;
     color: #ccc;
+}
+
+.empty-slot {
+    background-color: #fff;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
 }

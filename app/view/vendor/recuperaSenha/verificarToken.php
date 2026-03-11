@@ -1,0 +1,1 @@
+<form action="/checkToken" method="post"></form>

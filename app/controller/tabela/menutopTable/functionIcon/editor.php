@@ -33,14 +33,14 @@ class editor
 
                 $camposParaAtualizar[] = "$nomeColunaBanco = ?";
                 $valores[] = $valor;
-                $tipos .= ($conf['type'] ?? '') === 'number' ? "i" : "s";
+                $tipos .= (($conf['type'] ?? '') === 'number' || (!empty($conf['relation']))) ? "i" : "s";
             }
         }
 
         if (empty($camposParaAtualizar)) return "Nenhuma alteração detectada.";
 
         $db = Database::connects();
-        $sql = "UPDATE $tabela SET " . implode(", ", $camposParaAtualizar) . " WHERE id = ?";
+        $sql = "update $tabela set " . implode(", ", $camposParaAtualizar) . " where id = ?";
         $valores[] = $id;
         $tipos .= "i";
         $stmt = $db->prepare($sql);

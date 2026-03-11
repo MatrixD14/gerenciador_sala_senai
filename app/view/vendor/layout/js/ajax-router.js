@@ -24,6 +24,7 @@ async function loadPage(url, push = true) {
         mainContent.innerHTML = html;
         if (push) window.history.pushState(null, '', url);
         mainContent.style.opacity = '1';
+        document.dispatchEvent(new Event('contentUpdated'));
     } catch (error) {
         console.error('Falha na navegação:', error);
         mainContent.style.opacity = '1';

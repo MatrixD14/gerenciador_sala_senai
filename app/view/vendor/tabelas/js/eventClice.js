@@ -18,6 +18,9 @@ function executarAcao(acao, tabela, id, name) {
         case 'view':
             loadPagePost('/pesquisa', dados);
             break;
+        case 'revindicar':
+            confirm('avisar');
+            break;
         case 'back':
             //              overscroll-behavior: contain;
             // touch-action: pan-x pan-y;

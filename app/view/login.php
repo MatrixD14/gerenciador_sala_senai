@@ -35,7 +35,8 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>
-                <a class="link-a" href="/cadastrar">cadastar</a>
+                    <a class="link-a" href="/cadastrar">cadastar</a><br>
+                    <a class="link-a" href="/esqueciSenha">Esqueci minha senha</a>
                 </div>
             </form>
         </div>

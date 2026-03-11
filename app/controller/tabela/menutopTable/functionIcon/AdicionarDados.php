@@ -29,11 +29,13 @@ class Inserted
             $nomeColunaBanco = $conf['maskname'] ?? $nomeNoForm;
             if (isset($_POST[$nomeNoForm])) {
                 $valor = $_POST[$nomeNoForm];
+                if ($valor === "" && ($conf['type'] ?? '') === 'select')
+                    continue;
 
                 $colunasBanco[] = $nomeColunaBanco;
                 $placeholders[] = "?";
                 $valores[] = $valor;
-                $tipos .= ($conf['type'] ?? '') === 'number' ? "i" : "s";
+                $tipos .= (($conf['type'] ?? '') === 'number' || (!empty($conf['relation']))) ? "i" : "s";
             }
         }
 

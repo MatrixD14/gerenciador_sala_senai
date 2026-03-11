@@ -22,13 +22,13 @@ if (!$isAjax) {
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelDelete.css">
         <link rel="stylesheet" href="app/view/vendor/tabelas/menuPainel/css/painelEditor.css">
         <link rel="stylesheet" href="app/view/vendor/agendamentos/css/calendario.css">
-        <title>admin</title>
+        <title>gerenciado de Sala</title>
     </head>
 
     <body>
     <?php
     require_once __DIR__ . '/../../../../icon/newiconbase.html';
-    require_once __DIR__ . '/../../../../app/view/vendor/layout/Top_public.php';
+    require_once __DIR__ . '/../../../../app/view/vendor/layout/' . (($_SESSION['privilegio'] === 'admin') ? 'Top_admin' : 'Top_public') . '.php';
 } ?>
     <main class="content">
         <?php

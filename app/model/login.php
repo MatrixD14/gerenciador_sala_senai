@@ -30,6 +30,13 @@ class User
         $data = $result->fetch_assoc();
         return password_verify($pass, $data["senha"]);
     }
+    public static function userID(string $user): int
+    {
+        $result = User::SelectUsercheck("name", $user);
+        if ($result->num_rows != 1) return 0;
+        $data = $result->fetch_assoc();
+        return $data["id"];
+    }
     public static function checkCadastro(string $user, string $pass, string $email): bool
     {
         $connect = Database::connects();

@@ -66,10 +66,10 @@ if ($uri === '/cadastro') {
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
 $rotaAcao = ['/delete', '/editar', '/insert', '/pesquisa'];
-
-if ($uri === "/admin") {
+$HomeGenciador = __DIR__ . '/app/view/vendor/layout/main.php';
+if ($uri === "/gerenciado_de_Sala") {
     AuthLogin::check();
-    require __DIR__ . '/app/view/vendor/admin/admin.php';
+    require $HomeGenciador;
     exit;
 }
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
@@ -80,7 +80,7 @@ if (in_array($uri, $rotaAcao)) {
         $arquivo = ltrim($uri, '/');
         require __DIR__ . "/app/view/vendor/tabelas/menuPainel/{$arquivo}.php";
     } else {
-        require __DIR__ . '/app/view/vendor/admin/admin.php';
+        require $HomeGenciador;
     }
     exit;
 }
@@ -92,7 +92,7 @@ if (in_array($uri, $rotasAdmin)) {
     if ($isAjax) {
         require __DIR__ . "/app/view/vendor/tabelas/Table.php";
     } else {
-        require __DIR__ . '/app/view/vendor/admin/admin.php';
+        require $HomeGenciador;
     }
     exit;
 }
@@ -101,7 +101,7 @@ if ($uri === "/calendario") {
     if ($isAjax) {
         require __DIR__ . '/app/view/vendor/agendamentos/Calendario.php';
     } else {
-        require __DIR__ . '/app/view/vendor/admin/admin.php';
+        require $HomeGenciador;
     }
     exit;
 }
@@ -117,12 +117,10 @@ if ($uri === '/inserted') {
     Inserted::inserted();
     exit;
 }
-if ($uri === '/gerenciador_sala') {
-    AuthLogin::check();
-    require __DIR__ . '/app/view/vendor/gerenciador_sala/gerenciador_sala.php';
+if ($uri === '/esqueciSenha') {
+    require __DIR__ . "/app/view/vendor/recuperaSenha/verificarToken.php";
     exit;
 }
-
 http_response_code(404);
 echo 'Página não encontrada';
 ob_end_flush();

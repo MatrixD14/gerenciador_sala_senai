@@ -23,13 +23,11 @@ class AuthLogin
                     self::log_error("não existe nenhum <br>registro seu crie um");
                 } else {
                     $priv = User::checkPrivilegio($user);
+                    $id = User::userID($user);
+                    $_SESSION['id'] = $id;
                     $_SESSION['nome'] = $user;
                     $_SESSION["privilegio"] = $priv;
-                    if ($priv === "admin") {
-                        header('Location: /admin');
-                    } else {
-                        header('Location: /gerenciador_sala');
-                    }
+                    header('Location: /gerenciado_de_Sala');
                     exit;
                 }
                 Database::close();
