@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
     <link rel="icon" href="data:," type="image/x-icon" />
     <link rel="stylesheet" href="app/view/css/global.css" />
     <link rel="stylesheet" href="app/view/css/component/button.css" />
-    <title>cadastro</title>
+    <title>login</title>
     <style>
         input::-webkit-calendar-picker-indicator {
             display: none;
@@ -19,7 +19,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 
 <body class="body-center">
     <div class="center box-border">
-        <h1 class="h1-center">cadastrar</h1>
+        <h1 class="h1-center">recuperar senha</h1>
         <div class="center">
             <p style="color: red">
                 <?php if (isset($_SESSION["log_create"]))
@@ -27,17 +27,13 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
                 session_destroy();
                 ?>
             </p>
-            <form action="/cadastro" method="post">
-                <label for="nome">nome</label><br />
-                <input type="text" name="nome" id='nome' autocomplete="off" /><br />
-                <label for="email">email</label><br />
-                <input type="email" name="email" id='email' autocomplete="off" /><br />
-                <label for="senha">senha</label><br />
-                <input type="password" name="senha" id='senha' autocomplete="off" /><br /><br />
+            <form action="/verificaToken" method="post">
+                <label for="email">Email</label><br />
+                <input type="email" name="email" id="email" autocomplete="off" /><br><br>
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>
-                    <a class="link-a" href="/">login</a>
+                    <a class="link-a" href="/">logan</a><br>
                 </div>
             </form>
         </div>

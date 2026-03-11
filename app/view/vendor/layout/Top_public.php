@@ -1,7 +1,4 @@
-<?php
-$privilegios = $_SESSION['privilegio'] ?? 'Nenhum';
-?>
-<nav class="topbar"><a class="NameSite" href="/gerenciador_sala">Gerenciador de Sala</a>
+<nav class="topbar"><a class="NameSite" href="/gerenciado_de_Sala">Gerenciador de Sala</a>
     <p class="menu-oculto"><svg class="menu-icon">
             <use href="#icon-menu"></use>
         </svg></p>
@@ -21,7 +18,7 @@ $privilegios = $_SESSION['privilegio'] ?? 'Nenhum';
                         </svg>
                         <?php echo $_SESSION['nome'] ?? 'Login'; ?></p>
                     <p>
-                        privilegio: <?= $privilegios ?></p>
+                        privilegio: <?php echo $_SESSION['privilegio'] ?? 'Nenhum'; ?></p>
                 </li>
                 <li> <a class="effect-button-link" href="config">
                         <svg class="icon">
@@ -58,7 +55,7 @@ $privilegios = $_SESSION['privilegio'] ?? 'Nenhum';
                 </a></p>
         </div>
         <div class="menu-calendario">
-            <p><a class="effect-button-link button-menu ajax-link" href="calendario">
+            <p><a class="effect-button-link button-menu ajax-link" href="/calendario">
                     <svg class="icon">
                         <use href="#icon-calendario"></use>
                     </svg> Calendario

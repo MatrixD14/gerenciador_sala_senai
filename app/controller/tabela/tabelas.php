@@ -55,7 +55,13 @@ class Tabelas
 
         $tabelaPrincipal = $config["tabela"];
         $searchTerm = $_POST['search'] ?? null;
+        $lastId = $_POST['last_id'] ?? null;
+        $limit = 250;
         $where = "";
+        $condicoes = [];
+        if ($lastId)
+            $condicoes[] = "$tabelaPrincipal.id > $lastId";
+
         if ($searchTerm) {
             $filtros = [];
             if (!empty($config["especifico"])) {
@@ -70,21 +76,24 @@ class Tabelas
                     $filtros[] = "$coluna LIKE '%$searchTerm%'";
                 }
             }
-            $where = " WHERE " . implode(" OR ", $filtros);
+            $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
         }
+        $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
+        $order = " ORDER BY $tabelaPrincipal.id ASC ";
         if (!empty($config["especifico"])) {
             $campos = implode(", ", $config["especifico"]);
             $joins = $config["join"] ?? "";
-            $sql = "SELECT $campos FROM $tabelaPrincipal $joins $where LIMIT 1000";
+            $sql = "select $campos from $tabelaPrincipal $joins $where $order limit $limit";
         } else {
-            $sql = "SELECT * FROM $tabelaPrincipal $where LIMIT 1000";
+            $sql = "select * from $tabelaPrincipal $where $order limit $limit";
         }
 
         $listDate = Tabelas::list_All($sql);
         $html = "";
-
+        $IdEncontrado = "";
         while ($linha = $listDate->fetch_assoc()) {
             $id = $linha['id'] ?? '';
+            $IdEncontrado = $id;
             $displayRef = $linha['name'] ?? $linha['usuario'] ?? $linha['sala'] ?? '';
 
             $html .= "<tr data-id='$id' data-name='" . htmlspecialchars($displayRef) . "'>";
@@ -100,6 +109,15 @@ class Tabelas
                 }
             }
             $html .= "</tr>";
+        }
+        if ($IdEncontrado && $listDate->num_rows >= $limit) {
+            $html .= "<tr class='row-load-more'>
+                        <td  colspan='100%' style='padding:0px'>
+                            <a class='btn-carregar' onclick='carregarMais(\"$slug\", $IdEncontrado, this)'>
+                                Lista mais
+                            </a>
+                        </td>
+                      </tr>";
         }
 
         return $html;

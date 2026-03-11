@@ -39,7 +39,7 @@ return [
             "dia" => ['type' => 'date'],
             "periodo" => [
                 'type' => 'select',
-                'options' => ['tarde', 'demanhã', 'noite']
+                'options' => ['tarde', 'manhã', 'noite']
             ],
 
         ],
@@ -59,7 +59,7 @@ return [
             "id" => ['type' => 'number', 'primary' => true],
             "name" => ['type' => 'text'],
             "email" => ['type' => 'email',],
-            'previlegio' => ['type' => 'select', 'options' => ['admin', 'normal']]
+            'previlegio' => ['type' => 'select', 'options' => ['normal', 'admin']]
         ]
     ],
     "salas" => [
@@ -72,6 +72,6 @@ return [
                 "mensagem" => "agendamentos"
             ]
         ],
-        "colunas" => ["id" => ['type' => 'number', 'primary' => true], "name" => ['type' => 'text'], "bloco" => ['type' => 'text'], "type" => ['type' => 'text']]
+        "colunas" => ["id" => ['type' => 'number', 'primary' => true], "name" => ['type' => 'text'], "bloco" => ['type' => 'text'], "descricao" => ['type' => 'text']]
     ]
 ];

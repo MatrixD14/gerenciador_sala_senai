@@ -9,6 +9,7 @@ return [
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
         "revindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
     ],
+
     "agendamentos" => [
         "admin" => [
             'view',
@@ -16,12 +17,11 @@ return [
             'reload',
             "edite",
             'delete',
-            'revindicar',
         ],
         "normal" => [
             'view',
             'reload',
-            'revindicar',
+            'revindicar'
         ]
     ],
     "usuarios" => [

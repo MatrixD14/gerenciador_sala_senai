@@ -1,6 +1,6 @@
 document.addEventListener("click", function (e) {
   const row = e.target.closest(".tabela tbody tr");
-  if (row) {
+  if (row && !row.classList.contains("row-load-more")) {
     const alreadySelected = row.classList.contains("selected");
     document
       .querySelectorAll(".tabela tbody tr")
