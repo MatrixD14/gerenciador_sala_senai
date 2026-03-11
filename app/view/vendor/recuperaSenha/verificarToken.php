@@ -1,1 +1,3 @@
-<form action="/checkToken" method="post"></form>
+<form action="/checkToken" method="post">
+    <label for="token"></label>
+</form>
