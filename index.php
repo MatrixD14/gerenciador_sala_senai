@@ -117,8 +117,25 @@ if ($uri === '/inserted') {
     Inserted::inserted();
     exit;
 }
+if ($uri === '/CalendarioAgendamento') {
+    Calendario::datasAgendamentos();
+    exit;
+}
+if ($uri === '/menssageCalendario') {
+    AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . "/app/view/vendor/agendamentos/menssageAgenda.php";
+    } else {
+        require $HomeGenciador;
+    }
+    exit;
+}
 if ($uri === '/recuperarSenha') {
     require __DIR__ . "/app/view/vendor/recuperaSenha/verificarToken.php";
+    exit;
+}
+if ($uri === '/EmailRecuperacao') {
+    require __DIR__ . "/app/view/vendor/recuperaSenha/verificarEmail.php";
     exit;
 }
 http_response_code(404);
