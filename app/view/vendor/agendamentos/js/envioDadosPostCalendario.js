@@ -11,7 +11,7 @@ function agendarDia(dia) {
 if (!window.calendarioEventLoaded) {
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.dias-btn');
-        if (btn && !btn.disabled) {
+        if (btn && !btn.disabled && !btn.classList.contains('possui-evento')) {
             const diaClicado = btn.getAttribute('data-dia');
             agendarDia(diaClicado);
         }

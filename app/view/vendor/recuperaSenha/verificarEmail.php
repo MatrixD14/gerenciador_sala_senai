@@ -19,7 +19,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 
 <body class="body-center">
     <div class="center box-border">
-        <h1 class="h1-center">logar</h1>
+        <h1 class="h1-center">recuperar senha</h1>
         <div class="center">
             <p style="color: red">
                 <?php if (isset($_SESSION["log_create"]))
@@ -27,16 +27,13 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
                 session_destroy();
                 ?>
             </p>
-            <form action="/login" method="post" autocomplete="off">
-                <label for="nome">nome</label><br />
-                <input type="text" name="nome" /><br />
-                <label for="senha">senha</label><br />
-                <input type="password" name="senha" /><br /><br />
+            <form action="/verificaToken" method="post">
+                <label for="email">Email</label><br />
+                <input type="email" name="email" id="email" autocomplete="off" /><br><br>
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>
-                    <a class="link-a" href="/cadastrar">cadastar</a><br>
-                    <a class="link-a" href="/EmailRecuperacao">Esqueci minha senha</a>
+                    <a class="link-a" href="/">logan</a><br>
                 </div>
             </form>
         </div>

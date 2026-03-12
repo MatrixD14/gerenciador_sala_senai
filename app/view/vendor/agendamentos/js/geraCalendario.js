@@ -1,90 +1,144 @@
 let dataControleCalendario = new Date();
 let data_atual = new Date();
-function initCalendario() {
-    const calendarGrid = document.getElementById('calendarGrid');
-    const mesNome = document.getElementById('mesNome');
-    const btnAnt = document.getElementById('prevMonth');
-    const btnProx = document.getElementById('nextMonth');
-    if (!calendarGrid || !mesNome) return;
+const ComponentesCalendario = {
+    gerarDia(dia, isPassado, isHoje, temEvento) {
+        const classeEvento = temEvento ? 'possui-evento' : '';
+        const classeHoje = isHoje ? 'today' : '';
+        const classePassado = isPassado ? 'passado' : '';
+        const htmlEvento = temEvento ? `<span class="dot-evento"></span>` : '';
+        return `
+            <button class="dias-btn ${classeEvento} ${classeHoje} ${classePassado}" 
+                    ${isPassado ? 'disabled' : ''} 
+                    data-dia="${dia}" 
+                <span>${dia}</span>
+                ${htmlEvento}
+            </button>`;
+    },
 
-    function renderizarCalendario() {
-        calendarGrid.innerHTML = '';
+    gerarSlotVazio: () => `<div class="empty-slot"></div>`,
 
-        const ano = dataControleCalendario.getFullYear();
-        const mes = dataControleCalendario.getMonth();
+    gerarCabecalho: () =>
+        ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'].map((dia) => `<div class="day-name">${dia}</div>`).join(''),
+};
+async function renderizarCalendario() {
+    const grid = document.getElementById('calendarGrid');
+    const labelMes = document.getElementById('mesNome');
+    if (!grid || !labelMes) return;
 
-        const limitePassado = new Date();
-        limitePassado.setMonth(data_atual.getMonth() - 12);
-        const isMuitoAntigo = ano <= limitePassado.getFullYear() && mes <= limitePassado.getMonth();
-        if (btnAnt) {
-            btnAnt.disabled = isMuitoAntigo;
-            btnAnt.style.visibility = isMuitoAntigo ? 'hidden' : 'visible';
-        }
-        const limiteFuturo = new Date();
-        limiteFuturo.setMonth(data_atual.getMonth() + 12);
-        const isLimiteFuturo = ano >= limiteFuturo.getFullYear() && mes >= limiteFuturo.getMonth();
+    grid.innerHTML = '<div class="loading">Carregando...</div>';
 
-        if (btnProx) {
-            btnProx.disabled = isLimiteFuturo;
-            btnProx.style.visibility = isLimiteFuturo ? 'hidden' : 'visible';
-        }
-        const meses = [
-            'Janeiro',
-            'Fevereiro',
-            'Março',
-            'Abril',
-            'Maio',
-            'Junho',
-            'Julho',
-            'Agosto',
-            'Setembro',
-            'Outubro',
-            'Novembro',
-            'Dezembro',
-        ];
+    const ano = dataControleCalendario.getFullYear();
+    const mesIndex = dataControleCalendario.getMonth(); // 0-11
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const agendamentos = await buscarAgendamentosDoServidor(mesIndex + 1, ano);
 
-        mesNome.innerText = `${ano}\n${meses[mes]}`;
-        const diasSemana = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
-        diasSemana.forEach((dia) => {
-            calendarGrid.innerHTML += `<div class="day-name">${dia}</div>`;
-        });
-        const primeiroDiaMes = new Date(ano, mes, 1).getDay();
-        const totalDiasMes = new Date(ano, mes + 1, 0).getDate();
-        const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
-        for (let i = 0; i < primeiroDiaMes; i++) {
-            calendarGrid.innerHTML += `<div class="empty-slot"></div>`;
-        }
-        for (let dia = 1; dia <= totalDiasMes; dia++) {
-            const dataNoLoop = new Date(ano, mes, dia);
-            const isPassado = dataNoLoop < hoje;
-            const isHoje = dataNoLoop.getTime() === hoje.getTime();
+    atualizarNavegacao(ano, mesIndex);
+    const meses = [
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro',
+    ];
+    labelMes.innerText = `${ano}\n${meses[mesIndex]}`;
+    let htmlFinal = ComponentesCalendario.gerarCabecalho();
 
-            const classeToday = isHoje ? 'today' : '';
+    const primeiroDiaSemana = new Date(ano, mesIndex, 1).getDay();
+    const totalDiasMes = new Date(ano, mesIndex + 1, 0).getDate();
 
-            calendarGrid.innerHTML += `
-    <button class="dias-btn ${classeToday} ${isPassado ? 'passado' : ''}" 
-            ${isPassado ? 'disabled' : ''} data-dia=${dia}>
-        <span>${dia}</span>
-    </button>`;
-        }
-        const celulasOcupadas = primeiroDiaMes + totalDiasMes;
-        const celulasRestantes = 42 - celulasOcupadas;
+    for (let i = 0; i < primeiroDiaSemana; i++) htmlFinal += ComponentesCalendario.gerarSlotVazio();
 
-        for (let i = 0; i < celulasRestantes; i++) {
-            calendarGrid.innerHTML += `<div class="empty-slot"></div>`;
-        }
+    for (let dia = 1; dia <= totalDiasMes; dia++) {
+        const dataNoLoop = new Date(ano, mesIndex, dia);
+        const isPassado = dataNoLoop < hoje;
+        const isHoje = dataNoLoop.toDateString() === hoje.toDateString();
+        const listaNomes = agendamentos[dia] || [];
+        const temEvento = listaNomes.length > 0;
+
+        htmlFinal += ComponentesCalendario.gerarDia(dia, isPassado, isHoje, temEvento);
     }
 
-    btnAnt.onclick = () => {
-        dataControleCalendario.setMonth(dataControleCalendario.getMonth() - 1);
-        renderizarCalendario();
-    };
+    const restante = 42 - (primeiroDiaSemana + totalDiasMes);
+    for (let i = 0; i < restante; i++) htmlFinal += ComponentesCalendario.gerarSlotVazio();
 
-    btnProx.onclick = () => {
-        dataControleCalendario.setMonth(dataControleCalendario.getMonth() + 1);
-        renderizarCalendario();
-    };
+    grid.innerHTML = htmlFinal;
+    grid.querySelectorAll('.dias-btn').forEach((btn) => {
+        btn.onclick = () => {
+            const dia = btn.dataset.dia;
+            const nomes = agendamentos[dia];
+            if (nomes && nomes.length > 0) {
+                const formData = new FormData();
+                formData.append('dia', dia);
+                nomes.forEach((nome) => {
+                    formData.append('nomes[]', nome);
+                });
+                loadPagePost('/menssageCalendario', formData);
+            }
+        };
+    });
+}
+
+function atualizarNavegacao(ano, mes) {
+    const btnAnt = document.getElementById('prevMonth');
+    const btnProx = document.getElementById('nextMonth');
+
+    const dataAlvo = new Date(ano, mes, 1);
+    const limitePassado = new Date(data_atual.getFullYear(), data_atual.getMonth() - 12, 1);
+    const limiteFuturo = new Date(data_atual.getFullYear(), data_atual.getMonth() + 12, 1);
+
+    if (btnAnt) {
+        const desativar = dataAlvo <= limitePassado;
+        btnAnt.disabled = desativar;
+        btnAnt.style.visibility = desativar ? 'hidden' : 'visible';
+    }
+    if (btnProx) {
+        const desativar = dataAlvo >= limiteFuturo;
+        btnProx.disabled = desativar;
+        btnProx.style.visibility = desativar ? 'hidden' : 'visible';
+    }
+}
+
+async function buscarAgendamentosDoServidor(mes, ano) {
+    try {
+        const response = await fetch(`/CalendarioAgendamento?mes=${mes}&ano=${ano}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error(`Erro status: ${response.status}`);
+
+        return await response.json();
+    } catch (e) {
+        console.error('Falha ao obter dados do site:', e);
+        return {};
+    }
+}
+function initCalendario() {
+    const btnAnt = document.getElementById('prevMonth');
+    const btnProx = document.getElementById('nextMonth');
+
+    if (btnAnt)
+        btnAnt.onclick = () => {
+            dataControleCalendario.setMonth(dataControleCalendario.getMonth() - 1);
+            renderizarCalendario();
+        };
+
+    if (btnProx)
+        btnProx.onclick = () => {
+            dataControleCalendario.setMonth(dataControleCalendario.getMonth() + 1);
+            renderizarCalendario();
+        };
 
     renderizarCalendario();
 }

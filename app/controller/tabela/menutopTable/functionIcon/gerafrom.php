@@ -27,7 +27,7 @@ class gerarFromDinamico
         if ($id !== null) {
             $tabela = $config['tabela'] ?? null;
             $db = Database::connects();
-            $stmt = $db->prepare("select * from $tabela WHERE id=?");
+            $stmt = $db->prepare("select * from $tabela where id=?");
             $stmt->bind_param("i", $id);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -66,9 +66,8 @@ class gerarFromDinamico
                 $minAttr = !$isRegistroPassado ? "min='$hoje'" : "";
                 $html .= "<input type='date' name='$coluna' id='$coluna' class='input-dados' value='$valorEscapado' $readonlyAttr $minAttr>";
             } elseif ($tipo === "readonly") {
-                $valor = htmlspecialchars($valorBanco);
-
-                $html .= "<input type='text' id='$coluna' value='$valor' readonly>";
+                // $valor = htmlspecialchars($valorBanco);
+                $html .= "<input type='text' id='$coluna' value='$valorEscapado' readonly>";
             } elseif ($tipo === "select") {
 
                 if ($isRegistroPassado) {

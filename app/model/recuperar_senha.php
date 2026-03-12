@@ -1,17 +1,23 @@
 <?php
 class RecuperarPassWord
 {
-    public static function geraToken()
+    public static function buscaEmail($email): ?array
     {
-        $idUsuario = $_POST['id'];
+        $db = Database::connects();
+        $stmtUser = $db->prepare("SELECT id FROM usuario WHERE email = ?");
+        $stmtUser->bind_param("s", $email);
+        $stmtUser->execute();
+        $resUser = $stmtUser->get_result()->fetch_assoc();
+        return $resUser;
+    }
+    public static function criaToken($idUsuario)
+    {
         $token = bin2hex(random_bytes(32));
         $expiracao = date('Y-m-d H:i:s', strtotime('+1 hour'));
         $db = Database::connects();
         $stmt = $db->prepare("insert into recuperacao_tokens (idUser, token, expiracao) values (?, ?, ?)");
         $stmt->bind_param("iss", $idUsuario, $token, $expiracao);
         $stmt->execute();
-        header('location: /verificar_Token');
-        exit;
     }
     public static function redefinir()
     {

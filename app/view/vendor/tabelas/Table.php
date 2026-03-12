@@ -1,5 +1,9 @@
 <?php
 $tipoTabela = $Tabelas ?? '';
+if ($isAjax && isset($_POST['last_id'])) {
+    echo Tabelas::geraBodyTabela2($tipoTabela);
+    exit;
+}
 $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 $Bodytabela = Tabelas::geraBodyTabela2($tipoTabela);
 ?>
@@ -18,7 +22,7 @@ $Bodytabela = Tabelas::geraBodyTabela2($tipoTabela);
                 <thead>
                     <?= $Toptabela ?>
                 </thead>
-                <tbody>
+                <tbody class="carregaTable" id="carregaTabela">
                     <?= $Bodytabela ?>
                 </tbody>
             </table>

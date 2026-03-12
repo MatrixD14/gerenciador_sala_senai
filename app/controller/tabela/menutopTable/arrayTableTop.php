@@ -32,10 +32,7 @@ return [
             "edite",
             'delete'
         ],
-        "normal" => [
-            'view',
-            'reload'
-        ]
+        "normal" => []
     ],
     "salas" => [
         "admin" => [
