@@ -27,11 +27,11 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
                 session_destroy();
                 ?>
             </p>
-            <form action="/login" method="post" autocomplete="off">
+            <form action="/login" method="post">
                 <label for="nome">nome</label><br />
-                <input type="text" name="nome" /><br />
+                <input type="text" name="nome" autocomplete="off" /><br />
                 <label for="senha">senha</label><br />
-                <input type="password" name="senha" /><br /><br />
+                <input type="password" name="senha" autocomplete="off" /><br /><br />
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>

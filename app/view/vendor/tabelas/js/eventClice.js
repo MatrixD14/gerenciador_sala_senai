@@ -1,5 +1,5 @@
 function executarAcao(acao, tabela, id, name) {
-    console.log(`Executando ${acao} na tabela ${tabela} para o ID ${id}`);
+    // console.log(`Executando ${acao} na tabela ${tabela} para o ID ${id}`);
     const dados = new FormData();
     dados.append('tabela', tabela);
     dados.append('id', id);
@@ -19,7 +19,7 @@ function executarAcao(acao, tabela, id, name) {
             loadPagePost('/pesquisa', dados);
             break;
         case 'revindicar':
-            confirm('avisar');
+            loadPagePost('/revindicar', dados);
             break;
         case 'back':
             //              overscroll-behavior: contain;

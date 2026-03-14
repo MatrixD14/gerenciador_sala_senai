@@ -8,3 +8,4 @@
 <script src="app/view/vendor/agendamentos/js/geraCalendario.js"></script>
 <script src="app/view/vendor/agendamentos/js/envioDadosPostCalendario.js"></script>
 <script src="app/view/vendor/tabelas/js/geraMaisList.js"></script>
+<script src="/app/view/vendor/agendamentos/js/revindicarSelect.js"></script>

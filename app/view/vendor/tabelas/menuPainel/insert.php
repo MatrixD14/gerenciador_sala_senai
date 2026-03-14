@@ -19,7 +19,7 @@ if ($dia && $mes && $ano) {
     </div>
     <div class="editar-dados">
         <input type="hidden" name="table" id="table" value="<?= $table ?>">
-        <?= gerarFromDinamico::geraFrom($table, null, $dataParaOForm, $userData) ?>
+        <?= gerarFromDinamico::geraFrom($table, null, $dataParaOForm, $userData, false) ?>
     </div>
     <div class="buttons-cal-conf">
         <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>

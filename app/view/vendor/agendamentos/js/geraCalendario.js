@@ -1,15 +1,18 @@
 let dataControleCalendario = new Date();
 let data_atual = new Date();
+let agendamentosGlobais = {};
+
 const ComponentesCalendario = {
     gerarDia(dia, isPassado, isHoje, temEvento) {
         const classeEvento = temEvento ? 'possui-evento' : '';
         const classeHoje = isHoje ? 'today' : '';
-        const classePassado = isPassado ? 'passado' : '';
+        let classeTemporal = '';
+        if (isPassado) classeTemporal = temEvento ? 'passado-dados' : 'passado';
         const htmlEvento = temEvento ? `<span class="dot-evento"></span>` : '';
         return `
-            <button class="dias-btn ${classeEvento} ${classeHoje} ${classePassado}" 
-                    ${isPassado ? 'disabled' : ''} 
+            <button class="dias-btn ${classeEvento} ${classeHoje} ${classeTemporal}" 
                     data-dia="${dia}" 
+                    data-passado="${isPassado}">
                 <span>${dia}</span>
                 ${htmlEvento}
             </button>`;
@@ -28,10 +31,10 @@ async function renderizarCalendario() {
     grid.innerHTML = '<div class="loading">Carregando...</div>';
 
     const ano = dataControleCalendario.getFullYear();
-    const mesIndex = dataControleCalendario.getMonth(); // 0-11
+    const mesIndex = dataControleCalendario.getMonth();
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
-    const agendamentos = await buscarAgendamentosDoServidor(mesIndex + 1, ano);
+    agendamentosGlobais = await buscarAgendamentosDoServidor(mesIndex + 1, ano);
 
     atualizarNavegacao(ano, mesIndex);
     const meses = [
@@ -60,7 +63,7 @@ async function renderizarCalendario() {
         const dataNoLoop = new Date(ano, mesIndex, dia);
         const isPassado = dataNoLoop < hoje;
         const isHoje = dataNoLoop.toDateString() === hoje.toDateString();
-        const listaNomes = agendamentos[dia] || [];
+        const listaNomes = agendamentosGlobais[dia] || [];
         const temEvento = listaNomes.length > 0;
 
         htmlFinal += ComponentesCalendario.gerarDia(dia, isPassado, isHoje, temEvento);
@@ -70,20 +73,6 @@ async function renderizarCalendario() {
     for (let i = 0; i < restante; i++) htmlFinal += ComponentesCalendario.gerarSlotVazio();
 
     grid.innerHTML = htmlFinal;
-    grid.querySelectorAll('.dias-btn').forEach((btn) => {
-        btn.onclick = () => {
-            const dia = btn.dataset.dia;
-            const nomes = agendamentos[dia];
-            if (nomes && nomes.length > 0) {
-                const formData = new FormData();
-                formData.append('dia', dia);
-                nomes.forEach((nome) => {
-                    formData.append('nomes[]', nome);
-                });
-                loadPagePost('/menssageCalendario', formData);
-            }
-        };
-    });
 }
 
 function atualizarNavegacao(ano, mes) {

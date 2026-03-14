@@ -75,6 +75,16 @@
     background: none;
     color: #ccc;
 }
+.dias-btn.passado-dados {
+    background-color: #f5f5f5;
+    color: #ccc;
+    cursor: not-allowed;
+    border: 1px solid #eee;
+}
+
+.dias-btn.passado-dados:hover {
+    background-color: #f5f5f5;
+}
 
 .empty-slot {
     background-color: #fff;
@@ -99,12 +109,35 @@
 }
 
 .today {
-    background-color: #f1f1f1;
-    border: 1px solid #3498db;
+    border: 2px solid #3498db;
 }
-.dias-btn:not(.possui-evento):not(:disabled) {
+.dias-btn:not(.possui-evento):not(.passado) {
     cursor: copy;
 }
 .dias-btn.possui-evento {
     cursor: help;
+}
+.lista-checkbox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+.item-selecionavel input[type='radio'] {
+    display: none;
+}
+.item-selecionavel label {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.item-selecionavel label:hover {
+    background: #f1f3f5;
+    color: #000;
+}
+.item-selecionavel input[type='radio']:checked + label {
+    color: #000;
+    background-color: #00ff99;
 }

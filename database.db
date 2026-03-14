@@ -20,7 +20,8 @@ create table agendar_sala(
     idUser int,
     idSala int,
     foreign key(idSala) references sala(id),
-    foreign key(idUser) references usuario(id)
+    foreign key(idUser) references usuario(id),
+    unique (dia, periodo, idSala)
     );
 create table recuperacao_token(
     id int auto_increment primary key,
@@ -31,3 +32,13 @@ create table recuperacao_token(
     foreign key (idUser) references usuario(id) on delete cascade,
     INDEX idx_token (token)
     );
+create table revindicados(
+    id int auto_increment primary key,
+    id_remetente int,
+    id_agendamento_revindicado int,
+    mensagem varchar(255),
+    status varchar(50) default 'pendente',
+    data_envio datetime default current_timestamp,
+    foreign key (id_remetente) references usuario(id),
+    foreign key (id_agendamento_revindicado) references agendar_sala(id)
+);

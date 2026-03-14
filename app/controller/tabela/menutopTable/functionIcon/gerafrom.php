@@ -8,13 +8,13 @@ class gerarFromDinamico
         if (!self::$inforDate)
             self::$inforDate = require_once __DIR__ . '/../../arrayTables.php';
     }
-    public static function geraFrom($table, $id = null, $data = null, $user = null): string
+    public static function geraFrom($table, $id = null, $data = null, $user = null, $readonlyActive = false): string
     {
         self::loadConfig();
         $config =  self::$inforDate[$table] ?? null;
         if (!$config) return "Configuração não encontrada";
         $dados = [];
-        $isRegistroPassado = false;
+        $isRegistroBloqueado = false;
         $hoje = date('Y-m-d');
         $userPrivilegio = $user['privilegio'] ?? 'normal';
         $userId = $user['id'] ?? null;
@@ -32,9 +32,11 @@ class gerarFromDinamico
             $stmt->execute();
             $result = $stmt->get_result();
             $dados = $result->fetch_assoc() ?? [];
-            if (isset($dados['dia']) && $dados['dia'] < $hoje) {
-                $isRegistroPassado = true;
+            if ((isset($dados['dia']) && $dados['dia'] < $hoje) || $readonlyActive === true) {
+                $isRegistroBloqueado = true;
             }
+        } elseif ($readonlyActive === true) {
+            $isRegistroBloqueado = true;
         }
         $coluneSelect = $config['colunas'] ?? null;
         $html = "";
@@ -57,20 +59,19 @@ class gerarFromDinamico
             if ($tipo !== 'hidden') {
                 $html .= "<label for='$coluna'>" . ucfirst($coluna) . "</label><br>";
             }
-            $readonlyAttr = $isRegistroPassado ? "readonly style='cursor: not-allowed;'" : "";
+            $readonlyAttr = $isRegistroBloqueado ? "readonly style='cursor: not-allowed;'" : "";
             if ($tipo === 'readonly_user') {
                 $nomeUsuario = $_SESSION['nome'] ?? 'Usuário Atual';
-                $html .= "<input type='hidden' name='$coluna' id='$coluna'   value='$valorEscapado'>";
-                $html .= "<input type='text' class='input-dados' value='$nomeUsuario' readonly>";
+                $html .= "<input type='hidden' name='$coluna'   value='$valorEscapado'>";
+                $html .= "<input type='text' id='$coluna' class='input-dados' value='$nomeUsuario' readonly>";
             } elseif ($tipo === 'date') {
-                $minAttr = !$isRegistroPassado ? "min='$hoje'" : "";
+                $minAttr = !$isRegistroBloqueado ? "min='$hoje'" : "";
                 $html .= "<input type='date' name='$coluna' id='$coluna' class='input-dados' value='$valorEscapado' $readonlyAttr $minAttr>";
             } elseif ($tipo === "readonly") {
-                // $valor = htmlspecialchars($valorBanco);
                 $html .= "<input type='text' id='$coluna' value='$valorEscapado' readonly>";
             } elseif ($tipo === "select") {
 
-                if ($isRegistroPassado) {
+                if ($isRegistroBloqueado) {
                     $mostrarValor = $valorEscapado;
                     if (!empty($config['relation'])) {
                         $rel = $config['relation'];
@@ -87,7 +88,7 @@ class gerarFromDinamico
                     }
 
                     $html .= "<input type='hidden' name='$coluna' value='$valorEscapado'>";
-                    $html .= "<input type='text' id='display_$coluna' class='input-dados' value='$mostrarValor' readonly style='cursor: not-allowed;''>";
+                    $html .= "<input type='text' id='$coluna' class='input-dados' value='$mostrarValor' readonly style='cursor: not-allowed;' autocomplete='off'>";
                 } else {
                     $html .= "<select class='select-dados' name='$coluna' id='$coluna'>";
 
@@ -134,7 +135,7 @@ class gerarFromDinamico
                     $html .= "</select>";
                 }
             } else {
-                $html .= "<input type='$tipo' name='$coluna' id='$coluna' class='input-dados' value='$valorEscapado' $readonlyAttr>";
+                $html .= "<input type='$tipo' name='$coluna' id='$coluna' autocomplete='off' class='input-dados' value='$valorEscapado' $readonlyAttr>";
             }
             if ($tipo !== 'hidden' && $tipo !== 'readonly_user') $html .= "<br><br>";
             elseif ($tipo === 'readonly_user') $html .= "<br><br>";

@@ -1,6 +1,10 @@
 .input-dados {
     width: 95%;
 }
+.textarea {
+    resize: none;
+    height: 200px;
+}
 .select-dados {
     width: 100%;
 }

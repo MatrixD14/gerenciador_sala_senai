@@ -100,11 +100,20 @@ class Tabelas
 
             if (!empty($config["especifico"])) {
                 foreach ($linha as $valor) {
+                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
+                        $valor = date('d/m/Y', strtotime($valor));
+                    }
                     $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";
                 }
             } else {
                 foreach ($config["colunas"] as $coluna => $prop) {
                     if (!empty($prop['encryption'])) continue;
+                    $valor = $linha[$coluna] ?? '';
+                    if (($prop['type'] ?? '') === 'date' || preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
+                        if (!empty($valor)) {
+                            $valor = date('d/m/Y', strtotime($valor));
+                        }
+                    }
                     $html .= "<td>" . htmlspecialchars($linha[$coluna] ?? '') . "</td>";
                 }
             }

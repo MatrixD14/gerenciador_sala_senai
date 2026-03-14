@@ -11,7 +11,9 @@ Env::load(__DIR__ . '/.editorConf');
 //login
 require_once __DIR__ . '/app/controller/login/auth_login.php';
 require_once __DIR__ . '/app/model/connectDataBase.php';
+require_once __DIR__ . '/app/model/buscaInfoUser.php';
 require_once __DIR__ . '/app/model/login.php';
+require_once __DIR__ . "/app/model/revindica.php";
 require_once __DIR__ . '/app/controller/tabela/tabelas.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/TableTop.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/gerafrom.php';
@@ -19,4 +21,5 @@ require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/delete.
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/editor.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/AdicionarDados.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/deleteAgendamentoOld.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/revindicarUsuario.php';
 require_once __DIR__ . '/app/controller/calendario/calendario.php';

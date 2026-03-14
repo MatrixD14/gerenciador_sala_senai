@@ -122,9 +122,32 @@ if ($uri === '/CalendarioAgendamento') {
     exit;
 }
 if ($uri === '/menssageCalendario') {
-    require __DIR__ . "/app/view/vendor/agendamentos/menssageAgenda.php";
+    AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . "/app/view/vendor/agendamentos/menssageAgenda.php";
+    } else {
+        require $HomeGenciador;
+    }
     exit;
 }
+
+if ($uri === '/revindicar') {
+    AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . "/app/view/vendor/tabelas/menuPainel/revindicar.php";
+    } else {
+        require $HomeGenciador;
+    }
+    exit;
+}
+
+if ($uri === '/revindicado' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    AuthLogin::check();
+    revindicar::EnviaRevidicacao();
+    header("Location: /agendamentos");
+    exit;
+}
+
 if ($uri === '/recuperarSenha') {
     require __DIR__ . "/app/view/vendor/recuperaSenha/verificarToken.php";
     exit;

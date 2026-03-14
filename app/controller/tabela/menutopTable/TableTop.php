@@ -23,7 +23,7 @@ class menuTable
             $icon = $todasAcaos[$acao]['type'];
             $title = $todasAcaos[$acao]['menssage'] ?? '';
             $html .= "
-            <svg class='icon-table'
+            <svg class='icon-table' id='{$acao}'
                 data-action='{$acao}'
                 data-table='{$table}'>
                 <use href='#{$icon}'></use>

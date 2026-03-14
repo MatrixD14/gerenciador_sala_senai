@@ -1,15 +1,6 @@
 <?php
 class RecuperarPassWord
 {
-    public static function buscaEmail($email): ?array
-    {
-        $db = Database::connects();
-        $stmtUser = $db->prepare("SELECT id FROM usuario WHERE email = ?");
-        $stmtUser->bind_param("s", $email);
-        $stmtUser->execute();
-        $resUser = $stmtUser->get_result()->fetch_assoc();
-        return $resUser;
-    }
     public static function criaToken($idUsuario)
     {
         $token = bin2hex(random_bytes(32));

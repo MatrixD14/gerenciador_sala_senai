@@ -4,7 +4,7 @@ class recuperar
     public static function geraToken()
     {
         $email = $_POST['email'] ?? null;
-        $usuario = RecuperarPassWord::buscaEmail($email);
+        $usuario = BuscaInfoUser::buscaEmail($email);
         if (!$usuario) {
             echo "Email não encontrado";
             return;
