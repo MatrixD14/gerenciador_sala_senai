@@ -17,16 +17,18 @@ function iniciarScrollInfinit() {
                 if (sentinel.classList.contains('loading')) return;
                 const slug = sentinel.dataset.slug;
                 const lastId = sentinel.dataset.lastid;
+                const searchTerm = sentinel.dataset.search || '';
                 sentinel.classList.add('loading');
-                executarCargaInfinita(slug, lastId, sentinel, globalObserver);
+                executarCargaInfinita(slug, lastId, sentinel, searchTerm, globalObserver);
             }
         });
     }, observerOptions);
-    function executarCargaInfinita(slug, lastId, sentinel, obs) {
+    function executarCargaInfinita(slug, lastId, sentinel, searchTerm, obs) {
         const tbody = document.querySelector('table tbody');
         const dados = new FormData();
         dados.append('slug', slug);
         dados.append('last_id', lastId);
+        dados.append('search', searchTerm);
         fetch(window.location.pathname, {
             method: 'POST',
             body: dados,

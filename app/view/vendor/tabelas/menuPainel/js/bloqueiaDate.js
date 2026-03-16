@@ -11,8 +11,8 @@ function bloqueiarevindicar(event = null) {
     const form = event.currentTarget || event.target;
     const inputData = document.querySelector('input[name="dia"]');
     const btnConfirmar = document.getElementById('confirm');
-    const menssage = document.querySelector('#menssage');
-
+    const menssage = document.querySelector('#menssage-log');
+    const hoje = new Date().toISOString().split('T')[0];
     if (inputData && btnConfirmar) {
         const dataInput = inputData.value;
         if (dataInput < hoje) {
@@ -28,9 +28,11 @@ function bloqueiarevindicar(event = null) {
                 btnConfirmar.style.cursor = 'not-allowed';
                 btnConfirmar.innerText = 'Data Expirada';
             }
-            const url = form.getAttribute('action');
-            const formData = new FormData(form);
-            if (url) loadPagePost(url, formData, true);
+            return;
         }
+        const url = form.getAttribute('action');
+        const formData = new FormData(form);
+        if (url) loadPagePost(url, formData, true);
+        else menssage.textContent = 'algo deu errado';
     }
 }

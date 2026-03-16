@@ -7,6 +7,7 @@ class revindicando
         $mensagem
     ) {
         $db = Database::connects();
+        if (!$db) throw new Exception("Falha na conexão com o banco.");
         $stmt = $db->prepare("
             INSERT INTO revindicados 
             (id_remetente, id_agendamento_revindicado, mensagem) 
@@ -14,7 +15,9 @@ class revindicando
         ");
 
         $stmt->bind_param("iis", $id_remetente, $id_destinatario, $mensagem);
-        $stmt->execute();
+        if (!$stmt->execute()) {
+            throw new Exception("Erro no Execute: " . $stmt->error);
+        }
 
         return true;
     }

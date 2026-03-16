@@ -120,7 +120,7 @@ class Tabelas
             $html .= "</tr>";
         }
         if ($IdEncontrado && $listDate->num_rows >= $limit) {
-            $html .= "<tr class='sentinel' data-slug='$slug' data-lastid='$IdEncontrado'>
+            $html .= "<tr class='sentinel' data-slug='$slug' data-lastid='$IdEncontrado' data-search='" . htmlspecialchars($searchTerm ?? '') . "'>
                 <td colspan='100%' style='text-align:center;'>
                     Carregando mais registros...
                 </td>

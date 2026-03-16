@@ -38,7 +38,8 @@ foreach ($staticDirs as $dir) {
 }
 require_once __DIR__ . '/bootstrap.php';
 //essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
-TabelaCleanup::autoCleanup(365);
+TabelaCleanup::autoCleanupTableAgendamento(365);
+TabelaCleanup::autoCleanupReivindicacao(365);
 $uri = rtrim($path, '/');
 if ($uri === '') $uri = '/';
 if ($uri === '/') {

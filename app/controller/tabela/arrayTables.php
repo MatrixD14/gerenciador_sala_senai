@@ -73,5 +73,61 @@ return [
             ]
         ],
         "colunas" => ["id" => ['type' => 'number', 'primary' => true], "name" => ['type' => 'text'], "bloco" => ['type' => 'text'], "descricao" => ['type' => 'text']]
+    ],
+    "menssage" => [
+        "tabela" => 'revindicados',
+        "join" => "
+            INNER JOIN usuario u1
+            ON revindicados.id_remetente = u1.id
+            
+            INNER JOIN agendar_sala
+            ON revindicados.id_agendamento_revindicado = agendar_sala.id
+            
+            INNER JOIN usuario u2
+            ON agendar_sala.idUser = u2.id
+            
+            INNER JOIN sala
+            ON agendar_sala.idSala = sala.id;
+            ",
+        "dependencias" => [
+            [
+                "tabela" => "agendar_sala",
+                "coluna" => "idSala",
+                "link" => "agendamentos",
+                "mensagem" => "agendamentos"
+            ],
+            [
+                "tabela" => "agendar_sala",
+                "coluna" => "idSala",
+                "link" => "agendamentos",
+                "mensagem" => "agendamentos"
+            ]
+        ],
+        "colunas" => [
+            "id" => [
+                "type" => "number",
+                "primary" => true,
+            ],
+            "rementente" => [
+                "maskname" => "id_remetente",
+                "type" => "text",
+                "relation" => [
+                    "tabela" => "usuario",
+                    "coluna" => "name",
+                    "value" => 'id',
+                ]
+
+            ]
+
+        ],
+        "especifico" => [
+            'revindicados.id',
+            "user1.name as rementente",
+            "user2.name as destinatario",
+            "sala.name as sala",
+            "agendar_sala.dia",
+            "agendar_sala.periodo",
+            "revindicados.mensagem"
+        ],
     ]
 ];

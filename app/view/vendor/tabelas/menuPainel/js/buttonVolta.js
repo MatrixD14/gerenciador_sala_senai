@@ -27,7 +27,9 @@ document.addEventListener('submit', function (e) {
 
         const dados = new FormData();
         dados.append('search', termo);
-        loadPagePost('/' + tabela, dados);
+        loadPagePost('/' + tabela, dados).then(() => {
+            document.dispatchEvent(new Event('contentUpdated'));
+        });
         PainelVoltar();
     }
 });

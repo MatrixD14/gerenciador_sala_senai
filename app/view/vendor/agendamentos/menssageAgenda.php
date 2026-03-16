@@ -61,7 +61,7 @@ if ($isPassado) {
             <?php
             }
         } else { ?>
-            <script>
+            <!-- <script>
                 window.addEventListener('popstate', function(event) {
                     if (event.state && event.state.url) {
                         loadPagePost(event.state.url, event.state.formData, false);
@@ -69,7 +69,7 @@ if ($isPassado) {
                         location.reload();
                     }
                 });
-            </script>
+            </script> -->
         <?php } ?>
     </div>
     <div class="buttons-cal-conf">

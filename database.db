@@ -2,22 +2,22 @@ create database gerenciadorSala;
 use gerenciadorSala;
 create table usuario(
     id int auto_increment primary KEY,
-    name varchar(100),
-    email varchar(255),
-    senha varchar(255),
-    previlegio varchar(100)
+    name varchar(100) not null,
+    email varchar(255) not null unique,
+    senha varchar(255) not null,
+    previlegio varchar(100) not null
     );
 create table sala(
     id int auto_increment primary key,
-    name varchar(100),
-    bloco varchar(50),
-    descricao varchar(100),
+    name varchar(100) not null,
+    bloco varchar(50) not null,
+    descricao varchar(100) not null,
     unique(name,bloco),
     );
 create table agendar_sala(
     id int auto_increment primary key,
     dia date,
-    periodo varchar(100),
+    periodo varchar(100) not null,
     idUser int,
     idSala int,
     foreign key(idSala) references sala(id),

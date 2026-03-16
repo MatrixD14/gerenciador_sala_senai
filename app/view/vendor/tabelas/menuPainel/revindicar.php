@@ -7,6 +7,7 @@ $table = "agendamentos";
     <div class="top-Painel">
         <h2>revindicar </h2>
         <hr>
+        <div id="menssage-log"></div>
     </div>
     <div class="editar-dados">
         <input type="hidden" name="id" id="id" value="<?= $id ?>">
