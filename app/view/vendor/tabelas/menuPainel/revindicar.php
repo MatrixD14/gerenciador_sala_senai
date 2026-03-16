@@ -2,7 +2,7 @@
 $id = $_POST["id"] ?? "";
 $table = "agendamentos";
 ?>
-<form action="/revindicado" method="post" class="Painel">
+<form action="/revindicado" method="post" class="Painel" onsubmit="bloqueiarevindicar(event)">
     <input type="hidden" name="id" id="id" value="<?= $id ?>">
     <div class="top-Painel">
         <h2>revindicar </h2>

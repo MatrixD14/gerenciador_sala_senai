@@ -1,4 +1,4 @@
-async function loadPagePost(url, formData) {
+async function loadPagePost(url, formData = null, saveHistory = true) {
     const mainContent = document.querySelector('.content');
     mainContent.style.opacity = '0.5';
 
@@ -16,7 +16,14 @@ async function loadPagePost(url, formData) {
         const html = await response.text();
         mainContent.innerHTML = html;
         mainContent.style.opacity = '1';
-        window.history.pushState(null, '', url);
+        let dataToSave = null;
+        if (formData instanceof FormData) dataToSave = Object.fromEntries(formData.entries());
+        else dataToSave = formData;
+
+        const state = { url, formData: dataToSave };
+
+        if (saveHistory) history.pushState(state, '', url);
+        else history.replaceState(state, '', url);
     } catch (error) {
         console.error('Falha ao enviar POST:', error);
         mainContent.style.opacity = '1';

@@ -6,20 +6,20 @@ function executarAcao(acao, tabela, id, name) {
     dados.append('name', name);
     switch (acao) {
         case 'delete':
-            loadPagePost('/delete', dados);
+            loadPagePost('/delete', dados, true);
             break;
         case 'edite':
-            loadPagePost('/editar', dados);
+            loadPagePost('/editar', dados, true);
             break;
         case 'add':
         case 'agenda':
-            loadPagePost('/insert', dados);
+            loadPagePost('/insert', dados, true);
             break;
         case 'view':
-            loadPagePost('/pesquisa', dados);
+            loadPagePost('/pesquisa', dados, true);
             break;
         case 'revindicar':
-            loadPagePost('/revindicar', dados);
+            loadPagePost('/revindicar', dados, true);
             break;
         case 'back':
             //              overscroll-behavior: contain;

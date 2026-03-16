@@ -29,7 +29,7 @@ if (!window.calendarioEventLoaded) {
                 formData.append('periodos[]', info[3]);
             });
 
-            loadPagePost('/menssageCalendario', formData);
+            loadPagePost('/menssageCalendario', formData, true);
             return;
         }
         if (isPassado) return;
