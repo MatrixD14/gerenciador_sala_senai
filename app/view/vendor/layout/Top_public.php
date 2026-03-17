@@ -20,13 +20,13 @@
                     <p>
                         privilegio: <?php echo $_SESSION['privilegio'] ?? 'Nenhum'; ?></p>
                 </li>
-                <li> <a class="effect-button-link" href="config">
+                <li> <a class="effect-button-link" href="/config">
                         <svg class="icon">
                             <use href="#icon-config"></use>
                         </svg>
                         configurações</a>
                 </li>
-                <li> <a class="effect-button-link" href="logout">
+                <li> <a class="effect-button-link" href="/logout">
                         <svg class="icon">
                             <use href="#icon-seta"></use>
                         </svg>
@@ -43,12 +43,12 @@
                 </svg>
             </p>
             <ul class=" menu-list menu-tabela-list">
-                <li><a class="effect-button-link ajax-link" href="agendamentos">agendamentos</a></li>
-                <li><a class="effect-button-link ajax-link" href="salas">salas</a></li>
+                <li><a class="effect-button-link ajax-link" href="/agendamentos">agendamentos</a></li>
+                <li><a class="effect-button-link ajax-link" href="/salas">salas</a></li>
             </ul>
         </div>
         <div class="menu-sms">
-            <p><a class="effect-button-link button-menu" href="menssagem">
+            <p><a class="effect-button-link button-menu ajax-link" href="/menssagem">
                     <svg class="icon">
                         <use href="#icon-sinio"></use>
                     </svg> menssagem

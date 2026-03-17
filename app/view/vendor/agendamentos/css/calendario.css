@@ -118,10 +118,13 @@
     cursor: help;
 }
 .lista-checkbox {
+    height: 250px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin: 20px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 .item-selecionavel input[type='radio'] {
     position: absolute;

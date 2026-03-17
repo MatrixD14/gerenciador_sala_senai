@@ -40,11 +40,11 @@ class gerarFromDinamico
         }
         $coluneSelect = $config['colunas'] ?? null;
         $html = "";
-        foreach ($coluneSelect as $coluna => $config) {
+        foreach ($coluneSelect as $coluna => $configColuna) {
 
-            if (!empty($config['primary'])) continue;
-            $tipo = $config['type'] ?? 'text';
-            $campoBanco = $config['maskname'] ?? $coluna;
+            if (!empty($configColuna['primary'])) continue;
+            $tipo = $configColuna['type'] ?? 'text';
+            $campoBanco = $configColuna['maskname'] ?? $coluna;
             $valorBanco = $dados[$campoBanco] ?? '';
             if ($campoBanco === 'idUser' && $userPrivilegio === 'normal') {
                 if ($id === null) {
@@ -54,7 +54,46 @@ class gerarFromDinamico
             }
             if (empty($valorBanco) && $tipo === 'date' && $dataPredefinida)
                 $valorBanco = $dataPredefinida;
+            $mostrarValor = $valorBanco;
+            if (!empty($configColuna['relation']) && !empty($valorBanco)) {
+                $rel = $configColuna['relation'];
+                $db = Database::connects();
+                $valorPasso = $valorBanco;
+
+                if (isset($rel['tableConnection']) && is_array($rel['tableConnection'])) {
+                    foreach ($rel['tableConnection'] as $passo) {
+                        $t = $passo['tabela'];
+                        $b = $passo['buscar'];
+                        $o = $passo['onde'];
+
+                        $sql = "SELECT $b FROM $t WHERE $o = ?";
+                        $stmtRel = $db->prepare($sql);
+                        $stmtRel->bind_param("s", $valorPasso);
+                        $stmtRel->execute();
+                        $resRel = $stmtRel->get_result()->fetch_assoc();
+
+                        if ($resRel) {
+                            $valorPasso = $resRel[$b];
+                        } else {
+                            $valorPasso = "Não encontrado";
+                            break;
+                        }
+                    }
+                    $mostrarValor = $valorPasso;
+                } else {
+                    // Relação simples de 1 nível
+                    $sqlRel = "SELECT {$rel['coluna']} FROM {$rel['tabela']} WHERE {$rel['value']} = ?";
+                    $stmtRel = $db->prepare($sqlRel);
+                    $stmtRel->bind_param("s", $valorBanco);
+                    $stmtRel->execute();
+                    $resRel = $stmtRel->get_result()->fetch_assoc();
+                    if ($resRel) {
+                        $mostrarValor = $resRel[$rel['coluna']];
+                    }
+                }
+            }
             $valorEscapado = htmlspecialchars($valorBanco);
+            $mostrarEscapado = htmlspecialchars($mostrarValor);
 
             if ($tipo !== 'hidden') {
                 $html .= "<label for='$coluna'>" . ucfirst($coluna) . "</label><br>";
@@ -68,41 +107,27 @@ class gerarFromDinamico
                 $minAttr = !$isRegistroBloqueado ? "min='$hoje'" : "";
                 $html .= "<input type='date' name='$coluna' id='$coluna' class='input-dados' value='$valorEscapado' $readonlyAttr $minAttr>";
             } elseif ($tipo === "readonly") {
-                $html .= "<input type='text' id='$coluna' value='$valorEscapado' readonly>";
+                $html .= "<input type='hidden' name='$coluna' value='$valorEscapado'>";
+                $html .= "<input type='text' id='$coluna' class='input-dados' value='$mostrarEscapado' readonly style='cursor: not-allowed;'>";
             } elseif ($tipo === "select") {
 
                 if ($isRegistroBloqueado) {
-                    $mostrarValor = $valorEscapado;
-                    if (!empty($config['relation'])) {
-                        $rel = $config['relation'];
-                        $db = Database::connects();
-                        $sqlRel = "select {$rel['coluna']} from {$rel['tabela']} where {$rel['value']} = ?";
-                        $stmtRel = $db->prepare($sqlRel);
-                        $stmtRel->bind_param("s", $valorBanco);
-                        $stmtRel->execute();
-                        $resRel = $stmtRel->get_result()->fetch_assoc();
-
-                        if ($resRel) {
-                            $mostrarValor = htmlspecialchars($resRel[$rel['coluna']]);
-                        }
-                    }
-
                     $html .= "<input type='hidden' name='$coluna' value='$valorEscapado'>";
-                    $html .= "<input type='text' id='$coluna' class='input-dados' value='$mostrarValor' readonly style='cursor: not-allowed;' autocomplete='off'>";
+                    $html .= "<input type='text' id='$coluna' class='input-dados' value='$mostrarEscapado' readonly style='cursor: not-allowed;' autocomplete='off'>";
                 } else {
                     $html .= "<select class='select-dados' name='$coluna' id='$coluna'>";
 
                     // opções fixas
-                    if (!empty($config['options'])) {
-                        foreach ($config['options'] as $opt) {
+                    if (!empty($configColuna['options'])) {
+                        foreach ($configColuna['options'] as $opt) {
                             $selected = ($opt == $valorBanco) ? "selected" : "";
                             $html .= "<option value='$opt' $selected>$opt</option>";
                         }
                     }
 
                     // relação com outra tabela
-                    if (!empty($config['relation'])) {
-                        $rel = $config['relation'];
+                    if (!empty($configColuna['relation'])) {
+                        $rel = $configColuna['relation'];
                         $camposExtras = [];
                         foreach ($coluneSelect as $c => $conf) {
                             if (!empty($conf['depends']) && $conf['depends'] == $coluna) {

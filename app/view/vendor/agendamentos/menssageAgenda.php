@@ -29,7 +29,7 @@ if ($isPassado) {
 }
 ?>
 
-<form action="/revindicar" method="post" class="Painel" onsubmit="enviaDadosRevindicar(event)" novalidate>
+<form action="/reivindicar" method="post" class="Painel" onsubmit="enviaDadosRevindicar(event)" novalidate>
     <div class="top-Painel">
         <h3>pessoas que Agendo no <?= htmlspecialchars($data) ?></span>:</h3>
         <hr>
@@ -58,19 +58,10 @@ if ($isPassado) {
                         <label for="<?= $id_html ?>"><?= $label ?>
                         </label><?php } ?>
                 </div>
-            <?php
+        <?php
             }
-        } else { ?>
-            <!-- <script>
-                window.addEventListener('popstate', function(event) {
-                    if (event.state && event.state.url) {
-                        loadPagePost(event.state.url, event.state.formData, false);
-                    } else {
-                        location.reload();
-                    }
-                });
-            </script> -->
-        <?php } ?>
+        } else {
+        } ?>
     </div>
     <div class="buttons-cal-conf">
         <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>

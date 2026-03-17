@@ -132,7 +132,7 @@ if ($uri === '/menssageCalendario') {
     exit;
 }
 
-if ($uri === '/revindicar') {
+if ($uri === '/reivindicar') {
     AuthLogin::check();
     if ($isAjax) {
         require __DIR__ . "/app/view/vendor/tabelas/menuPainel/revindicar.php";
@@ -142,12 +142,38 @@ if ($uri === '/revindicar') {
     exit;
 }
 
-if ($uri === '/revindicado' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($uri === '/reivindicado' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     AuthLogin::check();
-    revindicar::EnviaRevidicacao();
+    revindicar::EnviaRevindicacao();
     header("Location: /agendamentos");
     exit;
 }
+
+if ($uri === '/menssagem') {
+    AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . "/app/view/vendor/menssagens/menssage.php";
+    } else {
+        require $HomeGenciador;
+    }
+    exit;
+}
+if ($uri === '/confirma') {
+    AuthLogin::check();
+    if ($isAjax) {
+        require __DIR__ . "/app/view/vendor/tabelas/menuPainel/confirmeReivindica.php";
+    } else {
+        require $HomeGenciador;
+    }
+    exit;
+}
+if ($uri === '/confirmaReivindica' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    AuthLogin::check();
+    revindicar::ConfirmoRevidicacao();
+    header("Location: /menssagem");
+    exit;
+}
+
 
 if ($uri === '/recuperarSenha') {
     require __DIR__ . "/app/view/vendor/recuperaSenha/verificarToken.php";
