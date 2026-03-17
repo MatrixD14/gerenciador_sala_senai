@@ -12,7 +12,7 @@ create table sala(
     name varchar(100) not null,
     bloco varchar(50) not null,
     descricao varchar(100) not null,
-    unique(name,bloco),
+    unique(name,bloco)
     );
 create table agendar_sala(
     id int auto_increment primary key,
@@ -22,7 +22,7 @@ create table agendar_sala(
     idSala int,
     foreign key(idSala) references sala(id),
     foreign key(idUser) references usuario(id),
-    unique (dia, periodo, idSala),
+    unique (dia, periodo, idSala)
     );
 create table recuperacao_token(
     id int auto_increment primary key,
@@ -31,7 +31,7 @@ create table recuperacao_token(
     expiracao datetime not null,
     usado tinyint(1) default 0,
     foreign key (idUser) references usuario(id) on delete cascade,
-    INDEX idx_token (token),
+    INDEX idx_token (token)
     );
 create table revindicados(
     id int auto_increment primary key,
@@ -41,5 +41,5 @@ create table revindicados(
     status varchar(50) default 'pendente',
     data_envio datetime default current_timestamp,
     foreign key (id_remetente) references usuario(id),
-    foreign key (id_agendamento_revindicado) references agendar_sala(id),
+    foreign key (id_agendamento_revindicado) references agendar_sala(id)
 );

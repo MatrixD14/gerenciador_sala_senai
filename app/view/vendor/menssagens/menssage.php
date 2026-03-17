@@ -1,5 +1,5 @@
 <?php
-$tipoTabela = $Tabelas ?? '';
+$tipoTabela = "menssagem";
 if ($isAjax && isset($_POST['last_id'])) {
     echo Tabelas::geraBodyTabela2($tipoTabela);
     exit;
@@ -15,7 +15,7 @@ $Bodytabela = Tabelas::geraBodyTabela2($tipoTabela);
         </div>
     <?php }
     unset($_SESSION["erro_table"]); ?>
-    <?php require_once __DIR__ . "/menuTop/topBar.php"; ?>
+    <?php require_once __DIR__ . "/../tabelas/menuTop/topBar.php"; ?>
     <div class="table">
         <div class="table-center">
             <table class="tabela">

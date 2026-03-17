@@ -40,6 +40,8 @@ if (!$isAjax) {
             require __DIR__ . "/../tabelas/Table.php";
         } elseif ($uri === '/calendario') {
             require __DIR__ . '/../agendamentos/Calendario.php';
+        } elseif ($uri === '/menssagem') {
+            require __DIR__ . '/../menssagens/menssage.php';
         } else {
             echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
         }

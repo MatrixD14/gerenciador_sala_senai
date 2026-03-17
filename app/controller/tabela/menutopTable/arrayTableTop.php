@@ -46,5 +46,17 @@ return [
             'view',
             'reload'
         ]
+    ],
+    "menssagem" => [
+        "admin" => [
+            'view',
+            'reload',
+            "edite",
+            'delete'
+        ],
+        "normal" => [
+            'view',
+            'reload'
+        ]
     ]
 ];

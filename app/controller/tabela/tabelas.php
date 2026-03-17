@@ -43,6 +43,10 @@ class Tabelas
     {
         $connect = Database::connects();
         $tmg = $connect->prepare($table);
+        if (!$tmg) {
+            self::log_error_table("Erro na consulta SQL: " . $connect->error . " | Query: " . $table);
+            return null;
+        }
         if (!$tmg->execute()) die("commad nao executado");
         return $tmg->get_result();
     }
@@ -100,8 +104,9 @@ class Tabelas
 
             if (!empty($config["especifico"])) {
                 foreach ($linha as $valor) {
-                    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
-                        $valor = date('d/m/Y', strtotime($valor));
+                    if (preg_match('/^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}:\d{2})?$/', $valor)) {
+                        $formato = (strpos($valor, ' ') !== false) ? 'd/m/Y H:i' : 'd/m/Y';
+                        $valor = date($formato, strtotime($valor));
                     }
                     $html .= "<td>" . htmlspecialchars($valor ?? '') . "</td>";
                 }
