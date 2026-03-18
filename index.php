@@ -154,15 +154,6 @@ if ($uri === '/menssagem') {
     }
     exit;
 }
-// if ($uri === '/confirma') {
-//     AuthLogin::check();
-//     if ($isAjax) {
-//         require __DIR__ . "/app/view/vendor/tabelas/menuPainel/confirmeReivindica.php";
-//     } else {
-//         require $HomeGenciador;
-//     }
-//     exit;
-// }
 if ($uri === '/confirmaReivindica' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     AuthLogin::check();
     revindicar::ConfirmoRevidicacao();

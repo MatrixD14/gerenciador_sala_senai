@@ -37,7 +37,7 @@ class revindicar
     {
         $db = Database::connects();
         $hoje = date('Y-m-d');
-        $horaLimite = 22;
+        $horaLimite = 24;
         $agoraHora = (int)date('H');
         $stmt = $db->prepare("update revindicados set status = 'expiro' where date(data_envio) < ? and status = 'pendente'");
         if ($agoraHora >= $horaLimite) $stmt = $db->prepare("update revindicados set status = 'expiro' where date(data_envio) < ? and status = 'pendente'");
