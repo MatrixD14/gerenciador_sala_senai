@@ -16,10 +16,21 @@ require_once __DIR__ . '/app/model/login.php';
 require_once __DIR__ . "/app/model/revindica.php";
 require_once __DIR__ . '/app/controller/tabela/tabelas.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/TableTop.php';
-require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/gerafrom.php';
+
+// require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/gerafrom.php';
+
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraFrom/formRelationservices.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraFrom/formRenderer.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraFrom/formEngine.php';
+
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/delete.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/editor.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/AdicionarDados.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/deleteAgendamentoOld.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/revindicarUsuario.php';
 require_once __DIR__ . '/app/controller/calendario/calendario.php';
+
+//essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
+TabelaCleanup::autoCleanupTableAgendamento(365);
+TabelaCleanup::autoCleanupReivindicacao(365);
+revindicar::ExperarReivindicacao();

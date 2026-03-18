@@ -1,0 +1,56 @@
+.Painel {
+    display: flex;
+    flex-direction: column;
+    background-color: blue;
+    min-width: 320px;
+    max-width: 90%;
+    align-items: center;
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.top-Painel {
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.buttons-cal-conf {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    margin-top: 20px;
+}
+.top-Painel h2,
+.top-Painel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+#fecha,
+#cancel,
+#confirm {
+    cursor: pointer;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: opacity 0.2s;
+    color: #fff;
+}
+#fecha:hover,
+#cancel:hover,
+#confirm:hover {
+    opacity: 0.8;
+}
+#fecha {
+    background-color: #e89b1e;
+}
+#cancel {
+    background-color: red;
+}
+#confirm {
+    background-color: green;
+}

@@ -1,0 +1,32 @@
+.menu-table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #004aad;
+    padding: 8px;
+    border-radius: 5px 5px 0 0;
+    font-size: 24px;
+    color: #fff;
+}
+.menssage {
+    text-align: center;
+    background-color: #fff;
+    border: 2px #004aad solid;
+    padding: 8px;
+}
+.icon-menu-table {
+    display: flex;
+    flex-direction: row-reverse;
+}
+.local-icon-reload {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+.icon-table {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
+}
