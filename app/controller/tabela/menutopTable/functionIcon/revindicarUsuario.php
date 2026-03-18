@@ -1,7 +1,7 @@
 <?php
 class revindicar
 {
-    public static function EnviaRevidicacao()
+    public static function EnviaRevindicacao()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
         $id_agendamento = $_POST["id"] ?? null;
@@ -10,7 +10,7 @@ class revindicar
         $mensagem = !empty($_POST["menssage"]) ? $_POST["menssage"] : "Gostaria de usar essa sala.";
 
         if ($id_agendamento && $id_remetente) {
-            revindicando::EnviaRevidicacao(
+            revindicando::EnviaRevindicacao(
                 $id_remetente,
                 $id_agendamento,
                 $mensagem
@@ -19,5 +19,30 @@ class revindicar
         } else {
             Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar.");
         }
+    }
+    public static function ConfirmoRevidicacao()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        $id_agendamento = $_POST["id"] ?? null;
+        $status = $_POST["status"] ?? null;
+
+        if ($id_agendamento && $status) {
+            revindicando::confirmoRevindicacao($id_agendamento, $status);
+            Tabelas::log_error_table("Você reivindico um agendamento com,  sucesso!");
+        } else {
+            Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar.");
+        }
+    }
+    public static function ExperarReivindicacao()
+    {
+        $db = Database::connects();
+        $hoje = date('Y-m-d');
+        $horaLimite = 22;
+        $agoraHora = (int)date('H');
+        $stmt = $db->prepare("update revindicados set status = 'expiro' where date(data_envio) < ? and status = 'pendente'");
+        if ($agoraHora >= $horaLimite) $stmt = $db->prepare("update revindicados set status = 'expiro' where date(data_envio) < ? and status = 'pendente'");
+        $stmt->bind_param("s", $hoje);
+        $stmt->execute();
+        $stmt->close();
     }
 }

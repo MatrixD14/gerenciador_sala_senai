@@ -8,6 +8,7 @@ return [
         "delete" => ['type' => "icon-lixeira", 'menssage' => 'deletar itens'],
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
         "revindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
+        "confirma" => ["type" => "icon-afirma", 'menssage' => 'ele serve para aceita']
     ],
 
     "agendamentos" => [
@@ -51,12 +52,13 @@ return [
         "admin" => [
             'view',
             'reload',
-            "edite",
+            "confirma",
             'delete'
         ],
         "normal" => [
             'view',
-            'reload'
+            'reload',
+            "confirma"
         ]
     ]
 ];

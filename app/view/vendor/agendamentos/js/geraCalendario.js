@@ -36,7 +36,6 @@ async function renderizarCalendario() {
     hoje.setHours(0, 0, 0, 0);
     agendamentosGlobais = await buscarAgendamentosDoServidor(mesIndex + 1, ano);
 
-    atualizarNavegacao(ano, mesIndex);
     const meses = [
         'Janeiro',
         'Fevereiro',
@@ -54,7 +53,8 @@ async function renderizarCalendario() {
     labelMes.innerText = `${ano}\n${meses[mesIndex]}`;
     let htmlFinal = ComponentesCalendario.gerarCabecalho();
 
-    const primeiroDiaSemana = new Date(ano, mesIndex, 1).getDay();
+    const primeiroDiaMes = new Date(ano, mesIndex, 1);
+    const primeiroDiaSemana = primeiroDiaMes.getDay();
     const totalDiasMes = new Date(ano, mesIndex + 1, 0).getDate();
 
     for (let i = 0; i < primeiroDiaSemana; i++) htmlFinal += ComponentesCalendario.gerarSlotVazio();
@@ -69,10 +69,15 @@ async function renderizarCalendario() {
         htmlFinal += ComponentesCalendario.gerarDia(dia, isPassado, isHoje, temEvento);
     }
 
-    const restante = 42 - (primeiroDiaSemana + totalDiasMes);
-    for (let i = 0; i < restante; i++) htmlFinal += ComponentesCalendario.gerarSlotVazio();
+    const totalSlotsAteAgora = primeiroDiaSemana + totalDiasMes;
+    const restante = Math.ceil(totalSlotsAteAgora / 7) * 7 - totalSlotsAteAgora;
+
+    for (let i = 0; i < restante; i++) {
+        htmlFinal += ComponentesCalendario.gerarSlotVazio();
+    }
 
     grid.innerHTML = htmlFinal;
+    atualizarNavegacao(ano, mesIndex);
 }
 
 function atualizarNavegacao(ano, mes) {

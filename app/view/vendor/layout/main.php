@@ -7,7 +7,7 @@ $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED
 if (!$isAjax) {
 ?>
     <!DOCTYPE html>
-    <html lang="pt-br">
+    <html lang='pt-BR'>
 
     <head>
         <meta charset="UTF-8">

@@ -37,9 +37,6 @@ foreach ($staticDirs as $dir) {
     }
 }
 require_once __DIR__ . '/bootstrap.php';
-//essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
-TabelaCleanup::autoCleanupTableAgendamento(365);
-TabelaCleanup::autoCleanupReivindicacao(365);
 $uri = rtrim($path, '/');
 if ($uri === '') $uri = '/';
 if ($uri === '/') {
@@ -66,7 +63,7 @@ if ($uri === '/cadastro') {
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
-$rotaAcao = ['/delete', '/editar', '/insert', '/pesquisa'];
+$rotaAcao = ['/delete', '/editar', '/insert', '/pesquisa', '/confirma'];
 $HomeGenciador = __DIR__ . '/app/view/vendor/layout/main.php';
 if ($uri === "/gerenciado_de_Sala") {
     AuthLogin::check();
@@ -144,7 +141,7 @@ if ($uri === '/reivindicar') {
 
 if ($uri === '/reivindicado' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     AuthLogin::check();
-    revindicar::EnviaRevidicacao();
+    revindicar::EnviaRevindicacao();
     header("Location: /agendamentos");
     exit;
 }
@@ -157,7 +154,21 @@ if ($uri === '/menssagem') {
     }
     exit;
 }
-
+// if ($uri === '/confirma') {
+//     AuthLogin::check();
+//     if ($isAjax) {
+//         require __DIR__ . "/app/view/vendor/tabelas/menuPainel/confirmeReivindica.php";
+//     } else {
+//         require $HomeGenciador;
+//     }
+//     exit;
+// }
+if ($uri === '/confirmaReivindica' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    AuthLogin::check();
+    revindicar::ConfirmoRevidicacao();
+    header("Location: /menssagem");
+    exit;
+}
 if ($uri === '/recuperarSenha') {
     require __DIR__ . "/app/view/vendor/recuperaSenha/verificarToken.php";
     exit;

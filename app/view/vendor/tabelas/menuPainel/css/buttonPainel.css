@@ -29,6 +29,7 @@
     margin-bottom: 8px;
     text-transform: capitalize;
 }
+#fecha,
 #cancel,
 #confirm {
     cursor: pointer;
@@ -39,10 +40,13 @@
     transition: opacity 0.2s;
     color: #fff;
 }
-
+#fecha:hover,
 #cancel:hover,
 #confirm:hover {
     opacity: 0.8;
+}
+#fecha {
+    background-color: #e89b1e;
 }
 #cancel {
     background-color: red;

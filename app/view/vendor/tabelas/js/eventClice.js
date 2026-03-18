@@ -11,6 +11,9 @@ function executarAcao(acao, tabela, id, name) {
         case 'edite':
             loadPagePost('/editar', dados, true);
             break;
+        case 'confirma':
+            loadPagePost('/confirma', dados, true);
+            break;
         case 'add':
         case 'agenda':
             loadPagePost('/insert', dados, true);
@@ -19,7 +22,7 @@ function executarAcao(acao, tabela, id, name) {
             loadPagePost('/pesquisa', dados, true);
             break;
         case 'revindicar':
-            loadPagePost('/revindicar', dados, true);
+            loadPagePost('/reivindicar', dados, true);
             break;
         case 'back':
             //              overscroll-behavior: contain;

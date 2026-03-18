@@ -39,7 +39,11 @@ return [
             "dia" => ['type' => 'date'],
             "periodo" => [
                 'type' => 'select',
-                'options' => ['tarde', 'manhã', 'noite']
+                'options' => [
+                    'manhã' => ["min" => 5, "max" => 7],
+                    'tarde' => ["min" => 7, "max" => 11],
+                    'noite' => ["min" => 7, "max" => 18]
+                ]
             ],
 
         ],
@@ -94,10 +98,11 @@ return [
             "id" => [
                 "type" => "number",
                 "primary" => true,
+                "virtual" => true
             ],
             "remetente" => [
                 "maskname" => "id_remetente",
-                "type" => "text",
+                "type" => "readonly",
                 "relation" => [
                     "tabela" => "usuario",
                     "coluna" => "name",
@@ -107,21 +112,56 @@ return [
             ],
             "destinatario" => [
                 "maskname" => "id_agendamento_revindicado",
-                'type' => "text"
+                'type' => "readonly",
+                "relation" => [
+                    "tabela" => "usuario",
+                    "coluna" => "name",
+                    "value" => 'id',
+                    "tableConnection" => [
+                        ["tabela" => "agendar_sala", 'buscar' => "idUser", "onde" => "id"],
+                        ["tabela" => "usuario", "buscar" => "name", "onde" => "id"]
+                    ]
+                ]
+            ],
+            "sala" => [
+                "maskname" => "id_agendamento_revindicado",
+                'type' => "readonly",
+                "relation" => [
+                    "tabela" => "sala",
+                    "coluna" => "name",
+                    "value" => 'id',
+                    "tableConnection" => [
+                        ["tabela" => "agendar_sala", 'buscar' => "idSala", "onde" => "id"],
+                        ["tabela" => "sala", "buscar" => "name", "onde" => "id"]
+                    ]
+                ]
+            ],
+            "periodo" => [
+                "maskname" => "id_agendamento_revindicado",
+                'type' => "readonly",
+                "relation" => [
+                    "tabela" => "sala",
+                    "coluna" => "name",
+                    "value" => 'id',
+                    "tableConnection" => [
+                        ["tabela" => "agendar_sala", 'buscar' => "periodo", "onde" => "id"],
+                    ]
+                ]
             ],
             "menssagem" => [
                 "maskname" => "mensagem",
-                "type" => "text"
+                "type" => "readonly"
             ]
 
         ],
         "especifico" => [
             'revindicados.id',
+            'revindicados.status as reivindicado',
+            "revindicados.data_envio as Enviado",
             "user1.name as rementente",
             "user2.name as destinatario",
             "sala.name as sala",
             "agendar_sala.dia as agendado",
-            "revindicados.data_envio as Enviado",
             "agendar_sala.periodo",
             "revindicados.mensagem"
         ],

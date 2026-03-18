@@ -1,70 +1,71 @@
 <?php
 date_default_timezone_set('America/Sao_Paulo');
+$regrasPeriodo = [
+    'manhã' => ["min" => 5, "max" => 7],
+    'tarde' => ["min" => 7, "max" => 11],
+    'noite' => ["min" => 7, "max" => 18]
+];
 $dia = (str_pad($_POST['dia'] ?? "", 2, "0", STR_PAD_LEFT) ?? '');
 $mes =  (str_pad($_POST['mes'] ?? "", 2, "0", STR_PAD_LEFT) ?? '');
 $ano = ($_POST['ano'] ?? '');
-$data = $dia . "/" . $mes . "/" . $ano;
+$dataAgendamento = "$ano-$mes-$dia";
+$dataHoje = date('Y-m-d');
+$dataExibicao = $dia . "/" . $mes . "/" . $ano;
+$horaAtual = (int)date('H');
+$isPassado = ($dataAgendamento < $dataHoje);
+$realmenteHoje = ($dataAgendamento === $dataHoje);
 $id_user = $_POST["id"] ?? [];
 $nomes = $_POST["nomes"] ?? [];
 $periodos = $_POST["periodos"] ?? [];
 $salas = $_POST["salas"] ?? [];
 
-$dataAgendamento = "$ano-$mes-$dia";
-$dataHoje = date('Y-m-d');
-$horaAtual = (int)date('H');
-$realmenteHoje = ($dataAgendamento === $dataHoje);
-$isPassado = ($dataAgendamento < $dataHoje);
-$motivoBloqueio = "";
-$bloqueioHorario = false;
-if ($realmenteHoje) {
-    if ($horaAtual < 11 || $horaAtual >= 18) {
-        $bloqueioHorario = true;
-        $motivoBloqueio = "Reivindicações hoje só são permitidas entre 11:00 e 17:00.";
-    }
-}
-$bloqueado = $isPassado || $bloqueioHorario;
-if ($isPassado) {
-    $amanha = date('d/m/Y', strtotime('+1 day'));
-    $motivoBloqueio = "Não é possível reivindicar, so na data $amanha";
-}
 ?>
 
 <form action="/reivindicar" method="post" class="Painel" onsubmit="enviaDadosRevindicar(event)" novalidate>
     <div class="top-Painel">
-        <h3>pessoas que Agendo no <?= htmlspecialchars($data) ?></span>:</h3>
+        <h3>pessoas que Agendo no <?= htmlspecialchars($dataExibicao) ?></span>:</h3>
         <hr>
-        <?php if ($bloqueado) { ?>
-            <p style="color: #F50; font-weight: bold;"><?= $motivoBloqueio ?></p>
-        <?php } else { ?>
-            <h4>Clique em um usuário para reivindicar:</h4>
-        <?php } ?>
+
         <span class="menssagen"></span>
     </div>
     <div class="lista-checkbox">
         <?php
         if (!empty($nomes)) {
             foreach ($nomes as $i => $nome) {
-                $periodo = $periodos[$i] ?? 'Não informado';
+                $periodo = $periodos[$i] ?? 'null';
                 $id = $id_user[$i] ?? $i;
-                $sala = $salas[$i] ?? 'Não informado';
+                $sala = $salas[$i] ?? 'null';
+                $itemBloqueado = $isPassado;
+                $motivo = "";
+
+                if ($realmenteHoje && isset($regrasPeriodo[$periodo])) {
+                    $min = $regrasPeriodo[$periodo]['min'];
+                    $max = $regrasPeriodo[$periodo]['max'];
+                    if ($horaAtual < $min || $horaAtual >= $max) {
+                        $itemBloqueado = true;
+                        $motivo = " (Fora do horário: $min:00h às $max:00h)";
+                    }
+                }
                 $id_html = "user_id_" . $id;
                 $label = htmlspecialchars(($salas[$i] ?? '') . " - $nome - " . ($periodos[$i] ?? ''));
         ?>
 
-                <div class="item-selecionavel">
-                    <?php if ($bloqueado) {
-                        echo $label;
-                    } else { ?><input type="radio" name="id" value="<?= htmlspecialchars($id) ?>" id="<?= $id_html ?>" required>
-                        <label for="<?= $id_html ?>"><?= $label ?>
-                        </label><?php } ?>
+                <div class="item-selecionavel" style="<?= $itemBloqueado ? 'opacity: 0.9; cursor: not-allowed;padding:5px' : '' ?>">
+                    <?php if ($itemBloqueado): ?>
+                        <span style="color: #fff; font-weight: bold;"><?= $label ?> <br><small><?= $motivo ?></small> 🚫</span>
+                    <?php else: ?>
+                        <input type="radio" name="id" value="<?= htmlspecialchars($id) ?>" id="<?= $id_html ?>" required>
+                        <label for="<?= $id_html ?>"><?= $label ?></label>
+                    <?php endif; ?>
                 </div>
         <?php
             }
         } else {
+            echo "<p>Nenhum agendamento encontrado.</p>";
         } ?>
     </div>
     <div class="buttons-cal-conf">
         <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
-        <button type="submit" id="confirm" <?= $bloqueado ? ' style="opacity:0.5; cursor:not-allowed" disabled' : '' ?>>Revindicar</button>
+        <button type="submit" id="confirm">Revindicar</button>
     </div>
 </form>

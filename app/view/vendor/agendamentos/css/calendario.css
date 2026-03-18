@@ -124,7 +124,15 @@
     gap: 10px;
     margin: 20px 0;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.item-selecionavel {
+    border: 1px solid #fff;
 }
 .item-selecionavel input[type='radio'] {
     position: absolute;
