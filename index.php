@@ -103,6 +103,11 @@ if ($uri === "/calendario") {
     }
     exit;
 }
+
+if ($uri === "/buscaList") {
+    completeList::buscaDadosList()();
+    exit;
+}
 if ($uri === "/deleted") {
     Delete::delete();
     exit;
@@ -154,6 +159,7 @@ if ($uri === '/menssagem') {
     }
     exit;
 }
+
 if ($uri === '/confirmaReivindica' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     AuthLogin::check();
     revindicar::ConfirmoRevidicacao();

@@ -5,7 +5,7 @@ create table usuario(
     name varchar(100) not null,
     email varchar(255) not null unique,
     senha varchar(255) not null,
-    previlegio varchar(100) not null
+    privilegio varchar(100) not null
     );
 create table sala(
     id int auto_increment primary key,

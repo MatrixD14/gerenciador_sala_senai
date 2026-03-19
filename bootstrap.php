@@ -1,4 +1,5 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 ini_set('memory_limit', '256M');
 ini_set('display_errors', '0');
@@ -14,14 +15,14 @@ require_once __DIR__ . '/app/model/connectDataBase.php';
 require_once __DIR__ . '/app/model/buscaInfoUser.php';
 require_once __DIR__ . '/app/model/login.php';
 require_once __DIR__ . "/app/model/revindica.php";
+require_once __DIR__ . "/app/model/enviaInfoEmail.php";
 require_once __DIR__ . '/app/controller/tabela/tabelas.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/TableTop.php';
 
-// require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/gerafrom.php';
-
-require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraFrom/formRelationservices.php';
-require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraFrom/formRenderer.php';
-require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraFrom/formEngine.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraForm/formRelationServices.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraForm/formRenderer.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraForm/formEngine.php';
+require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/renderGeraForm/completeList.php';
 
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/delete.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/editor.php';
