@@ -19,7 +19,7 @@ function executarAcao(acao, tabela, id, name) {
             loadPagePost('/insert', dados, true);
             break;
         case 'view':
-            loadPagePost('/pesquisa', dados, true);
+            toggleSearch();
             break;
         case 'revindicar':
             loadPagePost('/reivindicar', dados, true);

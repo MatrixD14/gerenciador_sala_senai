@@ -68,16 +68,29 @@ class Tabelas
 
         if ($searchTerm) {
             $filtros = [];
+            $db = Database::connects();
+            $termoOriginal = $db->real_escape_string($searchTerm);
+            $termoData = $termoOriginal;
+            if (preg_match('/^(\d{2})\/(\d{2})\/(\d{1,4})$/', $searchTerm, $matches)) {
+                $termoData = "{$matches[3]}-{$matches[2]}-{$matches[1]}";
+            } elseif (preg_match('/^(\d{2})\/(\d{2})$/', $searchTerm, $matches)) {
+                $termoData = "-{$matches[2]}-{$matches[1]}";
+            } else {
+                $termoData = str_replace('/', '', $termoOriginal);
+            }
+
             if (!empty($config["especifico"])) {
                 foreach ($config["especifico"] as $campo) {
                     $parts = explode(' as ', $campo);
                     $colunaFiltro = trim($parts[0]);
-                    $filtros[] = "$colunaFiltro LIKE '%$searchTerm%'";
+                    $termoParaSQL = (strpos($searchTerm, '/') !== false) ? $termoData : $termoOriginal;
+                    $filtros[] = "$colunaFiltro LIKE '%$termoParaSQL%'";
                 }
             } else {
                 foreach ($config["colunas"] as $coluna => $prop) {
                     if (!empty($prop['encryption'])) continue;
-                    $filtros[] = "$coluna LIKE '%$searchTerm%'";
+                    if (($prop['type'] ?? '') === 'date') $filtros[] = "$coluna LIKE '%$termoData%'";
+                    else $filtros[] = "$coluna LIKE '%$termoOriginal%'";
                 }
             }
             $condicoes[] = "(" . implode(" OR ", $filtros) . ")";

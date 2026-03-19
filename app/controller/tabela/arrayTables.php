@@ -63,7 +63,7 @@ return [
             "id" => ['type' => 'number', 'primary' => true],
             "name" => ['type' => 'text'],
             "email" => ['type' => 'email',],
-            'previlegio' => ['type' => 'select', 'options' => ['normal', 'admin']]
+            'privilegio' => ['type' => 'select', 'options' => ['normal', 'admin']]
         ]
     ],
     "salas" => [

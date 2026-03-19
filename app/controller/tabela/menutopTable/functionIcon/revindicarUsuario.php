@@ -1,4 +1,5 @@
 <?php
+
 class revindicar
 {
     public static function EnviaRevindicacao()
@@ -15,6 +16,11 @@ class revindicar
                 $id_agendamento,
                 $mensagem
             );
+            $dadosEmail = BuscaInfoUser::buscaDonoAgendamento($id_agendamento);
+
+            if ($dadosEmail && isset($dadosEmail['email'])) {
+                // EnviaInfoEmail::dispararEmailNotificacao($dadosEmail['email'], $mensagem);
+            }
             Tabelas::log_error_table("Você revindico um agendamento com ID $nome,  sucesso!");
         } else {
             Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar.");

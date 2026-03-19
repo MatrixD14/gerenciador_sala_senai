@@ -21,7 +21,7 @@ class User
         $result = User::SelectUsercheck("name", $user);
         if ($result->num_rows != 1) return  "normal";
         $data = $result->fetch_assoc();
-        return $data["previlegio"];
+        return $data["privilegio"];
     }
     public static function checkPassword(string $user, string $pass): bool
     {
@@ -41,7 +41,7 @@ class User
     {
         $connect = Database::connects();
         $password = password_hash($pass, PASSWORD_DEFAULT);
-        $sql = "insert into usuario(name,email,senha,previlegio)values(?,?,?,?)";
+        $sql = "insert into usuario(name,email,senha,privilegio)values(?,?,?,?)";
         $tmg = $connect->prepare($sql);
         $priv = 'normal';
         $tmg->bind_param("ssss", $user, $email, $password, $priv);

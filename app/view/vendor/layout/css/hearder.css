@@ -41,8 +41,8 @@
     color: white;
 }
 
-.menu-list li,
-.menu-tabela-list li {
+.menu-list li a,
+.menu-tabela-list li a {
     border-bottom: #f4f4f4 1px solid;
     padding: 10px 40px 10px 10px;
 }
@@ -50,6 +50,9 @@
 .menu-list li:not(.menu-info):hover,
 .menu-tabela-list li:hover {
     background-color: #555;
+}
+.menu-privilegio {
+    padding-left: 15px;
 }
 .menu-login-list,
 .menu-tabela-list {

@@ -12,3 +12,4 @@
 <script src="/app/view/vendor/tabelas/menuPainel/js/revindicarStatus.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/viewListSelect.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/buscaSelect.js"></script>
+<script src="/app/view/vendor/tabelas/menuPainel/js/buscaDadosBarra.js"></script>

@@ -15,6 +15,7 @@ require_once __DIR__ . '/app/model/connectDataBase.php';
 require_once __DIR__ . '/app/model/buscaInfoUser.php';
 require_once __DIR__ . '/app/model/login.php';
 require_once __DIR__ . "/app/model/revindica.php";
+// require_once __DIR__ . "/app/model/EnviaInfoEmail.php";
 require_once __DIR__ . '/app/controller/tabela/tabelas.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/TableTop.php';
 

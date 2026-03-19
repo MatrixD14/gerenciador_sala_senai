@@ -4,6 +4,6 @@
         <?= MenuTable::geraMenuTable($tipoTabela, $_SESSION['privilegio']) ?></div>
 
 </div>
-<div class="search-conteiner">
-    <input type="text" name="search" id="search" class="serach-dados" placeholder="pesquisar...">
+<div class="search-conteiner escondido" id="search-wrapper">
+    <input type="text" name="search" id="search" class="serach-dados" placeholder="pesquisar..." autocomplete="off">
 </div>

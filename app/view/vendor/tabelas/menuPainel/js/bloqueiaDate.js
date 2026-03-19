@@ -18,7 +18,7 @@ function bloqueiarevindicar(event = null) {
         if (dataInput < hoje) {
             if (event) event.preventDefault();
             if (menssage) {
-                menssage.textContent = 'Não é possível mandar esta reivindicação porque a data já expirou.';
+                menssage.textContent = 'Não é possível reivindica, porque já expirou';
                 menssage.style.color = 'red';
                 menssage.style.fontWeight = 'bold';
             }

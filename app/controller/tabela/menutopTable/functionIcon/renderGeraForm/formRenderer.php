@@ -90,7 +90,9 @@ class FormRenderer
             }
         }
         if ($displayLabel === "Selecione..." && !empty($col['options'])) {
-            foreach ($col['options'] as $optLabel => $regra) {
+            foreach ($col['options'] as $key => $regra) {
+                $optLabel = is_numeric($key) ? $regra : $key;
+                $optVal   = is_numeric($key) ? $regra : $key;
                 $optVal = is_array($regra) ? $optLabel : $regra;
                 if ($optVal == $selected) {
                     $displayLabel = $optLabel;
@@ -119,10 +121,12 @@ class FormRenderer
 
         // 1. Opções Estáticas
         if (!empty($col['options'])) {
-            foreach ($col['options'] as $optLabel => $regra) {
-                $optVal = is_array($regra) ? $optLabel : $regra;
+            foreach ($col['options'] as $key => $regra) {
+                $optLabel = is_numeric($key) ? $regra : $key;
+                $optVal   = is_numeric($key) ? $regra : $key;
+
                 $classDisabled = "";
-                $labelExibicao = $optLabel;
+                $labelExibicao = htmlspecialchars($optLabel);
 
                 if (is_array($regra)) {
                     $min = $regra['min'] ?? 0;

@@ -17,7 +17,7 @@
                             <use href="#icon-pessoa"></use>
                         </svg>
                         <?php echo $_SESSION['nome'] ?? 'Login'; ?></p>
-                    <p>
+                    <p class="menu-privilegio">
                         privilegio: <?php echo $_SESSION['privilegio'] ?? 'Nenhum'; ?></p>
                 </li>
                 <li> <a class="effect-button-link" href="/config">
