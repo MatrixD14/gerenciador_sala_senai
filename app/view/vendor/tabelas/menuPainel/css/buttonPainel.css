@@ -80,10 +80,9 @@
 
 /* A lista que abre */
 .custom-select-options {
-    /* Em vez de display: none, usamos estes três: */
     opacity: 0;
     pointer-events: none;
-    visibility: hidden; /* Garante que o leitor de tela ignore quando fechado */
+    visibility: hidden;
 
     position: absolute;
     top: 100%;
@@ -95,11 +94,10 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     overflow: hidden;
 
-    /* Transição suave para o efeito de aparecer */
     transition:
         opacity 0.2s ease-in-out,
         transform 0.2s ease-in-out;
-    transform: translateY(-5px); /* Efeito opcional de subir/descer */
+    transform: translateY(-5px);
 }
 
 .options-scroll-area {
@@ -121,16 +119,14 @@
 
 .option-disabled {
     color: #ccc;
-    pointer-events: none; /* Impede clique em opções desabilitadas */
+    pointer-events: none;
     background-color: #f9f9f9;
 }
-
-/* Classe para mostrar a lista via JS */
 .custom-select-container.open .custom-select-options {
     opacity: 1;
     pointer-events: auto;
     visibility: visible;
-    transform: translateY(0); /* Volta para a posição original */
+    transform: translateY(0);
 }
 
 .select-sentinel {
@@ -145,11 +141,11 @@
 }
 .custom-select-trigger.select-dados {
     cursor: pointer;
-    background-color: #fff; /* Ou a cor do seu design */
-    caret-color: transparent; /* Esconde o cursor de digitação se ele focar */
+    background-color: #fff;
+    caret-color: transparent;
 }
 
 .custom-select-trigger.select-dados:focus {
-    outline: none; /* Remove a borda azul padrão do navegador */
-    border-color: #aaa; /* Cor de destaque ao clicar */
+    outline: none;
+    border-color: #aaa;
 }

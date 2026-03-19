@@ -1,7 +1,11 @@
 <?php
-$name = $_POST["name"];
-$table = $_POST["tabela"];
-$id = $_POST["id"];
+$name = $_POST["name"] ?? "";
+$table = $_POST["tabela"] ?? "";
+$id = $_POST["id"] ?? "";
+if (!$table || !$id) {
+    header('location: /gerenciado_de_Sala');
+    exit;
+}
 ?>
 <form action="/deleted" method="post" class="Painel">
     <div class="top-Painel">

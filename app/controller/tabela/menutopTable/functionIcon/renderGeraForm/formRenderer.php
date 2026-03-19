@@ -59,12 +59,6 @@ class FormRenderer
     }
     private static function renderSelect($name, $col, $selected, $isLocked, $allCols, $isHoje, $slug = ''): string
     {
-        // if ($isLocked) {
-        //     $label = self::resolveLabel($selected, $col);
-        //     return "<input type='hidden' name='$name' value='$selected'>
-        //         <input type='text' class='input-dados' value='$label' readonly  autocomplete='off' style='cursor:not-allowed;'>";
-        // }
-
         $horaAtual = (int)date('H');
         $displayLabel = "Selecione...";
         $rel = $col['relation'] ?? null;

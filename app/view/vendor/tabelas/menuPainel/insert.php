@@ -6,6 +6,10 @@ $userData = [
     'privilegio' => $_SESSION['privilegio']
 ];
 $table = $_POST["tabela"];
+if (!$table) {
+    header('location: /gerenciado_de_Sala');
+    exit;
+}
 $presetData = [];
 if (isset($_POST['dia'], $_POST['mes'], $_POST['ano'])) {
     $presetData['dia'] = $_POST['ano'] . '-' .

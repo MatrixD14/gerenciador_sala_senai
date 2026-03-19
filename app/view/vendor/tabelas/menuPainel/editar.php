@@ -1,7 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-$table = $_POST["tabela"];
-$id = $_POST["id"];
+$table = $_POST["tabela"] ?? '';
+$id = $_POST["id"] ?? '';
+if (!$table || !$id) {
+    header('location: /gerenciado_de_Sala');
+    exit;
+}
 $userAtivo = [
     'id' => $_SESSION['id'] ?? null,
     'privilegio' => $_SESSION['privilegio'] ?? 'normal'

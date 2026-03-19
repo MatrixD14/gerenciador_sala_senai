@@ -1,5 +1,9 @@
 <?php
-$table = $_POST["tabela"];
+$table = $_POST["tabela"] ?? '';
+if (!$table) {
+    header('location: /gerenciado_de_Sala');
+    exit;
+}
 ?>
 <form id="form-pesquisa" class="Painel">
     <div class="top-Painel">

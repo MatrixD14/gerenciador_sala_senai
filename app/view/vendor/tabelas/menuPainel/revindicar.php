@@ -3,6 +3,10 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 $id = $_POST["id"] ?? "";
 $table = "agendamentos";
+if (!$table || !$id) {
+    header('location: /gerenciado_de_Sala');
+    exit;
+}
 $userAtivo = [
     'id' => $_SESSION['id'] ?? null,
     'privilegio' => $_SESSION['privilegio'] ?? 'normal'

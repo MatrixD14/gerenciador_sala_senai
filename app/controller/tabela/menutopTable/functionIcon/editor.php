@@ -13,7 +13,10 @@ class editor
         self::loadConfig();
         $table = $_POST['table'] ?? null;
         $id = $_POST['id'] ?? null;
-        if (!$table || !$id) return "Dados insuficientes para editar.";
+        if (!$table || !$id) {
+            header('location: /gerenciado_de_Sala');
+            exit;
+        }
         $config =  self::$inforDate[$table] ?? null;
         if (!$config) return "Configuração da tabela não encontrada.";
         $tabela = $config['tabela'] ?? null;
