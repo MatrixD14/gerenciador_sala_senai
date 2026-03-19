@@ -54,3 +54,102 @@
 #confirm {
     background-color: green;
 }
+/** select  new api**/
+/* O container precisa ser relativo para posicionar a lista absoluta */
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+/* O trigger herda as características da sua classe .select-dados */
+.custom-select-trigger {
+    width: 100%;
+    font-size: 20px;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 10px;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    background-color: white;
+    cursor: pointer;
+    display: block;
+    min-height: 42px;
+    color: #000 !important;
+}
+
+/* A lista que abre */
+.custom-select-options {
+    /* Em vez de display: none, usamos estes três: */
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden; /* Garante que o leitor de tela ignore quando fechado */
+
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: white;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+
+    /* Transição suave para o efeito de aparecer */
+    transition:
+        opacity 0.2s ease-in-out,
+        transform 0.2s ease-in-out;
+    transform: translateY(-5px); /* Efeito opcional de subir/descer */
+}
+
+.options-scroll-area {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.custom-option {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-bottom: 1px solid #eee;
+    color: #000 !important;
+}
+
+.custom-option:hover {
+    background-color: #f0f0f0;
+}
+
+.option-disabled {
+    color: #ccc;
+    pointer-events: none; /* Impede clique em opções desabilitadas */
+    background-color: #f9f9f9;
+}
+
+/* Classe para mostrar a lista via JS */
+.custom-select-container.open .custom-select-options {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transform: translateY(0); /* Volta para a posição original */
+}
+
+.select-sentinel {
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #666 !important;
+}
+.custom-select-trigger {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.custom-select-trigger.select-dados {
+    cursor: pointer;
+    background-color: #fff; /* Ou a cor do seu design */
+    caret-color: transparent; /* Esconde o cursor de digitação se ele focar */
+}
+
+.custom-select-trigger.select-dados:focus {
+    outline: none; /* Remove a borda azul padrão do navegador */
+    border-color: #aaa; /* Cor de destaque ao clicar */
+}
