@@ -25,10 +25,12 @@ body {
     flex-direction: column;
     position: relative;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 20px;
     box-sizing: border-box;
     width: 100%;
+
+    min-height: 0;
 }
 
 @media (min-width: 1200px) {

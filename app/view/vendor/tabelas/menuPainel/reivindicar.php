@@ -1,7 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-$table = $_POST["tabela"] ?? '';
-$id = $_POST["id"] ?? '';
+
+$id = $_POST["id"] ?? "";
+$table = "agendamentos";
 if (!$table || !$id) {
     header('location: /gerenciado_de_Sala');
     exit;
@@ -11,22 +12,24 @@ $userAtivo = [
     'privilegio' => $_SESSION['privilegio'] ?? 'normal'
 ];
 try {
-    $engine = new FormEngine($table, $id, $userAtivo, false);
+    $engine = new FormEngine($table, $id, $userAtivo, true);
 } catch (Exception $e) {
     echo "Erro: " . $e->getMessage();
     exit;
 }
 ?>
 <div class="painel-wrapper">
-    <form action="/edito" method="post" class="Painel">
+    <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiarevindicar(event)">
+        <input type="hidden" name="id" id="id" value="<?= $id ?>">
         <div class="top-Painel">
-            <h2>editar item da tabela <?= ucfirst($table) ?></h2>
+            <h2>reivindicar </h2>
             <hr>
+            <div id="menssage-log"></div>
         </div>
         <div class="editar-dados">
-            <input type="hidden" name="id" id="id" value="<?= $id ?>">
-            <input type="hidden" name="table" id="table" value="<?= $table ?>">
             <?= $engine->render() ?>
+            <label for="menssage">Mensagem (Opcional):</label>
+            <textarea name="menssage" class="input-dados textarea" id="menssage" placeholder="Gostaria de usar essa sala."></textarea>
         </div>
         <div class="buttons-cal-conf">
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>

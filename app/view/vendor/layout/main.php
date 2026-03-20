@@ -23,6 +23,7 @@ if (!$isAjax) {
         <link rel="stylesheet" href="/app/view/vendor/tabelas/menuPainel/css/painelEditor.css">
         <link rel="stylesheet" href="/app/view/vendor/agendamentos/css/calendario.css">
         <link rel="stylesheet" href="/app/view/vendor/tabelas/menuTop/css/icons.css">
+        <link rel="stylesheet" href="/app/view/vendor/creditos/css/creditos.css">
         <title>gerenciado de Sala</title>
     </head>
 

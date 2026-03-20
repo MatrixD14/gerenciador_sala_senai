@@ -7,8 +7,8 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:," type="image/x-icon" />
-    <link rel="stylesheet" href="/app/view/css/global.css" />
-    <link rel="stylesheet" href="/app/view/css/component/button.css" />
+    <link rel="stylesheet" href="<?= URL ?>/css/global.css" />
+    <link rel="stylesheet" href="<?= URL ?>/css/component/button.css" />
     <title>login</title>
     <style>
         input::-webkit-calendar-picker-indicator {

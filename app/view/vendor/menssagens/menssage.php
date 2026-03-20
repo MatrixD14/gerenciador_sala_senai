@@ -7,6 +7,7 @@ if ($isAjax && isset($_POST['last_id']) || isset($_POST['is_search_ajax'])) {
 $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 $Bodytabela = Tabelas::geraBodyTabela2($tipoTabela);
 ?>
+
 <div class="body-Table">
     <?php
     if (isset($_SESSION["erro_table"])) { ?>
