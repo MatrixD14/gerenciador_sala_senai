@@ -32,8 +32,8 @@ try {
         </div>
         <div class="buttons-cal-conf">
             <button type="button" onclick="buttonVoltar()" id="fecha">Fechar</button>
-            <button id="cancel" data-status="cancelo">Cancelar</button>
-            <button id="confirm" data-status="confirmado">Confirmar</button>
+            <button id="cancel" data-status="recusado">Cancelar</button>
+            <button id="confirm" data-status="aceito">Confirmar</button>
         </div>
     </form>
 </div>

@@ -11,15 +11,16 @@ class revindicar
         $mensagem = !empty($_POST["menssage"]) ? $_POST["menssage"] : "Gostaria de usar essa sala.";
 
         if ($id_agendamento && $id_remetente) {
-            revindicando::EnviaRevindicacao(
+            $id_nova_reivindicacao = revindicando::EnviaRevindicacao(
                 $id_remetente,
                 $id_agendamento,
                 $mensagem
             );
             $dadosEmail = BuscaInfoUser::buscaDonoAgendamento($id_agendamento);
+            $nomeQuemPede = $_SESSION["nome"] ?? "Alguém";
 
             if ($dadosEmail && isset($dadosEmail['email'])) {
-                // EnviaInfoEmail::dispararEmailNotificacao($dadosEmail['email'], $mensagem);
+                EnviaInfoEmail::dispararEmailNotificacao($nomeQuemPede, $dadosEmail['email'], $dadosEmail['sala'], $mensagem, $id_nova_reivindicacao);
             }
             Tabelas::log_error_table("Você revindico um agendamento com ID $nome,  sucesso!");
         } else {
@@ -29,26 +30,25 @@ class revindicar
     public static function ConfirmoRevidicacao()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        $id_agendamento = $_POST["id"] ?? null;
-        $status = $_POST["status"] ?? null;
+        $id_agendamento = $_REQUEST["id"] ?? null;
+        $status = $_REQUEST["status"] ?? null;
 
         if ($id_agendamento && $status) {
-            revindicando::confirmoRevindicacao($id_agendamento, $status);
-            Tabelas::log_error_table("Você reivindico um agendamento com,  sucesso!");
+            $repostaServe =  revindicando::confirmoRevindicacao($id_agendamento, $status);
+            $verificaStatu = $status === "recusado" || $status === "aceito" ?  $status . " com," : ",";
+            Tabelas::log_error_table("Você $verificaStatu $repostaServe");
         } else {
-            Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar.");
+            Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar. $id_agendamento");
         }
     }
     public static function ExperarReivindicacao()
     {
+        date_default_timezone_set('America/Sao_Paulo');
         $db = Database::connects();
         $hoje = date('Y-m-d');
-        $horaLimite = 22;
-        $agoraHora = (int)date('H');
-        $stmt = $db->prepare("update revindicados set status = 'expiro' where date(data_envio) < ? and status = 'pendente'");
-        if ($agoraHora >= $horaLimite) $stmt = $db->prepare("update revindicados set status = 'expiro' where date(data_envio) < ? and status = 'pendente'");
-        $stmt->bind_param("s", $hoje);
-        $stmt->execute();
-        $stmt->close();
+        $stmtAntigos = $db->prepare("UPDATE revindicados SET status = 'expiro' WHERE DATE(data_envio) < ? AND status = 'pendente'");
+        $stmtAntigos->bind_param("s", $hoje);
+        $stmtAntigos->execute();
+        $stmtAntigos->close();
     }
 }

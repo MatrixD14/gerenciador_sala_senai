@@ -19,6 +19,7 @@ function statusReivindica(event) {
     const acao = event.submitter ? event.submitter.getAttribute('data-status') : 'confirmado';
 
     formData.append('status', acao);
+    console.log('Enviando ID:', formData.get('id'), 'Status:', acao);
     if (url) loadPagePost(url, formData, true);
     else menssage.textContent = 'algo deu errado';
 }

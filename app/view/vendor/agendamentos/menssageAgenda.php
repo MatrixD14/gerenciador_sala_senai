@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('America/Sao_Paulo');
+
 $regrasPeriodo = [
     'manhã' => ["min" => 5, "max" => 7],
     'tarde' => ["min" => 7, "max" => 11],

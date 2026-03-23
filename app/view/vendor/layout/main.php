@@ -3,7 +3,7 @@ defined('APP') or die('Acesso negado');
 if (session_status() === PHP_SESSION_NONE) session_start();
 AuthLogin::check();
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-
+date_default_timezone_set('America/Sao_Paulo');
 if (!$isAjax) {
 ?>
     <!DOCTYPE html>
@@ -44,7 +44,7 @@ if (!$isAjax) {
         } elseif ($uri === '/menssagem') {
             require __DIR__ . '/../menssagens/menssage.php';
         } else {
-            echo "<h1>Bem-vindo ao Agendamento de Sala</h1>";
+            echo "<div class='bem-vindo'><h1>Bem-vindo ao Agendamento de Sala</h1></div>";
         }
         ?>
     </main>

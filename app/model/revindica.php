@@ -8,6 +8,7 @@ class revindicando
     ) {
         $db = Database::connects();
         if (!$db) throw new Exception("Falha na conexão com o banco.");
+
         $stmt = $db->prepare("
             INSERT INTO revindicados 
             (id_remetente, id_agendamento_revindicado, mensagem) 
@@ -19,7 +20,7 @@ class revindicando
             throw new Exception("Erro no Execute: " . $stmt->error);
         }
 
-        return true;
+        return $db->insert_id;
     }
     public static function confirmoRevindicacao(
         $id,
@@ -27,16 +28,28 @@ class revindicando
     ) {
         $db = Database::connects();
         if (!$db) throw new Exception("Falha na conexão com o banco.");
+        $stmtCheck = $db->prepare("SELECT status FROM revindicados WHERE id = ?");
+        $stmtCheck->bind_param("i", $id);
+        $stmtCheck->execute();
+        $resultado = $stmtCheck->get_result()->fetch_assoc();
+
+        if (!$resultado) return "nao encontrado";
+
+        if ($resultado['status'] === 'aceito' || $resultado['status'] === 'recusado') {
+            return "ja processado";
+        }
+
         $stmt = $db->prepare("
-            update revindicados set
-            status=? where id=?
-            ");
+        UPDATE revindicados 
+        SET status = ? 
+        WHERE id = ? 
+        AND (status = 'pendente' OR status = 'expiro')
+    ");
 
         $stmt->bind_param("si", $status, $id);
         if (!$stmt->execute()) {
             throw new Exception("Erro no Execute: " . $stmt->error);
         }
-
-        return true;
+        return ($stmt->affected_rows > 0) ? "sucesso" : "erro";
     }
 }

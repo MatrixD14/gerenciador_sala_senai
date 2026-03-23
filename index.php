@@ -146,9 +146,11 @@ if ($uri === '/reivindicar') {
     exit;
 }
 
-if ($uri === '/reivindicado' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    AuthLogin::check();
-    revindicar::EnviaRevindicacao();
+if ($uri === '/reivindicado') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        AuthLogin::check();
+        revindicar::EnviaRevindicacao();
+    }
     header("Location: /agendamentos");
     exit;
 }
@@ -162,8 +164,10 @@ if ($uri === '/menssagem') {
     exit;
 }
 
-if ($uri === '/confirmaReivindica' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($uri === '/confirmaReivindica') {
     AuthLogin::check();
+    // var_dump($_REQUEST);
+    // die();
     revindicar::ConfirmoRevidicacao();
     header("Location: /menssagem");
     exit;
