@@ -64,39 +64,41 @@ class FormRenderer
         $rel = $col['relation'] ?? null;
         $relDataAttrs = "";
         $deps = self::findDependents($name, $allCols);
-        if ($rel && !empty($selected)) {
+        if ($rel) {
             $relDataAttrs = "data-tabela='{$rel['tabela']}' 
-                         data-coluna='{$rel['coluna']}' 
-                         data-value-col='{$rel['value']}' 
-                         data-slug='$slug' 
-                         data-nome-campo-origem='$name'";
+            data-coluna='{$rel['coluna']}' 
+            data-value-col='{$rel['value']}' 
+            data-slug='$slug' 
+            data-nome-campo-origem='$name'";
+            if (!empty($selected)) {
 
-            $extraCols = !empty($deps) ? ", " . implode(',', $deps) : "";
+                $extraCols = !empty($deps) ? ", " . implode(',', $deps) : "";
 
-            $sqlS = "SELECT {$rel['coluna']} $extraCols FROM {$rel['tabela']} WHERE {$rel['value']} = ?";
-            $stmtS = Database::connects()->prepare($sqlS);
-            $stmtS->bind_param("s", $selected);
-            $stmtS->execute();
-            $resS = $stmtS->get_result();
+                $sqlS = "SELECT {$rel['coluna']} $extraCols FROM {$rel['tabela']} WHERE {$rel['value']} = ?";
+                $stmtS = Database::connects()->prepare($sqlS);
+                $stmtS->bind_param("s", $selected);
+                $stmtS->execute();
+                $resS = $stmtS->get_result();
 
-            if ($rowS = $resS->fetch_assoc()) {
-                $labelPrincipal = $rowS[$rel['coluna']];
-                $labelExtras = [];
-                foreach ($deps as $d) {
-                    if (!empty($rowS[$d])) $labelExtras[] = $rowS[$d];
+                if ($rowS = $resS->fetch_assoc()) {
+                    $labelPrincipal = $rowS[$rel['coluna']];
+                    $labelExtras = [];
+                    foreach ($deps as $d) {
+                        if (!empty($rowS[$d])) $labelExtras[] = $rowS[$d];
+                    }
+                    $textoExtra = !empty($labelExtras) ? " (" . implode(" - ", $labelExtras) . ")" : "";
+                    $displayLabel = htmlspecialchars($labelPrincipal . $textoExtra);
                 }
-                $textoExtra = !empty($labelExtras) ? " (" . implode(" - ", $labelExtras) . ")" : "";
-                $displayLabel = htmlspecialchars($labelPrincipal . $textoExtra);
             }
-        }
-        if ($displayLabel === "Selecione..." && !empty($col['options'])) {
-            foreach ($col['options'] as $key => $regra) {
-                $optLabel = is_numeric($key) ? $regra : $key;
-                $optVal   = is_numeric($key) ? $regra : $key;
-                $optVal = is_array($regra) ? $optLabel : $regra;
-                if ($optVal == $selected) {
-                    $displayLabel = $optLabel;
-                    break;
+            if ($displayLabel === "Selecione..." && !empty($col['options'])) {
+                foreach ($col['options'] as $key => $regra) {
+                    $optLabel = is_numeric($key) ? $regra : $key;
+                    $optVal   = is_numeric($key) ? $regra : $key;
+                    $optVal = is_array($regra) ? $optLabel : $regra;
+                    if ($optVal == $selected) {
+                        $displayLabel = $optLabel;
+                        break;
+                    }
                 }
             }
         }

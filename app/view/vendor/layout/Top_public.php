@@ -26,6 +26,14 @@
                         </svg>
                         configurações</a>
                 </li>
+                <li>
+                    <a class="effect-button-link ajax-link" href="/creditos">
+                        <svg class="icon">
+                            <use href="#icon-escramacao"></use>
+                        </svg>
+                        Sobre
+                    </a>
+                </li>
                 <li> <a class="effect-button-link" href="/logout">
                         <svg class="icon">
                             <use href="#icon-seta"></use>

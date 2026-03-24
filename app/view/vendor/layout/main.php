@@ -3,7 +3,6 @@ defined('APP') or die('Acesso negado');
 if (session_status() === PHP_SESSION_NONE) session_start();
 AuthLogin::check();
 $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-date_default_timezone_set('America/Sao_Paulo');
 if (!$isAjax) {
 ?>
     <!DOCTYPE html>

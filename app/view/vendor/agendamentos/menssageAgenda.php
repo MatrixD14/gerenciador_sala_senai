@@ -46,7 +46,7 @@ $salas = $_POST["salas"] ?? [];
                             $motivo = " (Fora do horário: $min:00h às $max:00h)";
                         }
                     }
-                    $id_html = "user_id_" . $id;
+                    $id_html = "agendamento_" . $id;
                     $label = htmlspecialchars(($salas[$i] ?? '') . " - $nome - " . ($periodos[$i] ?? ''));
             ?>
 

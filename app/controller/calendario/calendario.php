@@ -4,7 +4,7 @@ class Calendario
     public static function getAgendamentos($mes, $ano): array
     {
         $connect = Database::connects();
-        $sql = "SELECT usuario.id as id_usuario, DAY(agendar_sala.dia) as dia_num,periodo, usuario.name as nome_usuario, sala.name as nome_sala
+        $sql = "SELECT agendar_sala.id as id_agendamento, DAY(agendar_sala.dia) as dia_num,periodo, usuario.name as nome_usuario, sala.name as nome_sala
                 FROM agendar_sala 
                 inner join usuario on agendar_sala.idUser=usuario.id
                 inner join sala on agendar_sala.idSala=sala.id
@@ -18,7 +18,7 @@ class Calendario
         $eventos = [];
         while ($row = $result->fetch_assoc()) {
             $dia = (int)$row['dia_num'];
-            $eventos[$dia][] = [$row['id_usuario'], $row['nome_usuario'], $row['nome_sala'], $row['periodo']];
+            $eventos[$dia][] = [$row['id_agendamento'], $row['nome_usuario'], $row['nome_sala'], $row['periodo']];
         }
         return $eventos;
     }

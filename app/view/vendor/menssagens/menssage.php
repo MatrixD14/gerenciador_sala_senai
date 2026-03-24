@@ -1,11 +1,14 @@
 <?php
+$UserLogin = $_SESSION['id'] ?? null;
+if ($UserLogin === null) header("location: /gerenciado_de_Sala");
+
 $tipoTabela = "menssagem";
 if ($isAjax && isset($_POST['last_id']) || isset($_POST['is_search_ajax'])) {
-    echo Tabelas::geraBodyTabela2($tipoTabela);
+    echo Tabelas::geraBodyTabela2($tipoTabela, $UserLogin);
     exit;
 }
 $Toptabela = Tabelas::geraTopTabela($tipoTabela);
-$Bodytabela = Tabelas::geraBodyTabela2($tipoTabela);
+$Bodytabela = Tabelas::geraBodyTabela2($tipoTabela, $UserLogin);
 ?>
 
 <div class="body-Table">

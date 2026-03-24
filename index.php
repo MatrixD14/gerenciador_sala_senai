@@ -11,8 +11,7 @@ if (session_status() === PHP_SESSION_NONE)
     session_start();
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $staticDirs = ['css', 'js', 'img', 'fonts'];
-// $host = $_SERVER['HTTP_HOST'];
-// if ($host === "http://localhost") {
+
 foreach ($staticDirs as $dir) {
     if (strpos($path, "/$dir/") !== false) {
         $base = realpath(__DIR__ . '/app/view');
@@ -37,7 +36,6 @@ foreach ($staticDirs as $dir) {
         }
     }
 }
-// }
 require_once __DIR__ . '/bootstrap.php';
 $uri = rtrim($path, '/');
 if ($uri === '') $uri = '/';

@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-
+date_default_timezone_set('America/Sao_Paulo');
 $userData = [
     'id' => $_SESSION['id'] ?? '',
     'privilegio' => $_SESSION['privilegio']

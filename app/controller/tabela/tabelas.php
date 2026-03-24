@@ -51,7 +51,7 @@ class Tabelas
         return $tmg->get_result();
     }
 
-    public static function geraBodyTabela2($slug): string
+    public static function geraBodyTabela2($slug, $UserLogin = null): string
     {
         self::loadConfig();
         $config = self::$inforDate[$slug] ?? null;
@@ -63,6 +63,9 @@ class Tabelas
         $limit = 50;
         $where = "";
         $condicoes = [];
+        if ($UserLogin != null && $slug === 'menssagem') {
+            $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
+        }
         if ($lastId)
             $condicoes[] = "$tabelaPrincipal.id > $lastId";
 
