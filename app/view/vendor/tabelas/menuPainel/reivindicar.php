@@ -1,0 +1,43 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) session_start();
+date_default_timezone_set('America/Sao_Paulo');
+$id = $_POST["id"] ?? "";
+$table = "agendamentos";
+if (!$table || !$id) {
+    header('location: /gerenciado_de_Sala');
+    exit;
+}
+$userAtivo = [
+    'id' => $_SESSION['id'] ?? null,
+    'privilegio' => $_SESSION['privilegio'] ?? 'normal'
+];
+try {
+    $engine = new FormEngine($table, $id, $userAtivo, true);
+} catch (Exception $e) {
+    echo "Erro: " . $e->getMessage();
+    exit;
+}
+?>
+<div class="painel-wrapper">
+    <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiarevindicar(event)">
+        <input type="hidden" name="id" id="id" value="<?= $id ?>">
+        <div class="top-Painel">
+            <h2>reivindicar </h2>
+            <hr>
+            <div id="menssage-log"></div>
+        </div>
+        <div class="editar-dados">
+            <?= $engine->render() ?>
+            <label for="menssage">Mensagem (Opcional):</label>
+            <textarea name="menssage" class="input-dados textarea" id="menssage" placeholder="Gostaria de usar essa sala."></textarea>
+        </div>
+        <div class="buttons-cal-conf">
+            <?php if ($engine->canSubmit()) echo "<p></p>"; ?>
+            <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
+            <?php if ($engine->canSubmit()) echo "<p></p>";
+            else { ?>
+                <button id="confirm">Confirmar</button>
+            <?php } ?>
+        </div>
+    </form>
+</div>

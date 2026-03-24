@@ -1,0 +1,30 @@
+#view:hover {
+    color: #09f;
+    background-color: #fff;
+}
+
+#add:hover,
+#agenda:hover {
+    color: #00e6ea;
+    background-color: #fff;
+}
+
+#reload:hover {
+    color: #f90;
+    background-color: #fff;
+}
+#confirma:hover,
+#edite:hover {
+    color: #0c0;
+    background-color: #fff;
+}
+
+#delete:hover {
+    color: #f00;
+    background-color: #fff;
+}
+
+#revindicar:hover {
+    color: #f30;
+    background-color: #fff;
+}
