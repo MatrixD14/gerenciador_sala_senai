@@ -42,6 +42,7 @@ require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/Adicion
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/deleteAgendamentoOld.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/revindicarUsuario.php';
 require_once __DIR__ . '/app/controller/calendario/calendario.php';
+require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/filtrotabele/filtrotabelas.php";
 //essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
 TabelaCleanup::autoCleanupTableAgendamento(365);
 TabelaCleanup::autoCleanupReivindicacao(365);

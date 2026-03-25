@@ -63,7 +63,7 @@ if ($uri === '/cadastro') {
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
-$rotaAcao = ['/delete', '/editar', '/insert', '/confirma'];
+$rotaAcao = ['/delete', '/editar', '/insert', '/confirma', "/filtro"];
 $HomeGenciador = __DIR__ . '/app/view/vendor/layout/main.php';
 if ($uri === "/gerenciado_de_Sala") {
     AuthLogin::check();
@@ -164,6 +164,8 @@ if ($uri === '/menssagem') {
 
 if ($uri === '/confirmaReivindica') {
     AuthLogin::check();
+    // var_dump($_REQUEST);
+    // die();
     revindicar::ConfirmoRevidicacao();
     header("Location: /menssagem");
     exit;
