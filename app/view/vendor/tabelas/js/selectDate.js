@@ -12,7 +12,14 @@ document.addEventListener('click', function (e) {
         const table = icon.getAttribute('data-table');
         const selectedRow = document.querySelector('.tabela tbody tr.selected');
 
-        if (!selectedRow && action !== 'add' && action !== 'reload' && action !== 'agenda' && action !== 'view') {
+        if (
+            !selectedRow &&
+            action !== 'add' &&
+            action !== 'reload' &&
+            action !== 'agenda' &&
+            action !== 'view' &&
+            action !== 'filtro'
+        ) {
             alert('Selecione uma linha primeiro!');
             return;
         }

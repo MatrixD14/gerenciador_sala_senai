@@ -8,7 +8,8 @@ return [
         "delete" => ['type' => "icon-lixeira", 'menssage' => 'deletar itens'],
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
         "revindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
-        "confirma" => ["type" => "icon-afirma", 'menssage' => 'ele serve para aceita']
+        "confirma" => ["type" => "icon-afirma", 'menssage' => 'ele serve para aceita'],
+        "filtro" => ["type" => "icon-iconMutidirecao", 'menssage' => 'ele serve para aceita']
     ],
 
     "agendamentos" => [
@@ -18,11 +19,13 @@ return [
             'reload',
             "edite",
             'delete',
+            "filtro"
         ],
         "normal" => [
             'view',
             'reload',
-            'revindicar'
+            'revindicar',
+            "filtro"
         ]
     ],
     "usuarios" => [
@@ -31,7 +34,8 @@ return [
             'add',
             'reload',
             "edite",
-            'delete'
+            'delete',
+            "filtro"
         ],
         "normal" => []
     ],
@@ -41,11 +45,13 @@ return [
             'add',
             'reload',
             "edite",
-            'delete'
+            'delete',
+            "filtro"
         ],
         "normal" => [
             'view',
-            'reload'
+            'reload',
+            "filtro"
         ]
     ],
     "menssagem" => [
@@ -53,12 +59,14 @@ return [
             'view',
             'reload',
             "confirma",
-            'delete'
+            'delete',
+            "filtro"
         ],
         "normal" => [
             'view',
             'reload',
-            "confirma"
+            "confirma",
+            "filtro"
         ]
     ]
 ];

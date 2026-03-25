@@ -38,12 +38,13 @@ class revindicando
         if ($resultado['status'] === 'aceito' || $resultado['status'] === 'recusado') {
             return "ja processado";
         }
+        if ($resultado['status'] === 'expiro') return "já expiro";
 
         $stmt = $db->prepare("
         UPDATE revindicados 
         SET status = ? 
         WHERE id = ? 
-        AND (status = 'pendente' OR status = 'expiro')
+         AND status = 'pendente'
     ");
 
         $stmt->bind_param("si", $status, $id);

@@ -50,6 +50,22 @@
     box-shadow: inset 0 0 0 5px #00bb29;
     color: #00bb29;
 }
+.row-locked td {
+    background-color: #ddd;
+}
+.icon-alert {
+    width: 24px;
+    height: 24px;
+}
+.icon-escramacao {
+    width: 12px;
+    height: 12px;
+}
+.row-locked td,
+.icon-alert,
+.icon-escramacao {
+    color: #d9534f;
+}
 .tabela thead th {
     position: sticky;
     top: 0;

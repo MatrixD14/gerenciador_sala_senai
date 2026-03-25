@@ -163,3 +163,21 @@
     color: #000;
     background-color: #00ff99;
 }
+.item-adicionar {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
+}
+.item-adicionar:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+}
+.btn-add-inline {
+    font-weight: bold;
+    color: #fff;
+}

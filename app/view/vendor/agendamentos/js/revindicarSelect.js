@@ -26,3 +26,16 @@ function exibirErro(elemento, texto) {
     elemento.style.padding = '5px';
     elemento.style.background = '#fff';
 }
+function novoAgendamentoDesteDia() {
+    const form = document.getElementById('formReivindicar');
+    const dia = form.getAttribute('data-dia');
+    const mes = form.getAttribute('data-mes');
+    const ano = form.getAttribute('data-ano');
+
+    const formData = new FormData();
+    formData.append('dia', dia);
+    formData.append('mes', mes);
+    formData.append('ano', ano);
+    formData.append('tabela', 'agendamentos');
+    loadPagePost('/insert', formData, false);
+}

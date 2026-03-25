@@ -117,6 +117,14 @@
     overflow-y: auto;
 }
 
+.selected-item-top-container {
+    border: 1px solid #000;
+}
+.selected-badge small {
+    display: block;
+    color: #666;
+    text-transform: uppercase;
+}
 .custom-option {
     padding: 10px;
     cursor: pointer;
@@ -160,4 +168,15 @@
 .custom-select-trigger.select-dados:focus {
     outline: none;
     border-color: #aaa;
+}
+.alert-locked {
+    background: #fff3cd;
+    color: #856404;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ffeeba;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }

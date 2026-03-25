@@ -35,10 +35,10 @@ class revindicar
 
         if ($id_agendamento && $status) {
             $repostaServe =  revindicando::confirmoRevindicacao($id_agendamento, $status);
-            $verificaStatu = $status === "recusado" || $status === "aceito" ?  $status . " com," : ",";
-            Tabelas::log_error_table("Você $verificaStatu $repostaServe");
-        } else {
-            Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar. $id_agendamento");
+            $repost = $repostaServe === "sucesso" ? "Você $status com," : "";
+            Tabelas::log_error_table("$repost $repostaServe");
+        } elseif ($id_agendamento || $status) {
+            Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar. ID: $id_agendamento");
         }
     }
     public static function ExperarReivindicacao()

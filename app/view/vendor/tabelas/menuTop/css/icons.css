@@ -28,3 +28,11 @@
     color: #f30;
     background-color: #fff;
 }
+
+#filtro {
+    transform: rotate(180deg);
+    &:hover {
+        color: #83f;
+        background-color: #fff;
+    }
+}

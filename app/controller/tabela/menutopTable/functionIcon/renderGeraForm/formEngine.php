@@ -41,6 +41,19 @@ class FormEngine
     public function render(): string
     {
         $html = "";
+        $dataRef = $this->dbData['dia'] ?? null;
+        if ($this->isLocked && $dataRef && $dataRef < $this->hoje) {
+            $html .= "
+            <div class='alert-locked'>
+                <span> <svg class='icon-alert'>
+                            <use href='#icon-alentar'></use>
+                        </svg></span>
+                <div>
+                    <strong>Registro Antigo:</strong> 
+                    Esse item e do passado e não pode ser alterado.
+                </div>
+            </div>";
+        }
         $slug = array_search($this->config, require __DIR__ . '/../../../arrayTables.php');
         foreach ($this->config['colunas'] as $name => $colConfig) {
             if ($colConfig['primary'] ?? false) continue;
@@ -68,5 +81,11 @@ class FormEngine
         $spacing = ($col['type'] !== 'hidden') ? "<br><br>" : "";
 
         return "{$label}{$field}{$spacing}";
+    }
+    public function canSubmit(): bool
+    {
+        $dataRef = $this->dbData['dia'] ?? null;
+        if (!$dataRef || $dataRef > $this->hoje) return false;
+        return true;
     }
 }

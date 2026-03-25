@@ -18,10 +18,23 @@ $id_user = $_POST["id"] ?? [];
 $nomes = $_POST["nomes"] ?? [];
 $periodos = $_POST["periodos"] ?? [];
 $salas = $_POST["salas"] ?? [];
+$totalAgendamentos = count($nomes);
+$limiteAtingido = ($totalAgendamentos >= 3);
 
+$existePeriodoDisponivel = false;
+if ($realmenteHoje) {
+    foreach ($regrasPeriodo as $p => $regra) {
+        if ($horaAtual <= $regra['max']) {
+            $existePeriodoDisponivel = true;
+            break;
+        }
+    }
+} else
+    $existePeriodoDisponivel = !$isPassado;
+$agendamentosLiberados = 0;
 ?>
 <div class="painel-wrapper">
-    <form action="/reivindicar" method="post" class="Painel" onsubmit="enviaDadosRevindicar(event)" novalidate>
+    <form action="/reivindicar" method="post" class="Painel" id="formReivindicar" data-dia="<?= $dia ?>" data-mes="<?= $mes ?>" data-ano="<?= $ano ?>" onsubmit="enviaDadosRevindicar(event)" novalidate>
         <div class="top-Painel">
             <h3>pessoas que Agendo no <?= htmlspecialchars($dataExibicao) ?></span>:</h3>
             <hr>
@@ -46,6 +59,9 @@ $salas = $_POST["salas"] ?? [];
                             $motivo = " (Fora do horário: $min:00h às $max:00h)";
                         }
                     }
+                    if (!$itemBloqueado)
+                        $agendamentosLiberados++;
+
                     $id_html = "agendamento_" . $id;
                     $label = htmlspecialchars(($salas[$i] ?? '') . " - $nome - " . ($periodos[$i] ?? ''));
             ?>
@@ -63,10 +79,20 @@ $salas = $_POST["salas"] ?? [];
             } else {
                 echo "<p>Nenhum agendamento encontrado.</p>";
             } ?>
+            <?php if (!$limiteAtingido && $existePeriodoDisponivel) { ?>
+                <div class="item-adicionar" onclick="novoAgendamentoDesteDia()">
+                    <div class="btn-add-inline">
+                        <span>➕ Adicionar agendamento</span>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
         <div class="buttons-cal-conf">
-            <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
-            <button type="submit" id="confirm">Revindicar</button>
+            <?php if (!$agendamentosLiberados > 0) echo "<p></p>"; ?> <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
+            <?php if (!$agendamentosLiberados > 0) echo "<p></p>";
+            else { ?>
+                <button type="submit" id="confirm">Revindicar</button>
+            <?php  } ?>
         </div>
     </form>
 </div>

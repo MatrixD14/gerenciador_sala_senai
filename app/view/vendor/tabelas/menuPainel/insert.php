@@ -34,8 +34,12 @@ try {
             <?= $engine->render() ?>
         </div>
         <div class="buttons-cal-conf">
+            <?php if ($engine->canSubmit()) echo "<p></p>"; ?>
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
-            <button id="confirm">Confirmar</button>
+            <?php if ($engine->canSubmit()) echo "<p></p>";
+            else { ?>
+                <button id="confirm">Confirmar</button>
+            <?php } ?>
         </div>
     </form>
 </div>

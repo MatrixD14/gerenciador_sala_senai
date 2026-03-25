@@ -8,6 +8,7 @@ function agendarDia(dia) {
     formData.append('tabela', 'agendamentos');
     loadPagePost('/insert', formData);
 }
+
 if (!window.calendarioEventLoaded) {
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.dias-btn');

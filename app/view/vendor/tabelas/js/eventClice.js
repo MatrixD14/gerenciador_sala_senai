@@ -24,6 +24,9 @@ function executarAcao(acao, tabela, id, name) {
         case 'revindicar':
             loadPagePost('/reivindicar', dados, true);
             break;
+        case 'filtro':
+            loadPagePost('/filtro', dados, true);
+            break;
         case 'back':
             //              overscroll-behavior: contain;
             // touch-action: pan-x pan-y;

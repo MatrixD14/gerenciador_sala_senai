@@ -23,6 +23,32 @@ class Delete
         }
         $config = self::$inforDate[$table];
         $nomeTabela = $config["tabela"];
+        $colunas = $config["colunas"];
+        $colunaData = null;
+        foreach ($colunas as $nomeCol => $prop) {
+            if (($prop['type'] ?? '') === 'date') {
+                $colunaData = $prop['maskname'] ?? $nomeCol;
+                break;
+            }
+        }
+        if ($colunaData) {
+            $hoje = date('Y-m-d');
+            $checkSql = "SELECT $colunaData FROM $nomeTabela WHERE id = ?";
+            $stmtCheck = $connect->prepare($checkSql);
+            $stmtCheck->bind_param("i", $id);
+            $stmtCheck->execute();
+            $resCheck = $stmtCheck->get_result();
+
+            if ($row = $resCheck->fetch_assoc()) {
+                $dataRegistro = $row[$colunaData];
+                if (!empty($dataRegistro) && $dataRegistro < $hoje) {
+                    Tabelas::log_error_table("Não e possivel deletar registros antigos!!");
+                    header("Location: /$table");
+                    exit;
+                }
+            }
+            $stmtCheck->close();
+        }
         if (!empty($config["dependencias"])) {
             foreach ($config["dependencias"] as $dep) {
                 $tmp = self::countWhere($dep["tabela"], $dep["coluna"], $id);
