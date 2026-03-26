@@ -2,6 +2,16 @@
 return [
     "agendamentos" => [
         "tabela" => "agendar_sala",
+        "owner_column" => "idUser",
+        "no-repeat" => ["sala", 'bloco', "dia", 'periodo'],
+        "dependencias" => [
+            [
+                "tabela" => "revindicados",
+                "coluna" => "id_agendamento_revindicado",
+                "link" => "menssagem",
+                "mensagem" => "reivindicações"
+            ]
+        ],
         "join" => "
             inner join usuario 
                 on agendar_sala.idUser = usuario.id
@@ -51,6 +61,8 @@ return [
     ],
     "usuarios" => [
         "tabela" => "usuario",
+        "owner_column" => "id",
+        'no-repeat' => ["name", "email"],
         "dependencias" => [
             [
                 "tabela" => "agendar_sala",
@@ -68,6 +80,7 @@ return [
     ],
     "salas" => [
         "tabela" => "sala",
+        'no-repeat' => ["name", "bloco"],
         "dependencias" => [
             [
                 "tabela" => "agendar_sala",
@@ -80,6 +93,12 @@ return [
     ],
     "menssagem" => [
         "tabela" => 'revindicados',
+        'owner_relation' => [
+            "tabela" => "agendar_sala",
+            "coluna" => "id_agendamento_revindicado",
+            "value" => "id",
+            'owner_column' => "idUser"
+        ],
         "join" => "
             INNER JOIN usuario user1
             ON revindicados.id_remetente = user1.id

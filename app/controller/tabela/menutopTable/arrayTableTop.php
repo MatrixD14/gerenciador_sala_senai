@@ -23,8 +23,10 @@ return [
         ],
         "normal" => [
             'view',
+            'agenda',
             'reload',
             'revindicar',
+            'delete',
             "filtro"
         ]
     ],

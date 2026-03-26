@@ -28,13 +28,15 @@ try {
         </div>
         <div class="editar-dados">
             <?= $engine->render() ?>
-            <label for="menssage">Mensagem (Opcional):</label>
-            <textarea name="menssage" class="input-dados textarea" id="menssage" placeholder="Gostaria de usar essa sala."></textarea>
+            <?php if ($engine->canSubmit()) { ?>
+                <label for="menssage">Mensagem (Opcional):</label>
+                <textarea name="menssage" class="input-dados textarea" id="menssage" placeholder="Gostaria de usar essa sala."></textarea>
+            <?php } ?>
         </div>
         <div class="buttons-cal-conf">
-            <?php if ($engine->canSubmit()) echo "<p></p>"; ?>
+            <?php if (!$engine->canSubmit()) echo "<p></p>"; ?>
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
-            <?php if ($engine->canSubmit()) echo "<p></p>";
+            <?php if (!$engine->canSubmit()) echo "<p></p>";
             else { ?>
                 <button id="confirm">Confirmar</button>
             <?php } ?>

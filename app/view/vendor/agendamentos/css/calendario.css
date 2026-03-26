@@ -165,19 +165,24 @@
 }
 .item-adicionar {
     margin-top: 15px;
-    padding: 10px;
+    padding: 5px;
     border-radius: 8px;
     border: 2px solid #fff;
-    text-align: center;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    transition: 0.3s;
+    opacity: 0.8;
 }
 .item-adicionar:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: #fff;
+    opacity: 1;
 }
 .btn-add-inline {
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
+}
+.icon-adicionar {
+    width: 25px;
+    height: 25px;
+    color: #fff;
+    fill: currentColor;
 }

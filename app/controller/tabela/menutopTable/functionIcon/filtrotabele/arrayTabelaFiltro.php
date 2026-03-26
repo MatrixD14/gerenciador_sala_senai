@@ -2,17 +2,19 @@
    <?php
     return [
         "agendamentos" => [
-            "campos" => [
+            "colunas" => [
                 "idSala" => [
-                    "label" => "Salas",
-                    "type" => "checkbox-group",
-                    "tabela" => "sala",
-                    "coluna" => "name",
-                    "value" => "id"
+                    "label" => "bloco",
+                    "type" => "select",
+                    "relation" => [
+                        "tabela" => "sala",
+                        "coluna" => "bloco",
+                        "value" => "id"
+                    ]
                 ],
                 "periodo" => [
                     "label" => "Período",
-                    "type" => "checkbox-group",
+                    "type" => "select",
                     "options" => ["manhã", "tarde", "noite"]
                 ],
                 "dia" => [
@@ -20,8 +22,25 @@
                     "type" => "date-range"
                 ]
             ],
-            "colunas_visiveis" => [
-                "options" => ["id", "usuario", "sala", "bloco", "dia", "periodo"]
-            ]
-        ]
+            "colunas_visiveis" => ["id", "usuario", "sala", "bloco", "dia", "periodo"]
+        ],
+        "salas" => [
+            "colunas" => [
+                "bloco" => [
+                    "label" => "bloco",
+                    "type" => "select"
+                ]
+            ],
+            "colunas_visiveis" => ["id", 'name', "bloco", "descricao"]
+        ],
+        "usuarios" => [
+            "colunas" => [
+                "privilegio" => [
+                    "label" => "privilegio",
+                    "type" => "select",
+                    "options" => ["admin", "normal"],
+                ]
+            ],
+            "colunas_visiveis" => ["id", 'name', "email", "privilegio"]
+        ],
     ];

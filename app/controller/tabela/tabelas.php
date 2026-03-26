@@ -20,6 +20,7 @@ class Tabelas
         $config = self::$inforDate[$tabela] ?? null;
         if ($config === null) return "Tabela não encontrada";
         $html = "<tr>";
+        $colunasVisiveis = $_POST['show_cols'] ?? null;
         if (!empty($config['especifico'])) {
             foreach ($config['especifico'] as $campo) {
                 $parts = explode(' as ', $campo);
@@ -28,12 +29,19 @@ class Tabelas
                 if (strpos($nomeExibicao, '.') !== false) {
                     $nomeExibicao = explode('.', $nomeExibicao)[1];
                 }
+                $idColuna = self::getCleanColumnName($campo);
+                if ($colunasVisiveis !== null && !in_array($idColuna, $colunasVisiveis)) {
+                    continue;
+                }
 
                 $html .= "<th>" . ucfirst($nomeExibicao) . "</th>";
             }
         } else {
             foreach ($config['colunas'] as $coluna => $dados) {
                 if (!empty($dados['encryption'])) continue;
+                if ($colunasVisiveis !== null && !in_array($coluna, $colunasVisiveis)) {
+                    continue;
+                }
                 $html .= "<th>" . ucfirst($coluna) . "</th>";
             }
         }
@@ -174,50 +182,6 @@ class Tabelas
         return htmlspecialchars($valor);
     }
 
-    // private static function buildQuery($slug, $config, $UserLogin, $limit): string
-    // {
-    //     $tabelaPrincipal = $config["tabela"];
-    //     $db = Database::connects();
-    //     $condicoes = [];
-    //     $lastId = isset($_POST['last_id']) ? (int)$_POST['last_id'] : null;
-    //     $searchTerm = $_POST['search'] ?? null;
-
-    //     if ($UserLogin != null && $slug === 'menssagem') {
-    //         $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
-    //     }
-    //     if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
-
-    //     if ($searchTerm) {
-    //         $termoOriginal = $db->real_escape_string($searchTerm);
-    //         $filtros = [];
-
-    //         $termoData = (preg_match('/^\d{2}\/\d{2}/', $searchTerm)) ?
-    //             implode('-', array_reverse(explode('/', $searchTerm))) :
-    //             str_replace('/', '', $termoOriginal);
-
-    //         $colunasParaFiltro = !empty($config["especifico"]) ? $config["especifico"] : array_keys($config["colunas"]);
-
-    //         foreach ($colunasParaFiltro as $c) {
-    //             $colFiltro = self::getCleanColumnName($c);
-    //             $filtros[] = "$colFiltro LIKE '%$termoOriginal%'";
-    //             if (strpos($searchTerm, '/') !== false) {
-    //                 $filtros[] = "$colFiltro LIKE '%$termoData%'";
-    //             }
-    //         }
-    //         $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
-    //     }
-
-    //     $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
-    //     $order = " ORDER BY $tabelaPrincipal.id ASC ";
-
-    //     if (!empty($config["especifico"])) {
-    //         $campos = implode(", ", $config["especifico"]);
-    //         $joins = $config["join"] ?? "";
-    //         return "SELECT $campos FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
-    //     }
-
-    //     return "SELECT * FROM $tabelaPrincipal $where $order LIMIT $limit";
-    // }
     private static function buildQuery($slug, $config, $UserLogin, $limit): string
     {
         $tabelaPrincipal = $config["tabela"];
@@ -226,13 +190,32 @@ class Tabelas
         $lastId = isset($_POST['last_id']) ? (int)$_POST['last_id'] : null;
         $searchTerm = $_POST['search'] ?? null;
 
-        // 1. Filtros de Sistema (Seu código original)
         if ($UserLogin != null && $slug === 'menssagem') {
             $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
         if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
+        foreach ($config['colunas'] as $nomeCol => $prop) {
+            $valorFiltro = $_POST[$nomeCol] ?? null;
 
-        // 2. BUSCA GLOBAL (Input de texto geral)
+            if (!empty($valorFiltro)) {
+                $valorEsc = $db->real_escape_string($valorFiltro);
+                $colReal = self::getCleanColumnName($nomeCol);
+                if (($prop['type'] ?? '') === 'select' || $nomeCol === 'id') {
+                    $condicoes[] = "$tabelaPrincipal.$colReal = '$valorEsc'";
+                } else {
+                    $condicoes[] = "$tabelaPrincipal.$colReal LIKE '%$valorEsc%'";
+                }
+            }
+
+            $dataDe = $_POST[$nomeCol . "_de"] ?? null;
+            $dataAte = $_POST[$nomeCol . "_ate"] ?? null;
+            if (!empty($dataDe)) {
+                $condicoes[] = "$tabelaPrincipal.$nomeCol >= '" . $db->real_escape_string($dataDe) . "'";
+            }
+            if (!empty($dataAte)) {
+                $condicoes[] = "$tabelaPrincipal.$nomeCol <= '" . $db->real_escape_string($dataAte) . "'";
+            }
+        }
         if ($searchTerm) {
             $termoOriginal = $db->real_escape_string($searchTerm);
             $filtros = [];
@@ -240,44 +223,10 @@ class Tabelas
 
             foreach ($colunasParaFiltro as $c) {
                 $colFiltro = self::getCleanColumnName($c);
+                if (strpos($colFiltro, '.') === false) $colFiltro = "$tabelaPrincipal.$colFiltro";
                 $filtros[] = "$colFiltro LIKE '%$termoOriginal%'";
             }
             $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
-        }
-
-        // 3. FILTROS DINÂMICOS (Checkboxes e Datas vindos do FiltroRenderer)
-        foreach ($_POST as $key => $value) {
-            // Ignora chaves que não são colunas do banco
-            if (in_array($key, ['tabela', 'last_id', 'is_search_ajax', 'search', 'show_cols']) || empty($value)) continue;
-            $configColuna = $config['colunas'][$key] ?? null;
-            $colunaBanco = $configColuna['maskname'] ?? $key;
-            $colunaLimpa = self::getCleanColumnName($colunaBanco);
-
-            // Se a coluna for virtual, não filtramos direto no SQL (ou tratamos diferente)
-            if (isset($configColuna['virtual']) && $configColuna['virtual']) continue;
-
-            if (is_array($value)) {
-                // Caso 1: Checkboxes (IN)
-                $valoresLimpos = array_map(fn($v) => "'" . $db->real_escape_string($v) . "'", $value);
-                $lista = implode(', ', $valoresLimpos);
-                $condicoes[] = "$tabelaPrincipal.$colunaLimpa IN ($lista)";
-            } elseif (str_ends_with($key, '_de')) {
-                // Caso 2: Date Range
-                $baseKey = str_replace('_de', '', $key);
-                $ateKey = $baseKey . '_ate';
-                $de = $db->real_escape_string($value);
-                $ate = isset($_POST[$ateKey]) ? $db->real_escape_string($_POST[$ateKey]) : null;
-
-                if ($de && $ate) {
-                    $condicoes[] = "$tabelaPrincipal.$baseKey BETWEEN '$de' AND '$ate'";
-                }
-            } elseif (str_ends_with($key, '_ate')) {
-                continue; // Pula pois já tratamos no '_de'
-            } else {
-                // Caso 3: Inputs de texto simples (LIKE)
-                $val = $db->real_escape_string($value);
-                $condicoes[] = "$tabelaPrincipal.$colunaLimpa LIKE '%$val%'";
-            }
         }
 
         $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";

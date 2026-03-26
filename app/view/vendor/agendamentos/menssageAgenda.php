@@ -18,8 +18,6 @@ $id_user = $_POST["id"] ?? [];
 $nomes = $_POST["nomes"] ?? [];
 $periodos = $_POST["periodos"] ?? [];
 $salas = $_POST["salas"] ?? [];
-$totalAgendamentos = count($nomes);
-$limiteAtingido = ($totalAgendamentos >= 3);
 
 $existePeriodoDisponivel = false;
 if ($realmenteHoje) {
@@ -79,10 +77,12 @@ $agendamentosLiberados = 0;
             } else {
                 echo "<p>Nenhum agendamento encontrado.</p>";
             } ?>
-            <?php if (!$limiteAtingido && $existePeriodoDisponivel) { ?>
+            <?php if ($existePeriodoDisponivel) { ?>
                 <div class="item-adicionar" onclick="novoAgendamentoDesteDia()">
                     <div class="btn-add-inline">
-                        <span>➕ Adicionar agendamento</span>
+                        <svg class='icon-adicionar'>
+                            <use href='#icon-mais'></use>
+                        </svg> <span>Adicionar agendamento</span>
                     </div>
                 </div>
             <?php } ?>

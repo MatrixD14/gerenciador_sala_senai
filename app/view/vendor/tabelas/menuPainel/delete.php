@@ -29,9 +29,9 @@ try {
         <input type="hidden" name="table" id="table" value="<?= $table ?>">
         <input type="hidden" name="name" id="name" value="<?= htmlspecialchars($name) ?>">
         <div class="buttons-cal-conf">
-            <?php if ($engine->canSubmit()) echo "<p></p>"; ?>
+            <?php if (!$engine->canSubmit()) echo "<p></p>"; ?>
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
-            <?php if ($engine->canSubmit()) echo "<p></p>";
+            <?php if (!$engine->canSubmit()) echo "<p></p>";
             else { ?>
                 <button id="confirm">Confirmar</button>
             <?php } ?>

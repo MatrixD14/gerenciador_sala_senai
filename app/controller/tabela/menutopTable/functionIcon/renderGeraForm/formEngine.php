@@ -84,8 +84,25 @@ class FormEngine
     }
     public function canSubmit(): bool
     {
+        date_default_timezone_set('America/Sao_Paulo');
         $dataRef = $this->dbData['dia'] ?? null;
-        if (!$dataRef || $dataRef > $this->hoje) return false;
+        if (!$dataRef) return true;
+        $hoje = date('Y-m-d');
+        $horaAtual = (int)date('H');
+        if ($dataRef < $hoje) return false;
+        if ($dataRef === $hoje) {
+            $regras = $this->config['colunas']['periodo']['options'] ?? [];
+
+            $maiorMax = 0;
+            foreach ($regras as $periodo) {
+                if ($periodo['max'] > $maiorMax) {
+                    $maiorMax = $periodo['max'];
+                }
+            }
+            if ($horaAtual >= $maiorMax) {
+                return false;
+            }
+        }
         return true;
     }
 }

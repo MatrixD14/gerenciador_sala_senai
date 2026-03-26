@@ -28,8 +28,7 @@ class editor
         $tipos = "";
 
         foreach ($coluneSelect as $nomeNoForm => $conf) {
-            if (!empty($conf['primary'])) continue;
-            if (!empty($conf['virtual'])) continue;
+            if (!empty($conf['primary']) && !empty($conf['virtual'])) continue;
             $nomeColunaBanco = $conf['maskname'] ?? $nomeNoForm;
             if (isset($_POST[$nomeNoForm])) {
                 $valor = $_POST[$nomeNoForm];
