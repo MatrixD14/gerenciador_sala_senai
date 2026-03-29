@@ -197,19 +197,29 @@ class Tabelas
         if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
 
         if ($searchTerm) {
-            $termoOriginal = $db->real_escape_string($searchTerm);
             $filtros = [];
+            $db = Database::connects();
+            $termoOriginal = $db->real_escape_string($searchTerm);
+            $termoData = $termoOriginal;
+            if (preg_match('/^(\d{2})\/(\d{2})\/(\d{1,4})$/', $searchTerm, $matches)) {
+                $termoData = "{$matches[3]}-{$matches[2]}-{$matches[1]}";
+            } elseif (preg_match('/^(\d{2})\/(\d{2})$/', $searchTerm, $matches)) {
+                $termoData = "-{$matches[2]}-{$matches[1]}";
+            } else {
+                $termoData = str_replace('/', '', $termoOriginal);
+            }
             $colunasParaFiltro = !empty($config["especifico"]) ? $config["especifico"] : array_keys($config["colunas"]);
 
             foreach ($colunasParaFiltro as $c) {
                 $campoCru = trim(explode(' as ', $c)[0]);
-
                 if (strpos($campoCru, '.') === false) {
                     $campoCru = "$tabelaPrincipal.$campoCru";
                 }
+                $termoParaSQL = (strpos($searchTerm, '/') !== false) ? $termoData : $termoOriginal;
 
-                $filtros[] = "$campoCru LIKE '%$termoOriginal%'";
+                $filtros[] = "$campoCru LIKE '%$termoParaSQL%'";
             }
+
             $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
         }
 
