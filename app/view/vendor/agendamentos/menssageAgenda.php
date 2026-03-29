@@ -65,12 +65,12 @@ $agendamentosLiberados = 0;
             ?>
 
                     <div class="item-selecionavel" style="<?= $itemBloqueado ? 'opacity: 0.9; cursor: not-allowed;padding:5px' : '' ?>">
-                        <?php if ($itemBloqueado): ?>
+                        <?php if ($itemBloqueado) { ?>
                             <span style="color: #fff; font-weight: bold;"><?= $label ?> <br><small><?= $motivo ?></small> 🚫</span>
-                        <?php else: ?>
+                        <?php } else { ?>
                             <input type="radio" name="id" value="<?= htmlspecialchars($id) ?>" id="<?= $id_html ?>" required>
                             <label for="<?= $id_html ?>"><?= $label ?></label>
-                        <?php endif; ?>
+                        <?php } ?>
                     </div>
             <?php
                 }

@@ -17,6 +17,11 @@ try {
     echo "Erro: " . $e->getMessage();
     exit;
 }
+$dono = BuscaInfoUser::buscaDonoAgendamento($id);
+
+$bloquearEdicao =
+    !$engine->canSubmit() ||
+    ($dono['usuario_id'] !== $userAtivo['id'] && $userAtivo['privilegio'] !== "admin");
 ?>
 <div class="painel-wrapper">
     <form action="/edito" method="post" class="Painel">
@@ -30,9 +35,9 @@ try {
             <?= $engine->render() ?>
         </div>
         <div class="buttons-cal-conf">
-            <?php if (!$engine->canSubmit()) echo "<p></p>"; ?>
+            <?php if ($bloquearEdicao) echo "<p></p>"; ?>
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
-            <?php if (!$engine->canSubmit()) echo "<p></p>";
+            <?php if ($bloquearEdicao) echo "<p></p>";
             else { ?>
                 <button id="confirm">Confirmar</button>
             <?php } ?>

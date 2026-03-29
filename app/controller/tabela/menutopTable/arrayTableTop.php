@@ -25,6 +25,7 @@ return [
             'view',
             'agenda',
             'reload',
+            "edite",
             'revindicar',
             'delete',
             "filtro"

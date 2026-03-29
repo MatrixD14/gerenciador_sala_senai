@@ -70,7 +70,7 @@ class Tabelas
         }
 
         $limit = 50;
-        $sql = self::buildQuery($slug, $config, $UserLogin, $limit);
+        $sql = self::searchTabela($slug, $config, $UserLogin, $limit);
         $listDate = Tabelas::list_All($sql);
 
         $html = "";
@@ -182,7 +182,8 @@ class Tabelas
         return htmlspecialchars($valor);
     }
 
-    private static function buildQuery($slug, $config, $UserLogin, $limit): string
+
+    private static function searchTabela($slug, $config, $UserLogin, $limit): string
     {
         $tabelaPrincipal = $config["tabela"];
         $db = Database::connects();
@@ -194,50 +195,33 @@ class Tabelas
             $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
         if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
-        foreach ($config['colunas'] as $nomeCol => $prop) {
-            $valorFiltro = $_POST[$nomeCol] ?? null;
 
-            if (!empty($valorFiltro)) {
-                $valorEsc = $db->real_escape_string($valorFiltro);
-                $colReal = self::getCleanColumnName($nomeCol);
-                if (($prop['type'] ?? '') === 'select' || $nomeCol === 'id') {
-                    $condicoes[] = "$tabelaPrincipal.$colReal = '$valorEsc'";
-                } else {
-                    $condicoes[] = "$tabelaPrincipal.$colReal LIKE '%$valorEsc%'";
-                }
-            }
-
-            $dataDe = $_POST[$nomeCol . "_de"] ?? null;
-            $dataAte = $_POST[$nomeCol . "_ate"] ?? null;
-            if (!empty($dataDe)) {
-                $condicoes[] = "$tabelaPrincipal.$nomeCol >= '" . $db->real_escape_string($dataDe) . "'";
-            }
-            if (!empty($dataAte)) {
-                $condicoes[] = "$tabelaPrincipal.$nomeCol <= '" . $db->real_escape_string($dataAte) . "'";
-            }
-        }
         if ($searchTerm) {
             $termoOriginal = $db->real_escape_string($searchTerm);
             $filtros = [];
             $colunasParaFiltro = !empty($config["especifico"]) ? $config["especifico"] : array_keys($config["colunas"]);
 
             foreach ($colunasParaFiltro as $c) {
-                $colFiltro = self::getCleanColumnName($c);
-                if (strpos($colFiltro, '.') === false) $colFiltro = "$tabelaPrincipal.$colFiltro";
-                $filtros[] = "$colFiltro LIKE '%$termoOriginal%'";
+                $campoCru = trim(explode(' as ', $c)[0]);
+
+                if (strpos($campoCru, '.') === false) {
+                    $campoCru = "$tabelaPrincipal.$campoCru";
+                }
+
+                $filtros[] = "$campoCru LIKE '%$termoOriginal%'";
             }
             $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
         }
 
         $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
         $order = " ORDER BY $tabelaPrincipal.id ASC ";
+        $joins = $config["join"] ?? "";
 
         if (!empty($config["especifico"])) {
             $campos = implode(", ", $config["especifico"]);
-            $joins = $config["join"] ?? "";
             return "SELECT $campos FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
         }
 
-        return "SELECT * FROM $tabelaPrincipal $where $order LIMIT $limit";
+        return "SELECT $tabelaPrincipal.* FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
     }
 }

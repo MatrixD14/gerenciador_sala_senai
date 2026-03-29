@@ -17,6 +17,9 @@ try {
     echo "Erro: " . $e->getMessage();
     exit;
 }
+$dono = BuscaInfoUser::buscaDonoAgendamento($id);
+
+$bloquearEdicao = ($dono && $dono['usuario_id'] === $userAtivo['id']) || !$engine->canSubmit();
 ?>
 <div class="painel-wrapper">
     <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiarevindicar(event)">
@@ -28,15 +31,15 @@ try {
         </div>
         <div class="editar-dados">
             <?= $engine->render() ?>
-            <?php if ($engine->canSubmit()) { ?>
+            <?php if (!$bloquearEdicao) { ?>
                 <label for="menssage">Mensagem (Opcional):</label>
                 <textarea name="menssage" class="input-dados textarea" id="menssage" placeholder="Gostaria de usar essa sala."></textarea>
             <?php } ?>
         </div>
         <div class="buttons-cal-conf">
-            <?php if (!$engine->canSubmit()) echo "<p></p>"; ?>
+            <?php if ($bloquearEdicao) echo "<p></p>"; ?>
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
-            <?php if (!$engine->canSubmit()) echo "<p></p>";
+            <?php if ($bloquearEdicao) echo "<p></p>";
             else { ?>
                 <button id="confirm">Confirmar</button>
             <?php } ?>

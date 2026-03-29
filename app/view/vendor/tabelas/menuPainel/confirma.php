@@ -17,6 +17,9 @@ try {
     echo "Erro: " . $e->getMessage();
     exit;
 }
+$dono = BuscaInfoUser::buscaDonoAgendamento($id);
+
+$bloquearEdicao = !$engine->canSubmit() || $dono['usuario_id'] !== $userAtivo['id'];
 ?>
 <div class="painel-wrapper">
     <form action="/confirmaReivindica" method="post" class="Painel" onsubmit="statusReivindica(event)">

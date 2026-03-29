@@ -1,0 +1,98 @@
+--- NOVO FILTRO ---
+POST: Array
+(
+    [tabela] => agendamentos
+    [idSala] => A-1
+    [search-idSala] => 
+    [periodo] => 
+    [search-periodo] => 
+    [dia_de] => 
+    [dia_ate] => 
+    [show_cols] => Array
+        (
+            [0] => id
+            [1] => usuario
+            [2] => sala
+            [3] => bloco
+            [4] => dia
+            [5] => periodo
+        )
+
+)
+QUERY FINAL: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+--- NOVO FILTRO ---
+POST: Array
+(
+)
+QUERY FINAL: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+--- NOVO FILTRO ---
+POST: Array
+(
+)
+QUERY FINAL: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+--- NOVO FILTRO ---
+POST: Array
+(
+)
+QUERY FINAL: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+--- NOVO FILTRO ---
+POST: Array
+(
+)
+QUERY FINAL: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+
+[ 00:37:33 ] QUERY: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+[ 00:37:40 ] QUERY: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+[ 00:38:27 ] QUERY: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+          WHERE (agendar_sala.id LIKE '%q%' OR agendar_sala.name LIKE '%q%' OR agendar_sala.name LIKE '%q%' OR agendar_sala.bloco LIKE '%q%' OR agendar_sala.dia LIKE '%q%' OR agendar_sala.periodo LIKE '%q%')  ORDER BY agendar_sala.id ASC  LIMIT 50
+[ 00:38:29 ] QUERY: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+           ORDER BY agendar_sala.id ASC  LIMIT 50
+[ 00:38:32 ] QUERY: SELECT agendar_sala.id, usuario.name as usuario, sala.name as sala, sala.bloco, agendar_sala.dia, agendar_sala.periodo FROM agendar_sala 
+            inner join usuario 
+                on agendar_sala.idUser = usuario.id
+            inner join sala 
+                on agendar_sala.idSala = sala.id
+          WHERE (agendar_sala.id LIKE '%de%' OR agendar_sala.name LIKE '%de%' OR agendar_sala.name LIKE '%de%' OR agendar_sala.bloco LIKE '%de%' OR agendar_sala.dia LIKE '%de%' OR agendar_sala.periodo LIKE '%de%')  ORDER BY agendar_sala.id ASC  LIMIT 50

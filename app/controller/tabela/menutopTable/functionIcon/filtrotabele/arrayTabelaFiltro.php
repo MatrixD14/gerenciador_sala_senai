@@ -9,8 +9,8 @@
                     "relation" => [
                         "tabela" => "sala",
                         "coluna" => "bloco",
-                        "value" => "id"
-                    ]
+                        "value" => "bloco",
+                    ],
                 ],
                 "periodo" => [
                     "label" => "Período",
@@ -27,8 +27,13 @@
         "salas" => [
             "colunas" => [
                 "bloco" => [
-                    "label" => "bloco",
-                    "type" => "select"
+                    "label" => "Bloco",
+                    "type" => "select",
+                    "relation" => [
+                        "tabela" => "sala",
+                        "coluna" => "bloco",
+                        "value" => "bloco"
+                    ]
                 ]
             ],
             "colunas_visiveis" => ["id", 'name', "bloco", "descricao"]
@@ -42,5 +47,19 @@
                 ]
             ],
             "colunas_visiveis" => ["id", 'name', "email", "privilegio"]
+        ],
+        "menssagem" => [
+            "colunas" => [
+                "id_agendamento_revindicado" => [
+                    "label" => "periodo",
+                    "type" => "select",
+                    'options' => [
+                        'manhã' => ["min" => 5, "max" => 7],
+                        'tarde' => ["min" => 7, "max" => 11],
+                        'noite' => ["min" => 7, "max" => 18]
+                    ]
+                ]
+            ],
+            "colunas_visiveis" => ["id", 'remetente', "destinatario", "sala", "periodo", "menssagem"]
         ],
     ];

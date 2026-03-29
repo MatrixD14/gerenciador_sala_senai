@@ -40,7 +40,7 @@ class BuscaInfoUser
     public static function buscaDonoAgendamento($id_agendamento): ?array
     {
         $db = Database::connects();
-        $sql = "SELECT s.email, s.name as usuario, sl.name as sala
+        $sql = "SELECT s.id as usuario_id,s.email, s.name as usuario, sl.name as sala
             FROM usuario s
             INNER JOIN agendar_sala a ON a.idUser = s.id 
             INNER JOIN sala sl ON a.idSala = sl.id 
