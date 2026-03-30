@@ -15,7 +15,8 @@ class FiltroEngine
     public function render(): string
     {
         $html = "";
-
+        $html .= $this->renderOrderOptions();
+        $html .= "<hr>";
         foreach ($this->config['colunas'] as $name => $col) {
             $html .= "<div class='filtro-group'>";
             $html .= "<label><strong>" . ($col['label'] ?? ucfirst($name)) . "</strong></label><br>";
@@ -57,5 +58,28 @@ class FiltroEngine
                 </label>";
         }
         return $html . "</div></div>";
+    }
+    private function renderOrderOptions(): string
+    {
+        $opcoes = $this->config['orderna'] ?? [];
+        if (empty($opcoes)) return "";
+
+        $html = "<div class='filtro-group'>";
+        $html .= "<label><strong>Ordenar por:</strong></label><br>";
+        $html .= "<div >";
+
+        $html .= "<select name='order_by' class='select-dados' >";
+        $html .= "<option value='id'>Padrão (ID)</option>";
+        foreach ($opcoes as $campo) {
+            $html .= "<option value='$campo'>" . ucfirst($campo) . "</option>";
+        }
+        $html .= "</select>";
+        $html .= "<select name='order_direction' class='select-dados' >";
+        $html .= "<option value='ASC'>Crescente (A-Z, 0-9)</option>";
+        $html .= "<option value='DESC'>Decrescente (Z-A, 9-0)</option>";
+        $html .= "</select>";
+
+        $html .= "</div></div><br>";
+        return $html;
     }
 }

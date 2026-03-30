@@ -84,6 +84,7 @@ class FormRenderer
         }
 
         $html .= "</div><div class='options-scroll-area'>";
+        $html .= "<div class='custom-option default-option' data-value='' >Selecione...</div>";
 
         $html .= self::renderStaticOptions($col, $isHoje, $horaAtual);
 

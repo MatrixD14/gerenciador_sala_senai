@@ -2,6 +2,7 @@
    <?php
     return [
         "agendamentos" => [
+            "orderna" => ['bloco', "dia", "usuario", "sala"],
             "colunas" => [
                 "idSala" => [
                     "label" => "bloco",
@@ -25,6 +26,7 @@
             "colunas_visiveis" => ["id", "usuario", "sala", "bloco", "dia", "periodo"]
         ],
         "salas" => [
+            "orderna" => ["name", 'bloco'],
             "colunas" => [
                 "bloco" => [
                     "label" => "Bloco",
@@ -39,6 +41,7 @@
             "colunas_visiveis" => ["id", 'name', "bloco", "descricao"]
         ],
         "usuarios" => [
+            "orderna" => ["name", 'email'],
             "colunas" => [
                 "privilegio" => [
                     "label" => "privilegio",
@@ -49,6 +52,7 @@
             "colunas_visiveis" => ["id", 'name', "email", "privilegio"]
         ],
         "menssagem" => [
+            "orderna" => ["remetente", "destinatario", 'sala'],
             "colunas" => [
                 "id_agendamento_revindicado" => [
                     "label" => "periodo",

@@ -61,6 +61,7 @@ class Tabelas
 
     public static function geraBodyTabela2($slug, $UserLogin = null): string
     {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         date_default_timezone_set('America/Sao_Paulo');
         self::loadConfig();
         $config = self::$inforDate[$slug] ?? null;
@@ -72,6 +73,18 @@ class Tabelas
         $limit = 50;
         $sql = self::searchTabela($slug, $config, $UserLogin, $limit);
         $listDate = Tabelas::list_All($sql);
+
+        $searchTerm = $_POST['search'] ?? '';
+        if (!$listDate || $listDate->num_rows === 0) {
+            if (isset($_SESSION['last_valid_table'][$slug])) {
+                return $_SESSION['last_valid_table'][$slug];
+            }
+            $termo = htmlspecialchars($searchTerm);
+            return "<tr><td colspan='100%' >
+                        <svg class='icon-escramacao'><use href='#icon-escramacao'></use></svg>
+                        Nenhum resultado encontrado para: <strong>$termo</strong>
+                    </td></tr>";
+        }
 
         $html = "";
         $lastIdFound = "";
@@ -112,11 +125,11 @@ class Tabelas
 
                 $html .= "<td>$conteudo</td>";
             }
+            $_SESSION['last_valid_table'][$slug] = $html;
             $html .= "</tr>";
         }
 
         if ($lastIdFound && $listDate->num_rows >= $limit) {
-            $searchTerm = $_POST['search'] ?? '';
             $html .= "<tr class='sentinel' data-slug='$slug' data-lastid='$lastIdFound' data-search='" . htmlspecialchars($searchTerm) . "'>
                     <td colspan='100%' style='text-align:center;'>Carregando mais registros...</td>
                   </tr>";
@@ -182,32 +195,88 @@ class Tabelas
         return htmlspecialchars($valor);
     }
 
+    private static function applyCustomFilters($slug, $db, $tabelaPrincipal): array
+    {
+        $condicoes = [];
+        $filtroConfigPath = __DIR__ . '/menutopTable/functionIcon/filtrotabele/arrayTabelaFiltro.php';
+
+        if (!file_exists($filtroConfigPath)) return [];
+
+        $allFiltros = require $filtroConfigPath;
+        $colsFiltro = $allFiltros[$slug]['colunas'] ?? [];
+
+        foreach ($colsFiltro as $nomeCampo => $info) {
+            if ($info['type'] === 'date-range') {
+                $de = $_POST["{$nomeCampo}_de"] ?? null;
+                $ate = $_POST["{$nomeCampo}_ate"] ?? null;
+
+                if (!empty($de)) {
+                    $de = $db->real_escape_string($de);
+                    $condicoes[] = "$tabelaPrincipal.$nomeCampo >= '$de'";
+                }
+                if (!empty($ate)) {
+                    $ate = $db->real_escape_string($ate);
+                    $condicoes[] = "$tabelaPrincipal.$nomeCampo <= '$ate'";
+                }
+            } else {
+                $valor = $_POST[$nomeCampo] ?? null;
+                if ($valor !== null && $valor !== '') {
+                    $valorLimpo = $db->real_escape_string($valor);
+                    if (isset($info['relation']['tabela'])) {
+                        $tabelaRelacao = $info['relation']['tabela'];
+                        $colunaRelacao = $info['relation']['coluna'];
+                        $condicoes[] = "$tabelaRelacao.$colunaRelacao = '$valorLimpo'";
+                    } else
+                        $condicoes[] = "$tabelaPrincipal.$nomeCampo = '$valorLimpo'";
+                }
+            }
+        }
+
+        return $condicoes;
+    }
+
+    private static function applyOrder($slug, $config, $tabelaPrincipal): string
+    {
+        $orderBy = $_POST['order_by'] ?? 'id';
+        $direction = ($_POST['order_direction'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
+        $filtroConfigPath = __DIR__ . '/menutopTable/functionIcon/filtrotabele/arrayTabelaFiltro.php';
+        $allFiltros = file_exists($filtroConfigPath) ? require $filtroConfigPath : [];
+        $colunasPermitidas = $allFiltros[$slug]['orderna'] ?? ['id'];
+
+        if (in_array($orderBy, $colunasPermitidas)) {
+            if ($orderBy === 'id') {
+                return " ORDER BY $tabelaPrincipal.id $direction ";
+            }
+            return " ORDER BY $orderBy $direction ";
+        }
+
+        return " ORDER BY $tabelaPrincipal.id ASC ";
+    }
 
     private static function searchTabela($slug, $config, $UserLogin, $limit): string
     {
         $tabelaPrincipal = $config["tabela"];
         $db = Database::connects();
         $condicoes = [];
+
+        $filtrosCustom = self::applyCustomFilters($slug, $db, $tabelaPrincipal);
+
+
+        if (!empty($filtrosCustom)) $condicoes = array_merge($condicoes, $filtrosCustom);
+
         $lastId = isset($_POST['last_id']) ? (int)$_POST['last_id'] : null;
         $searchTerm = $_POST['search'] ?? null;
 
         if ($UserLogin != null && $slug === 'menssagem') {
             $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
-        if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
+
+        if ($lastId && !$searchTerm) $condicoes[] = "$tabelaPrincipal.id > $lastId";
 
         if ($searchTerm) {
             $filtros = [];
-            $db = Database::connects();
             $termoOriginal = $db->real_escape_string($searchTerm);
-            $termoData = $termoOriginal;
-            if (preg_match('/^(\d{2})\/(\d{2})\/(\d{1,4})$/', $searchTerm, $matches)) {
-                $termoData = "{$matches[3]}-{$matches[2]}-{$matches[1]}";
-            } elseif (preg_match('/^(\d{2})\/(\d{2})$/', $searchTerm, $matches)) {
-                $termoData = "-{$matches[2]}-{$matches[1]}";
-            } else {
-                $termoData = str_replace('/', '', $termoOriginal);
-            }
+            $temBarra = (strpos($searchTerm, '/') !== false);
             $colunasParaFiltro = !empty($config["especifico"]) ? $config["especifico"] : array_keys($config["colunas"]);
 
             foreach ($colunasParaFiltro as $c) {
@@ -215,23 +284,37 @@ class Tabelas
                 if (strpos($campoCru, '.') === false) {
                     $campoCru = "$tabelaPrincipal.$campoCru";
                 }
-                $termoParaSQL = (strpos($searchTerm, '/') !== false) ? $termoData : $termoOriginal;
+                $nomeColuna = self::getCleanColumnName($c);
 
-                $filtros[] = "$campoCru LIKE '%$termoParaSQL%'";
+                $tipoColuna = $config["colunas"][$nomeColuna]['type'] ?? null;
+
+                if ($tipoColuna === 'date') {
+                    $subFiltrosData = [];
+                    if (preg_match('/^(\d{1,2})$/', $searchTerm)) {
+                        $subFiltrosData[] = "DAY($campoCru) = $termoOriginal";
+                    } elseif (preg_match('/^(\d{1,2})\/$/', $searchTerm, $m)) {
+                        $subFiltrosData[] = "DAY($campoCru) = {$m[1]}";
+                    } elseif (preg_match('/^(\d{1,2})\/(\d{1,2})$/', $searchTerm, $m)) {
+                        $subFiltrosData[] = "DAY($campoCru) = {$m[1]} AND MONTH($campoCru) = {$m[2]}";
+                    } elseif (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $searchTerm, $m)) {
+                        $subFiltrosData[] = "$campoCru = '{$m[3]}-{$m[2]}-{$m[1]}'";
+                    } else {
+                        $subFiltrosData[] = "$campoCru LIKE '%-$termoOriginal%'";
+                    }
+                    $filtros[] = "(" . implode(" OR ", $subFiltrosData) . ")";
+                } else {
+                    if (!$temBarra) $filtros[] = "$campoCru LIKE '%$termoOriginal%'";
+                }
             }
-
-            $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
+            if (!empty($filtros)) $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
         }
 
         $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
-        $order = " ORDER BY $tabelaPrincipal.id ASC ";
+        // $order = " ORDER BY $tabelaPrincipal.id ASC ";
+        $order = self::applyOrder($slug, $config, $tabelaPrincipal);
         $joins = $config["join"] ?? "";
 
-        if (!empty($config["especifico"])) {
-            $campos = implode(", ", $config["especifico"]);
-            return "SELECT $campos FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
-        }
-
-        return "SELECT $tabelaPrincipal.* FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
+        $select = !empty($config["especifico"]) ? implode(", ", $config["especifico"]) : "$tabelaPrincipal.*";
+        return "SELECT $select FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
     }
 }
