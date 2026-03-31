@@ -2,7 +2,7 @@
    <?php
     return [
         "agendamentos" => [
-            "orderna" => ['bloco', "dia", "usuario", "sala"],
+            "orderna" => ['bloco', "dia", "usuario", "sala", "periodo"],
             "colunas" => [
                 "idSala" => [
                     "label" => "bloco",
