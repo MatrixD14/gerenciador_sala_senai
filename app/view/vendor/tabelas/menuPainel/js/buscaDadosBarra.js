@@ -7,9 +7,25 @@ document.addEventListener('input', function (e) {
         clearTimeout(input.searchTimeout);
         if (termo.length === 0 || termo.length >= 1) {
             input.searchTimeout = setTimeout(() => {
-                const dados = new FormData();
-                dados.append('search', termo);
-                dados.append('is_search_ajax', 'true');
+                const sentinel = document.querySelector('.sentinel');
+                let dados = new FormData();
+
+                if (sentinel && sentinel.dataset.filtros) {
+                    try {
+                        const filtros = JSON.parse(sentinel.dataset.filtros);
+                        Object.entries(filtros).forEach(([key, value]) => {
+                            if (Array.isArray(value)) {
+                                value.forEach((v) => dados.append(`${key}[]`, v));
+                            } else {
+                                dados.append(key, value);
+                            }
+                        });
+                    } catch (e) {
+                        console.error('Erro ao recuperar filtros do sentinel', e);
+                    }
+                }
+                dados.set('search', termo);
+                dados.set('is_search_ajax', 'true');
 
                 fetch(tabelaPath, {
                     method: 'POST',
@@ -22,6 +38,7 @@ document.addEventListener('input', function (e) {
                         if (tbody) {
                             tbody.innerHTML = html;
                             document.dispatchEvent(new Event('contentUpdated'));
+                            if (globalObserver) globalObserver.disconnect();
                         }
                     })
                     .catch((error) => console.error('Erro na busca:', error));

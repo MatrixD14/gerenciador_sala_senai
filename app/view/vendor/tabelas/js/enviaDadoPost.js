@@ -24,6 +24,8 @@ async function loadPagePost(url, formData = null, saveHistory = true) {
 
         if (saveHistory) history.pushState(state, '', url);
         else history.replaceState(state, '', url);
+
+        document.dispatchEvent(new Event('contentUpdated'));
     } catch (error) {
         console.error('Falha ao enviar POST:', error);
         mainContent.style.opacity = '1';

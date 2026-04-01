@@ -21,6 +21,14 @@ class Tabelas
         if ($config === null) return "Tabela não encontrada";
         $html = "<tr>";
         $colunasVisiveis = $_POST['show_cols'] ?? null;
+        if (is_string($colunasVisiveis)) {
+            $decoded = json_decode($colunasVisiveis, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $colunasVisiveis = $decoded;
+            } else {
+                $colunasVisiveis = explode(',', $colunasVisiveis);
+            }
+        }
         if (!empty($config['especifico'])) {
             foreach ($config['especifico'] as $campo) {
                 $parts = explode(' as ', $campo);
@@ -76,14 +84,30 @@ class Tabelas
 
         $searchTerm = $_POST['search'] ?? '';
         if (!$listDate || $listDate->num_rows === 0) {
-            if (isset($_SESSION['last_valid_table'][$slug])) {
-                return $_SESSION['last_valid_table'][$slug];
-            }
             $termo = htmlspecialchars($searchTerm);
+            $filtros = array_filter($_POST, function ($v) {
+                return $v !== '' && $v !== null;
+            });
+            unset(
+                $filtros['slug'],
+                $filtros['last_id'],
+                $filtros['is_search_ajax']
+            );
             return "<tr><td colspan='100%' >
                         <svg class='icon-escramacao'><use href='#icon-escramacao'></use></svg>
                         Nenhum resultado encontrado para: <strong>$termo</strong>
-                    </td></tr>";
+                    </td></tr>
+                     <tr class='sentinel'
+            data-slug='$slug'
+            data-lastid=''
+            data-end='true'
+            data-search='" . htmlspecialchars($searchTerm ?? '') . "'
+            data-filtros='" . htmlspecialchars(json_encode($filtros), ENT_QUOTES) . "'>
+            <td colspan='100%' style='text-align:center;'>
+                Fim dos resultados
+            </td>
+        </tr>
+    ";
         }
 
         $html = "";
@@ -102,9 +126,18 @@ class Tabelas
             $html .= "<tr data-id='$id' data-name='" . htmlspecialchars($displayRef) . "' class='$rowClass'>";
             $first = true;
             $colunasParaLoop = !empty($config["especifico"]) ? $linha : $config["colunas"];
+            $colunasVisiveis = $_POST['show_cols'] ?? null;
 
+            if (is_string($colunasVisiveis)) {
+                $decoded = json_decode($colunasVisiveis, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $colunasVisiveis = $decoded;
+                } else {
+                    $colunasVisiveis = explode(',', $colunasVisiveis);
+                }
+            }
             foreach ($colunasParaLoop as $key => $val) {
-                if (isset($_POST['show_cols']) && !in_array($key, $_POST['show_cols'])) {
+                if ($colunasVisiveis !== null && !in_array($key, $colunasVisiveis)) {
                     continue;
                 }
                 if (empty($config["especifico"])) {
@@ -125,19 +158,28 @@ class Tabelas
 
                 $html .= "<td>$conteudo</td>";
             }
-            $_SESSION['last_valid_table'][$slug] = $html;
             $html .= "</tr>";
         }
-
+        $filtros = array_filter($_POST, function ($v) {
+            return $v !== '' && $v !== null;
+        });
+        unset(
+            $filtros['slug'],
+            $filtros['last_id'],
+            $filtros['is_search_ajax']
+        );
         if ($lastIdFound && $listDate->num_rows >= $limit) {
-            $html .= "<tr class='sentinel' data-slug='$slug' data-lastid='$lastIdFound' data-search='" . htmlspecialchars($searchTerm) . "'>
+            $html .= "<tr class='sentinel' 
+            data-slug='$slug' 
+            data-lastid='$lastIdFound' 
+            data-search='" . htmlspecialchars($searchTerm ?? '') . "' 
+            data-filtros='" . htmlspecialchars(json_encode($filtros), ENT_QUOTES) . "'>
                     <td colspan='100%' style='text-align:center;'>Carregando mais registros...</td>
                   </tr>";
         }
 
         return $html;
     }
-
     private static function checkIsLocked($linha, $config): bool
     {
         $hoje = date('Y-m-d');
@@ -244,9 +286,9 @@ class Tabelas
         $colunasPermitidas = $allFiltros[$slug]['orderna'] ?? ['id'];
 
         if (in_array($orderBy, $colunasPermitidas)) {
-            if ($orderBy === 'id') {
-                return " ORDER BY $tabelaPrincipal.id $direction ";
-            }
+            if ($orderBy === 'id')
+                $orderBy = " $tabelaPrincipal.id";
+
             return " ORDER BY $orderBy $direction ";
         }
 
@@ -260,8 +302,6 @@ class Tabelas
         $condicoes = [];
 
         $filtrosCustom = self::applyCustomFilters($slug, $db, $tabelaPrincipal);
-
-
         if (!empty($filtrosCustom)) $condicoes = array_merge($condicoes, $filtrosCustom);
 
         $lastId = isset($_POST['last_id']) ? (int)$_POST['last_id'] : null;
@@ -271,7 +311,7 @@ class Tabelas
             $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
 
-        if ($lastId && !$searchTerm) $condicoes[] = "$tabelaPrincipal.id > $lastId";
+        if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
 
         if ($searchTerm) {
             $filtros = [];
@@ -287,9 +327,11 @@ class Tabelas
                 $nomeColuna = self::getCleanColumnName($c);
 
                 $tipoColuna = $config["colunas"][$nomeColuna]['type'] ?? null;
-
                 if ($tipoColuna === 'date') {
+                    if (!preg_match('/^[0-9\/]+$/', $searchTerm))
+                        continue;
                     $subFiltrosData = [];
+
                     if (preg_match('/^(\d{1,2})$/', $searchTerm)) {
                         $subFiltrosData[] = "DAY($campoCru) = $termoOriginal";
                     } elseif (preg_match('/^(\d{1,2})\/$/', $searchTerm, $m)) {
@@ -299,18 +341,19 @@ class Tabelas
                     } elseif (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $searchTerm, $m)) {
                         $subFiltrosData[] = "$campoCru = '{$m[3]}-{$m[2]}-{$m[1]}'";
                     } else {
-                        $subFiltrosData[] = "$campoCru LIKE '%-$termoOriginal%'";
+                        $subFiltrosData[] = "$campoCru LIKE '%$termoOriginal%'";
                     }
-                    $filtros[] = "(" . implode(" OR ", $subFiltrosData) . ")";
+                    if (!empty($subFiltrosData))  $filtros[] = "(" . implode(" OR ", $subFiltrosData) . ")";
                 } else {
-                    if (!$temBarra) $filtros[] = "$campoCru LIKE '%$termoOriginal%'";
+                    if (!$temBarra)
+                        $filtros[] = "$campoCru LIKE '%$termoOriginal%'";
                 }
             }
             if (!empty($filtros)) $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
+            else $condicoes[] = "1=0";
         }
 
         $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
-        // $order = " ORDER BY $tabelaPrincipal.id ASC ";
         $order = self::applyOrder($slug, $config, $tabelaPrincipal);
         $joins = $config["join"] ?? "";
 

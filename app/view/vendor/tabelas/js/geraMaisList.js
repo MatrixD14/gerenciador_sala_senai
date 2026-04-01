@@ -15,20 +15,36 @@ function iniciarScrollInfinit() {
             if (entry.isIntersecting) {
                 const sentinel = entry.target;
                 if (sentinel.classList.contains('loading')) return;
+                if (sentinel.dataset.end === 'true') return;
                 const slug = sentinel.dataset.slug;
                 const lastId = sentinel.dataset.lastid;
                 const searchTerm = sentinel.dataset.search || '';
+                const filtros = sentinel.dataset.filtros;
                 sentinel.classList.add('loading');
-                executarCargaInfinita(slug, lastId, sentinel, searchTerm, globalObserver);
+                executarCargaInfinita(slug, lastId, filtros, sentinel, searchTerm, globalObserver);
             }
         });
     }, observerOptions);
-    function executarCargaInfinita(slug, lastId, sentinel, searchTerm, obs) {
-        const tbody = document.querySelector('table tbody');
+    function executarCargaInfinita(slug, lastId, filtros, sentinel, searchTerm, obs) {
+        const tbody = document.getElementById('carregaTabela');
         const dados = new FormData();
-        dados.append('slug', slug);
-        dados.append('last_id', lastId);
-        dados.append('search', searchTerm);
+        if (filtros) {
+            try {
+                const filtrosObj = JSON.parse(filtros);
+                Object.entries(filtrosObj).forEach(([key, value]) => {
+                    if (Array.isArray(value)) {
+                        value.forEach((v) => dados.append(`${key}[]`, v));
+                    } else dados.append(key, value);
+                });
+            } catch (e) {
+                console.error('Erro ao processar filtros do scroll', e);
+            }
+        }
+        dados.set('slug', slug);
+        dados.set('last_id', lastId ?? '');
+        dados.set('is_search_ajax', 'true');
+        dados.set('search', searchTerm ?? '');
+
         fetch(window.location.pathname, {
             method: 'POST',
             body: dados,
@@ -43,9 +59,11 @@ function iniciarScrollInfinit() {
             .then((html) => {
                 globalObserver.unobserve(sentinel);
                 sentinel.remove();
-                tbody.insertAdjacentHTML('beforeend', html);
-                const novoSentinel = tbody.querySelector('.sentinel');
-                if (novoSentinel) obs.observe(novoSentinel);
+                if (html.trim() !== '') {
+                    tbody.insertAdjacentHTML('beforeend', html);
+                    const novoSentinel = tbody.querySelector('.sentinel');
+                    if (novoSentinel) obs.observe(novoSentinel);
+                }
             })
             .catch(() => {
                 sentinel.classList.remove('loading');
