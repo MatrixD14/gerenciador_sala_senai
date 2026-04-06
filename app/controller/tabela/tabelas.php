@@ -77,45 +77,27 @@ class Tabelas
         if (!$config) {
             return "<tr><td colspan='100%'>Configuração não encontrada</td></tr>";
         }
-
+        $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
         $limit = 50;
-        $sql = self::searchTabela($slug, $config, $UserLogin, $limit);
+
+        $sql = self::searchTabela($slug, $config, $UserLogin, $limit, $offset);
         $listDate = Tabelas::list_All($sql);
 
         $searchTerm = $_POST['search'] ?? '';
         if (!$listDate || $listDate->num_rows === 0) {
+            if ($offset > 0) {
+                return "<tr class='sentinel' data-slug='$slug' data-end='true'>
+                        <td colspan='100%' style='text-align:center;'>Fim dos resultados</td>
+                    </tr>";
+            }
             $termo = htmlspecialchars($searchTerm);
-            $filtros = array_filter($_POST, function ($v) {
-                return $v !== '' && $v !== null;
-            });
-            unset(
-                $filtros['slug'],
-                $filtros['last_id'],
-                $filtros['is_search_ajax']
-            );
-            return "<tr><td colspan='100%' >
-                        <svg class='icon-escramacao'><use href='#icon-escramacao'></use></svg>
-                        Nenhum resultado encontrado para: <strong>$termo</strong>
-                    </td></tr>
-                     <tr class='sentinel'
-            data-slug='$slug'
-            data-lastid=''
-            data-end='true'
-            data-search='" . htmlspecialchars($searchTerm ?? '') . "'
-            data-filtros='" . htmlspecialchars(json_encode($filtros), ENT_QUOTES) . "'>
-            <td colspan='100%' style='text-align:center;'>
-                Fim dos resultados
-            </td>
-        </tr>
-    ";
+            return "<tr><td colspan='100%'>Nenhum resultado encontrado para: <strong>$termo</strong></td></tr>";
         }
 
         $html = "";
-        $lastIdFound = "";
 
         while ($linha = $listDate->fetch_assoc()) {
-            $id = $linha['id'] ?? '';
-            $lastIdFound = $id;
+            $id = (int)($linha['id'] ?? 0);
 
             $estaBloqueado = self::checkIsLocked($linha, $config);
 
@@ -124,20 +106,24 @@ class Tabelas
             $rowClass = $estaBloqueado ? "row-locked" : "";
 
             $html .= "<tr data-id='$id' data-name='" . htmlspecialchars($displayRef) . "' class='$rowClass'>";
-            $first = true;
-            $colunasParaLoop = !empty($config["especifico"]) ? $linha : $config["colunas"];
-            $colunasVisiveis = $_POST['show_cols'] ?? null;
-
+            $colunasVisiveis = $_POST['show_cols'] ?? [];
             if (is_string($colunasVisiveis)) {
                 $decoded = json_decode($colunasVisiveis, true);
+
                 if (json_last_error() === JSON_ERROR_NONE) {
                     $colunasVisiveis = $decoded;
                 } else {
                     $colunasVisiveis = explode(',', $colunasVisiveis);
                 }
             }
+            if (!is_array($colunasVisiveis)) {
+                $colunasVisiveis = [];
+            }
+            $colunasParaLoop = !empty($config["especifico"]) ? $linha : $config["colunas"];
+            $first = true;
+
             foreach ($colunasParaLoop as $key => $val) {
-                if ($colunasVisiveis !== null && !in_array($key, $colunasVisiveis)) {
+                if (!empty($colunasVisiveis) && !in_array($key, $colunasVisiveis)) {
                     continue;
                 }
                 if (empty($config["especifico"])) {
@@ -165,20 +151,34 @@ class Tabelas
         });
         unset(
             $filtros['slug'],
-            $filtros['last_id'],
-            $filtros['is_search_ajax']
+            $filtros['offset'],
+            $filtros['is_search_ajax'],
+            $filtros['search']
         );
-        if ($lastIdFound && $listDate->num_rows >= $limit) {
-            $html .= "<tr class='sentinel' 
-            data-slug='$slug' 
-            data-lastid='$lastIdFound' 
-            data-search='" . htmlspecialchars($searchTerm ?? '') . "' 
-            data-filtros='" . htmlspecialchars(json_encode($filtros), ENT_QUOTES) . "'>
-                    <td colspan='100%' style='text-align:center;'>Carregando mais registros...</td>
-                  </tr>";
-        }
+        $filtrosJson = htmlspecialchars(json_encode($filtros), ENT_QUOTES);
 
-        return $html;
+        $htmlTop = "";
+        if ($offset > 0) {
+            $prevOffset = max(0, $offset - $limit);
+            $htmlTop = "<tr class='sentinel-top' data-offset='$prevOffset' data-slug='$slug' data-filtros='$filtrosJson'>
+                        <td colspan='100%' style='text-align:center; font-size: 0.8em; color: #ccc;'>Carregando anteriores...</td>
+                    </tr>";
+        } else $htmlTop = "";
+        $htmlBottom = "";
+        if ($listDate->num_rows >= $limit) {
+            $proximoOffset = $offset + $limit;
+            $htmlBottom = "<tr class='sentinel' data-offset='$proximoOffset' data-slug='$slug' data-search='" . htmlspecialchars($searchTerm) . "' data-filtros='$filtrosJson'>
+                        <td colspan='100%' style='text-align:center;'>Carregando mais...</td>
+                      </tr>";
+        } else {
+            $htmlBottom = "<tr class='sentinel' data-slug='$slug' data-end='true'>
+                        <td colspan='100%' style='text-align:center;'>Fim dos resultados</td>
+                       </tr>";
+        }
+        error_log("📥 offset recebido: " . ($_POST['offset'] ?? 'null'));
+        error_log("🔍 sentinela inferior offset: " . ($proximoOffset ?? 'nenhum'));
+        error_log("POST recebido: " . print_r($_POST, true));
+        return $htmlTop . $html . $htmlBottom;
     }
     private static function checkIsLocked($linha, $config): bool
     {
@@ -266,7 +266,7 @@ class Tabelas
                     $valorLimpo = $db->real_escape_string($valor);
                     if (isset($info['relation']['tabela'])) {
                         $tabelaRelacao = $info['relation']['tabela'];
-                        $colunaRelacao = $info['relation']['coluna'];
+                        $colunaRelacao = $info['relation']['value'] ?? $info['relation']['coluna'];
                         $condicoes[] = "$tabelaRelacao.$colunaRelacao = '$valorLimpo'";
                     } else
                         $condicoes[] = "$tabelaPrincipal.$nomeCampo = '$valorLimpo'";
@@ -295,7 +295,7 @@ class Tabelas
         return " ORDER BY $tabelaPrincipal.id ASC ";
     }
 
-    private static function searchTabela($slug, $config, $UserLogin, $limit): string
+    private static function searchTabela($slug, $config, $UserLogin, $limit, $offset): string
     {
         $tabelaPrincipal = $config["tabela"];
         $db = Database::connects();
@@ -304,53 +304,17 @@ class Tabelas
         $filtrosCustom = self::applyCustomFilters($slug, $db, $tabelaPrincipal);
         if (!empty($filtrosCustom)) $condicoes = array_merge($condicoes, $filtrosCustom);
 
-        $lastId = isset($_POST['last_id']) ? (int)$_POST['last_id'] : null;
-        $searchTerm = $_POST['search'] ?? null;
+        $searchTerm = $_POST['search'] ?? '';
+
 
         if ($UserLogin != null && $slug === 'menssagem') {
             $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
 
-        if ($lastId) $condicoes[] = "$tabelaPrincipal.id > $lastId";
+        $searchCond = searchTabelas::buildSearch($slug, $searchTerm, $tabelaPrincipal);
 
-        if ($searchTerm) {
-            $filtros = [];
-            $termoOriginal = $db->real_escape_string($searchTerm);
-            $temBarra = (strpos($searchTerm, '/') !== false);
-            $colunasParaFiltro = !empty($config["especifico"]) ? $config["especifico"] : array_keys($config["colunas"]);
-
-            foreach ($colunasParaFiltro as $c) {
-                $campoCru = trim(explode(' as ', $c)[0]);
-                if (strpos($campoCru, '.') === false) {
-                    $campoCru = "$tabelaPrincipal.$campoCru";
-                }
-                $nomeColuna = self::getCleanColumnName($c);
-
-                $tipoColuna = $config["colunas"][$nomeColuna]['type'] ?? null;
-                if ($tipoColuna === 'date') {
-                    if (!preg_match('/^[0-9\/]+$/', $searchTerm))
-                        continue;
-                    $subFiltrosData = [];
-
-                    if (preg_match('/^(\d{1,2})$/', $searchTerm)) {
-                        $subFiltrosData[] = "DAY($campoCru) = $termoOriginal";
-                    } elseif (preg_match('/^(\d{1,2})\/$/', $searchTerm, $m)) {
-                        $subFiltrosData[] = "DAY($campoCru) = {$m[1]}";
-                    } elseif (preg_match('/^(\d{1,2})\/(\d{1,2})$/', $searchTerm, $m)) {
-                        $subFiltrosData[] = "DAY($campoCru) = {$m[1]} AND MONTH($campoCru) = {$m[2]}";
-                    } elseif (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $searchTerm, $m)) {
-                        $subFiltrosData[] = "$campoCru = '{$m[3]}-{$m[2]}-{$m[1]}'";
-                    } else {
-                        $subFiltrosData[] = "$campoCru LIKE '%$termoOriginal%'";
-                    }
-                    if (!empty($subFiltrosData))  $filtros[] = "(" . implode(" OR ", $subFiltrosData) . ")";
-                } else {
-                    if (!$temBarra)
-                        $filtros[] = "$campoCru LIKE '%$termoOriginal%'";
-                }
-            }
-            if (!empty($filtros)) $condicoes[] = "(" . implode(" OR ", $filtros) . ")";
-            else $condicoes[] = "1=0";
+        if (!empty($searchCond)) {
+            $condicoes = array_merge($condicoes, $searchCond);
         }
 
         $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
@@ -358,6 +322,8 @@ class Tabelas
         $joins = $config["join"] ?? "";
 
         $select = !empty($config["especifico"]) ? implode(", ", $config["especifico"]) : "$tabelaPrincipal.*";
-        return "SELECT $select FROM $tabelaPrincipal $joins $where $order LIMIT $limit";
+        $query = "SELECT $select FROM $tabelaPrincipal $joins $where $order LIMIT $offset, $limit";
+        error_log("QUERY GERADA: " . $query);
+        return $query;
     }
 }

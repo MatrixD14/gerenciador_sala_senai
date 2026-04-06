@@ -1,3 +1,11 @@
+<script>
+    let tabelaState = {
+        offset: 0,
+        slug: null,
+        search: "",
+        filtros: {},
+    };
+</script>
 <script src="/app/view/vendor/layout/js/ajax-router.js"></script>
 <script src="/app/view/vendor/layout/js/button.js"></script>
 <script src="/app/view/vendor/tabelas/js/selectDate.js"></script>

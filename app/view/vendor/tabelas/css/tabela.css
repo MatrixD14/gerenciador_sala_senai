@@ -33,6 +33,11 @@
 }
 .tabela tr {
     background-color: #fff;
+    /* }
+#carregaTabelaContainer { */
+    height: 45px;
+    overflow: hidden;
+    overflow-anchor: none;
 }
 .tabela td {
     overflow: hidden;
