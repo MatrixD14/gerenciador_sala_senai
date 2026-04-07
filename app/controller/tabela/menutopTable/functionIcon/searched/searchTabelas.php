@@ -22,11 +22,7 @@ class searchTabelas
         $termo = $db->real_escape_string($searchTerm);
         $filtros = [];
 
-        foreach ($colunasBusca as $col) {
-            $nome = array_key_first($col);
-            $config = $col[$nome];
-
-            $campo = $nome;
+        foreach ($colunasBusca as $campo) {
 
             if (strpos($campo, '.') === false) {
                 $campo = "$tabelaPrincipal.$campo";

@@ -31,13 +31,25 @@
     border-collapse: collapse;
     border-spacing: 0;
 }
+
+.carregaTable tr {
+    contain: layout size;
+    height: 45px;
+}
+#spacer-top td {
+    line-height: 0;
+}
+.sentinel td {
+    text-align: center;
+    padding: 10px;
+    background: #f0f0f0;
+    cursor: pointer;
+}
+
 .tabela tr {
     background-color: #fff;
-    /* }
-#carregaTabelaContainer { */
     height: 45px;
     overflow: hidden;
-    overflow-anchor: none;
 }
 .tabela td {
     overflow: hidden;

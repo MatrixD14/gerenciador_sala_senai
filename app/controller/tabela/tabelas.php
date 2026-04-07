@@ -67,118 +67,38 @@ class Tabelas
         return $tmg->get_result();
     }
 
-    public static function geraBodyTabela2($slug, $UserLogin = null): string
+    public static function geraBodyTabela2($slug, $UserLogin = null)
     {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        date_default_timezone_set('America/Sao_Paulo');
         self::loadConfig();
         $config = self::$inforDate[$slug] ?? null;
+        if (!$config) return json_encode(['erro' => 'Config não encontrada']);
 
-        if (!$config) {
-            return "<tr><td colspan='100%'>Configuração não encontrada</td></tr>";
-        }
         $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
         $limit = 50;
 
         $sql = self::searchTabela($slug, $config, $UserLogin, $limit, $offset);
-        $listDate = Tabelas::list_All($sql);
+        $result = Tabelas::list_All($sql);
 
-        $searchTerm = $_POST['search'] ?? '';
-        if (!$listDate || $listDate->num_rows === 0) {
-            if ($offset > 0) {
-                return "<tr class='sentinel' data-slug='$slug' data-end='true'>
-                        <td colspan='100%' style='text-align:center;'>Fim dos resultados</td>
-                    </tr>";
-            }
-            $termo = htmlspecialchars($searchTerm);
-            return "<tr><td colspan='100%'>Nenhum resultado encontrado para: <strong>$termo</strong></td></tr>";
+        $dados = [];
+        while ($linha = $result->fetch_assoc()) {
+            // O PHP só faz o cálculo lógico, sem HTML
+            $linha['is_locked'] = self::checkIsLocked($linha, $config);
+            $dados[] = $linha;
         }
-
-        $html = "";
-
-        while ($linha = $listDate->fetch_assoc()) {
-            $id = (int)($linha['id'] ?? 0);
-
-            $estaBloqueado = self::checkIsLocked($linha, $config);
-
-            $displayRef = $linha['name'] ?? $linha['usuario'] ?? $linha['sala'] ?? '';
-            $iconLock = $estaBloqueado ? "<span title='Bloqueado: Fora do horário ou data vencida'><svg class='icon-escramacao'><use href='#icon-escramacao'></use></svg></span> " : "";
-            $rowClass = $estaBloqueado ? "row-locked" : "";
-
-            $html .= "<tr data-id='$id' data-name='" . htmlspecialchars($displayRef) . "' class='$rowClass'>";
-            $colunasVisiveis = $_POST['show_cols'] ?? [];
-            if (is_string($colunasVisiveis)) {
-                $decoded = json_decode($colunasVisiveis, true);
-
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $colunasVisiveis = $decoded;
-                } else {
-                    $colunasVisiveis = explode(',', $colunasVisiveis);
-                }
-            }
-            if (!is_array($colunasVisiveis)) {
-                $colunasVisiveis = [];
-            }
-            $colunasParaLoop = !empty($config["especifico"]) ? $linha : $config["colunas"];
-            $first = true;
-
-            foreach ($colunasParaLoop as $key => $val) {
-                if (!empty($colunasVisiveis) && !in_array($key, $colunasVisiveis)) {
-                    continue;
-                }
-                if (empty($config["especifico"])) {
-                    if (!empty($val['encryption'])) continue;
-                    $valorOriginal = $linha[$key] ?? '';
-                    $tipo = $val['type'] ?? '';
-                } else {
-                    $valorOriginal = $val;
-                    $tipo = 'auto';
-                }
-
-                $conteudo = self::formatCellValue($valorOriginal, $tipo);
-
-                if ($first) {
-                    $conteudo = $iconLock . $conteudo;
-                    $first = false;
-                }
-
-                $html .= "<td>$conteudo</td>";
-            }
-            $html .= "</tr>";
-        }
-        $filtros = array_filter($_POST, function ($v) {
-            return $v !== '' && $v !== null;
-        });
-        unset(
-            $filtros['slug'],
-            $filtros['offset'],
-            $filtros['is_search_ajax'],
-            $filtros['search']
-        );
-        $filtrosJson = htmlspecialchars(json_encode($filtros), ENT_QUOTES);
-
-        $htmlTop = "";
-        if ($offset > 0) {
-            $prevOffset = max(0, $offset - $limit);
-            $htmlTop = "<tr class='sentinel-top' data-offset='$prevOffset' data-slug='$slug' data-filtros='$filtrosJson'>
-                        <td colspan='100%' style='text-align:center; font-size: 0.8em; color: #ccc;'>Carregando anteriores...</td>
-                    </tr>";
-        } else $htmlTop = "";
-        $htmlBottom = "";
-        if ($listDate->num_rows >= $limit) {
-            $proximoOffset = $offset + $limit;
-            $htmlBottom = "<tr class='sentinel' data-offset='$proximoOffset' data-slug='$slug' data-search='" . htmlspecialchars($searchTerm) . "' data-filtros='$filtrosJson'>
-                        <td colspan='100%' style='text-align:center;'>Carregando mais...</td>
-                      </tr>";
-        } else {
-            $htmlBottom = "<tr class='sentinel' data-slug='$slug' data-end='true'>
-                        <td colspan='100%' style='text-align:center;'>Fim dos resultados</td>
-                       </tr>";
-        }
-        error_log("📥 offset recebido: " . ($_POST['offset'] ?? 'null'));
-        error_log("🔍 sentinela inferior offset: " . ($proximoOffset ?? 'nenhum'));
-        error_log("POST recebido: " . print_r($_POST, true));
-        return $htmlTop . $html . $htmlBottom;
+        $has_more = ($result->num_rows === $limit);
+        // Retorna JSON puro para o JS trabalhar
+        header('Content-Type: application/json');
+        echo json_encode([
+            'dados' => $dados,
+            'config' => [
+                'especifico' => $config['especifico'] ?? null,
+                'colunas' => $config['colunas'] ?? null
+            ],
+            'offset' => $offset,
+            'limit' => $limit,
+            'has_more' => $has_more
+        ]);
+        exit;
     }
     private static function checkIsLocked($linha, $config): bool
     {
@@ -223,18 +143,6 @@ class Tabelas
             return trim(end($parts));
         }
         return $nome;
-    }
-
-    private static function formatCellValue($valor, $tipo): string
-    {
-        if (empty($valor)) return "";
-        if ($tipo === 'date' || preg_match('/^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}:\d{2})?$/', $valor)) {
-            $temHora = (strpos($valor, ' ') !== false);
-            $formato = $temHora ? 'd/m/Y H:i' : 'd/m/Y';
-            return date($formato, strtotime($valor));
-        }
-
-        return htmlspecialchars($valor);
     }
 
     private static function applyCustomFilters($slug, $db, $tabelaPrincipal): array

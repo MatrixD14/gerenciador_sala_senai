@@ -6,9 +6,14 @@ document.addEventListener('input', function (e) {
         clearTimeout(input.searchTimeout);
         if (termo.length === 0 || termo.length >= 1) {
             input.searchTimeout = setTimeout(() => {
-                tabelaState.search = termo;
-                tabelaState.offset = 0;
-                executarFetchNovaTabela();
+                if (typeof window.pesquisarTabela === 'function') {
+                    window.pesquisarTabela(termo);
+                } else {
+                    if (window.tabelaState) {
+                        window.tabelaState.search = termo;
+                        window.initTabela(window.tabelaState.slug);
+                    }
+                }
             }, 400);
         }
     }
