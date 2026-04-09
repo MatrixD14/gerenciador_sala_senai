@@ -1,14 +1,14 @@
 (function () {
     const LIMITE_LINHAS = 150;
     const TAMANHO_PAGINA = 50;
-    const MARGEM_OBSERVER = 200;
+    const MARGEM_OBSERVER = 300;
+
     if (typeof window.tabelaState !== 'undefined') {
         console.warn('tabelaState já existe, reaproveitando');
         var tabelaState = window.tabelaState;
     } else {
         var tabelaState = {
             slug: null,
-            offset: 0,
             isLoading: false,
             loadingUp: false,
             loadingDown: false,
@@ -16,20 +16,119 @@
             hasMoreDown: true,
             observer: null,
             search: '',
-            filtros: {},
             blocosCarregados: new Set(),
             ultimoBlocoCompleto: true,
         };
         window.tabelaState = tabelaState;
     }
 
+    function getReferenciaScroll(container) {
+        const trs = container.children;
+        for (let i = 0; i < trs.length; i++) {
+            const tr = trs[i];
+            if (tr.dataset && tr.dataset.id) {
+                const rect = tr.getBoundingClientRect();
+                if (rect.top >= 0 && rect.top < window.innerHeight) {
+                    return { tr, posTop: rect.top };
+                }
+            }
+        }
+        for (let i = 0; i < trs.length; i++) {
+            const tr = trs[i];
+            if (tr.dataset && tr.dataset.id) {
+                return { tr, posTop: tr.getBoundingClientRect().top };
+            }
+        }
+        return null;
+    }
+
+    function ajustarScrollAposInsercao(scrollContainer, referencia) {
+        if (referencia && referencia.tr && referencia.tr.isConnected) {
+            const novaPos = referencia.tr.getBoundingClientRect().top;
+            const delta = novaPos - referencia.posTop;
+            scrollContainer.scrollTop += delta;
+        }
+    }
+
+    function removerBloco(offset, scrollContainer, containerTabela) {
+        const inicio = offset + 1;
+        const fim = offset + TAMANHO_PAGINA;
+        const linhas = Array.from(containerTabela.querySelectorAll('tr[data-id]'));
+        let referencia = getReferenciaScroll(containerTabela);
+        let removidos = false;
+
+        for (const tr of linhas) {
+            const id = parseInt(tr.dataset.id);
+            if (id >= inicio && id <= fim) {
+                tr.remove();
+                removidos = true;
+            }
+        }
+
+        if (removidos) {
+            tabelaState.blocosCarregados.delete(offset);
+            if (referencia && referencia.tr.isConnected) {
+                const novaPos = referencia.tr.getBoundingClientRect().top;
+                const delta = novaPos - referencia.posTop;
+                scrollContainer.scrollTop += delta;
+            }
+        }
+    }
+
+    function gerenciarLimite(direcao, scrollContainer, containerTabela) {
+        const linhas = containerTabela.querySelectorAll('tr[data-id]');
+        if (linhas.length <= LIMITE_LINHAS) return;
+
+        const excedente = linhas.length - LIMITE_LINHAS;
+        const blocosRemover = Math.ceil(excedente / TAMANHO_PAGINA);
+        const offsetsOrdenados = Array.from(tabelaState.blocosCarregados).sort((a, b) => a - b);
+
+        let remover = [];
+        if (direcao === 'down') {
+            remover = offsetsOrdenados.slice(0, blocosRemover);
+        } else {
+            remover = offsetsOrdenados.slice(-blocosRemover);
+        }
+
+        for (const offset of remover) {
+            removerBloco(offset, scrollContainer, containerTabela);
+        }
+        atualizarFlags();
+    }
+
+    function atualizarFlags() {
+        if (tabelaState.blocosCarregados.size === 0) {
+            tabelaState.hasMoreUp = false;
+            tabelaState.hasMoreDown = true;
+            return;
+        }
+        const minOffset = Math.min(...tabelaState.blocosCarregados);
+        tabelaState.hasMoreUp = minOffset > 0;
+        if (!tabelaState.ultimoBlocoCompleto) {
+            tabelaState.hasMoreDown = false;
+        }
+    }
+
+    function proximoOffsetUp() {
+        if (!tabelaState.hasMoreUp || tabelaState.blocosCarregados.size === 0) return null;
+        return Math.min(...tabelaState.blocosCarregados) - TAMANHO_PAGINA;
+    }
+
+    function proximoOffsetDown() {
+        if (!tabelaState.hasMoreDown || tabelaState.blocosCarregados.size === 0) return null;
+        return Math.max(...tabelaState.blocosCarregados) + TAMANHO_PAGINA;
+    }
+
     async function carregarBloco(offset, direcao) {
-        if (direcao === 'up' && tabelaState.loadingUp) return;
-        if (direcao === 'down' && tabelaState.loadingDown) return;
-        if (tabelaState.isLoading) return;
-        if (tabelaState.blocosCarregados.has(offset)) return;
-        if (direcao === 'down' && !tabelaState.hasMoreDown) return;
-        if (direcao === 'up' && !tabelaState.hasMoreUp) return;
+        if (
+            (direcao === 'up' && tabelaState.loadingUp) ||
+            (direcao === 'down' && tabelaState.loadingDown) ||
+            tabelaState.isLoading ||
+            tabelaState.blocosCarregados.has(offset) ||
+            (direcao === 'down' && !tabelaState.hasMoreDown) ||
+            (direcao === 'up' && !tabelaState.hasMoreUp)
+        )
+            return;
 
         if (direcao === 'up') tabelaState.loadingUp = true;
         else tabelaState.loadingDown = true;
@@ -62,23 +161,22 @@
                 return;
             }
 
-            // tabelaState.ultimoBlocoCompleto = json.dados.length === TAMANHO_PAGINA;
-
             tabelaState.ultimoBlocoCompleto = json.has_more;
-            const alturaAntes = container.scrollHeight;
-            const scrollTopAntes = window.scrollY;
 
             if (direcao === 'down') {
                 const sentinelaBaixo = container.querySelector('.sentinel-bottom');
                 if (sentinelaBaixo) sentinelaBaixo.remove();
                 container.insertAdjacentHTML('beforeend', novoHtml);
             } else {
+                const scrollContainer = document.querySelector('.table-center');
+                if (!scrollContainer) throw new Error('Container .table-center não encontrado');
+                if (tabelaState.observer) tabelaState.observer.disconnect();
+
+                const referencia = getReferenciaScroll(container);
                 const sentinelaTopo = container.querySelector('.sentinel-top');
                 if (sentinelaTopo) sentinelaTopo.remove();
                 container.insertAdjacentHTML('afterbegin', novoHtml);
-                const alturaDepois = container.scrollHeight;
-                const deltaAltura = alturaDepois - alturaAntes;
-                window.scrollTo(0, scrollTopAntes + deltaAltura);
+                ajustarScrollAposInsercao(scrollContainer, referencia);
             }
 
             tabelaState.blocosCarregados.add(offset);
@@ -89,27 +187,38 @@
             if (direcao === 'up') {
                 tabelaState.hasMoreUp = offset > 0;
             }
-
-            gerenciarLimite(direcao);
-            criarSentinelas();
         } catch (err) {
             console.error('Erro no carregamento:', err);
         } finally {
             tabelaState.isLoading = false;
-            if (direcao === 'up') tabelaState.loadingUp = false;
-            else tabelaState.loadingDown = false;
+            tabelaState.loadingUp = false;
+            tabelaState.loadingDown = false;
             if (loader) loader.style.display = 'none';
-            setTimeout(() => configurarObserver(), 150);
+
+            criarSentinelas();
+            configurarObserver();
+            const scrollContainer = document.querySelector('.table-center');
+            const removerLimite = () => {
+                if (scrollContainer) {
+                    gerenciarLimite(direcao, scrollContainer, container);
+                } else {
+                    gerenciarLimite(direcao, null, container);
+                }
+            };
+
+            if (window.requestIdleCallback) {
+                requestIdleCallback(removerLimite, { timeout: 200 });
+            } else {
+                setTimeout(removerLimite, 100);
+            }
         }
     }
-
     function criarSentinelas() {
         const container = document.getElementById('carregaTabela');
         if (!container) return;
         container.querySelectorAll('.sentinel-top, .sentinel-bottom').forEach((el) => el.remove());
 
         const nextUp = proximoOffsetUp();
-
         if (nextUp !== null) {
             const topSentinel = document.createElement('tr');
             topSentinel.className = 'sentinel-top';
@@ -130,85 +239,16 @@
             fimMsg.innerHTML = '<td colspan="100%" style="text-align:center; color:#aaa;">Fim dos resultados</td>';
             container.appendChild(fimMsg);
         }
-        console.log('📌 Criando sentinelas - up:', nextUp, 'down:', nextDown);
     }
 
-    function atualizarFlags() {
-        if (tabelaState.blocosCarregados.size === 0) {
-            tabelaState.hasMoreUp = false;
-            tabelaState.hasMoreDown = true;
-            return;
-        }
-        const minOffset = Math.min(...tabelaState.blocosCarregados);
-        tabelaState.hasMoreUp = minOffset > 0;
-        if (!tabelaState.ultimoBlocoCompleto) {
-            tabelaState.hasMoreDown = false;
-        }
-    }
-
-    // Retorna o próximo offset para cima (ou null se não houver)
-    function proximoOffsetUp() {
-        if (!tabelaState.hasMoreUp) return null;
-        const minOffset = Math.min(...tabelaState.blocosCarregados);
-        return minOffset - TAMANHO_PAGINA;
-    }
-
-    function proximoOffsetDown() {
-        if (!tabelaState.hasMoreDown) return null;
-        const maxOffset = Math.max(...tabelaState.blocosCarregados);
-        return maxOffset + TAMANHO_PAGINA;
-    }
-
-    function removerBloco(offset) {
-        const container = document.getElementById('carregaTabela');
-        if (!container) return;
-        const inicio = offset + 1;
-        const fim = offset + TAMANHO_PAGINA;
-        const linhas = Array.from(container.querySelectorAll('tr[data-id]'));
-        let alturaRemovida = 0;
-        linhas.forEach((tr) => {
-            const id = parseInt(tr.dataset.id);
-            if (id >= inicio && id <= fim) {
-                alturaRemovida += tr.offsetHeight;
-                tr.remove();
-            }
-        });
-        tabelaState.blocosCarregados.delete(offset);
-        const minAtual = tabelaState.blocosCarregados.size ? Math.min(...tabelaState.blocosCarregados) : null;
-        if (offset === minAtual && alturaRemovida > 0) {
-            window.scrollBy(0, -alturaRemovida);
-        }
-    }
-    function gerenciarLimite(direcaoCarregada) {
-        const container = document.getElementById('carregaTabela');
-        const linhas = container.querySelectorAll('tr[data-id]');
-        if (linhas.length <= LIMITE_LINHAS) return;
-
-        const excedente = linhas.length - LIMITE_LINHAS;
-        const blocosRemover = Math.ceil(excedente / TAMANHO_PAGINA);
-        const offsetsOrdenados = Array.from(tabelaState.blocosCarregados).sort((a, b) => a - b);
-
-        if (direcaoCarregada === 'down') {
-            // Remove blocos do início (mais antigos)
-            const remover = offsetsOrdenados.slice(0, blocosRemover);
-            remover.forEach((offset) => removerBloco(offset));
-        } else if (direcaoCarregada === 'up') {
-            // Remove blocos do fim
-            const remover = offsetsOrdenados.slice(-blocosRemover);
-            remover.forEach((offset) => removerBloco(offset));
-        }
-        atualizarFlags();
-    }
     function configurarObserver() {
-        if (tabelaState.observer) {
-            tabelaState.observer.disconnect();
-        }
+        if (tabelaState.observer) tabelaState.observer.disconnect();
+
         const sentinelas = document.querySelectorAll('.sentinel-top, .sentinel-bottom');
-        console.log('👀 Observando sentinelas:', sentinelas.length);
         if (sentinelas.length === 0) return;
 
         const observer = new IntersectionObserver(
-            (entries) => {
+            async (entries) => {
                 if (tabelaState.isLoading) return;
                 for (const entry of entries) {
                     if (!entry.isIntersecting) continue;
@@ -216,24 +256,20 @@
                     const offset = parseInt(sentinel.dataset.offset);
                     if (isNaN(offset)) continue;
 
-                    if (sentinel.classList.contains('sentinel-top')) {
-                        carregarBloco(offset, 'up');
-                    } else if (sentinel.classList.contains('sentinel-bottom')) {
-                        carregarBloco(offset, 'down');
-                    }
-                    break; // apenas um por vez
+                    observer.disconnect();
+                    const direcao = sentinel.classList.contains('sentinel-top') ? 'up' : 'down';
+                    await carregarBloco(offset, direcao);
+                    break;
                 }
             },
-            { rootMargin: `0px 0px ${MARGEM_OBSERVER}px 0px`, threshold: 0.1 },
+            { rootMargin: `${MARGEM_OBSERVER}px 0px ${MARGEM_OBSERVER}px 0px`, threshold: 0.1 },
         );
 
         sentinelas.forEach((s) => observer.observe(s));
         tabelaState.observer = observer;
     }
     window.pesquisarTabela = function (termo) {
-        // Atualiza o termo no estado
         tabelaState.search = termo;
-        // Reseta todos os flags e dados
         tabelaState.isLoading = false;
         tabelaState.loadingUp = false;
         tabelaState.loadingDown = false;
@@ -241,7 +277,6 @@
         tabelaState.hasMoreDown = true;
         tabelaState.blocosCarregados.clear();
         tabelaState.ultimoBlocoCompleto = true;
-        // Limpa o container e carrega o primeiro bloco (offset 0)
         const container = document.getElementById('carregaTabela');
         if (container) container.innerHTML = '';
         if (tabelaState.observer) {
@@ -261,7 +296,6 @@
         tabelaState.blocosCarregados.clear();
         tabelaState.ultimoBlocoCompleto = true;
         tabelaState.search = '';
-        tabelaState.filtros = {};
         const container = document.getElementById('carregaTabela');
         if (container) container.innerHTML = '';
         carregarBloco(0, 'down');

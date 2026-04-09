@@ -24,6 +24,9 @@
 .table-center {
     flex: 1;
     overflow: auto;
+    position: relative;
+    will-change: scroll-position;
+    overflow-anchor: none;
 }
 .tabela {
     width: 100%;
@@ -33,8 +36,14 @@
 }
 
 .carregaTable tr {
-    contain: layout size;
+    contain: strict;
     height: 45px;
+    display: table-row;
+}
+.carregaTable td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 #spacer-top td {
     line-height: 0;
@@ -48,7 +57,7 @@
 
 .tabela tr {
     background-color: #fff;
-    height: 45px;
+    height: 30px;
     overflow: hidden;
 }
 .tabela td {

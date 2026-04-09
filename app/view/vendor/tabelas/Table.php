@@ -1,9 +1,5 @@
 <?php
 $tipoTabela = $Tabelas ?? '';
-// if (isset($_POST['get_fragmento'])) {
-//     echo "ENTROU NO AJAX";
-//     exit;
-// }
 if (isset($_POST['get_fragmento'])) {
     Tabelas::geraBodyTabela2($tipoTabela);
     exit;
