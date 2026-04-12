@@ -41,17 +41,12 @@ function fecharTodosSelects(excecao = null) {
 document.addEventListener(
     'scroll',
     function (e) {
-        const area = e.target;
-
-        // Filtro seco: só executa se for a classe correta
-        if (!area.classList || !area.classList.contains('options-scroll-area')) return;
+        const area = e.target.closest('.options-scroll-area');
+        if (!area) return;
 
         const sentinel = area.querySelector('.select-sentinel');
-
-        // Se não tem sentinel ou já está carregando, para aqui
         if (!sentinel || sentinel.dataset.loading === 'true') return;
 
-        // Cálculo objetivo: altura total - quanto rolou <= altura visível + margem
         if (area.scrollHeight - area.scrollTop <= area.clientHeight + 10) {
             carregarMaisOpcoes(sentinel, area);
         }
@@ -76,12 +71,12 @@ function carregarMaisOpcoes(sentinel, container) {
     fetch('/buscaList', { method: 'POST', body: fd })
         .then((r) => r.text())
         .then((html) => {
-            if (!html.trim()) {
-                sentinel.remove();
-                return;
-            }
             sentinel.remove();
-            container.insertAdjacentHTML('beforeend', html);
+            if (html.trim()) {
+                container.insertAdjacentHTML('beforeend', html);
+                const novoSentinel = container.querySelector('.select-sentinel');
+                if (novoSentinel) observarSentinela(novoSentinel);
+            }
         })
         .catch(() => {
             sentinel.dataset.loading = 'false';

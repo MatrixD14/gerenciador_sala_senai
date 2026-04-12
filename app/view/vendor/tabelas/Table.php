@@ -1,6 +1,6 @@
 <?php
 $tipoTabela = $Tabelas ?? '';
-if (isset($_POST['get_fragmento'])) {
+if (isset($_POST['get_fragmento']) && $_POST['get_fragmento'] == '1') {
     Tabelas::geraBodyTabela2($tipoTabela);
     exit;
 }

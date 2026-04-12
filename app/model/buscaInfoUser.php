@@ -88,7 +88,7 @@ class BuscaInfoUser
         $params[] = (int)$offset;
         $types .= "ii";
 
-        $sql = "SELECT $colsSql FROM $tabela $where 
+        $sql = "SELECT DISTINCT $colsSql FROM $tabela $where 
             ORDER BY LENGTH($colLabel) ASC, $colLabel ASC 
             LIMIT ? OFFSET ?";
         $stmt = $db->prepare($sql);

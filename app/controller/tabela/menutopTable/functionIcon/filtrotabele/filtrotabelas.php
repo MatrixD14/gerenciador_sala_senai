@@ -2,14 +2,24 @@
 
 class FiltroEngine
 {
-    private array $config;
-    private string $slug;
+    private  $config;
+    private  $slug;
 
-    public function __construct(string $tableKey)
+    public function __construct($slug)
     {
-        $allConfigs = require __DIR__ . '/arrayTabelaFiltro.php';
-        $this->config = $allConfigs[$tableKey] ?? throw new Exception("Filtro não configurado.");
-        $this->slug = $tableKey;
+        $this->slug = $slug;
+        $path = __DIR__ . '/arrayTabelaFiltro.php';
+
+        if (!file_exists($path)) {
+            throw new Exception("Arquivo de configuração de filtros não encontrado.");
+        }
+
+        $allConfigs = require $path;
+        $this->config = $allConfigs[$slug] ?? null;
+
+        if (!$this->config) {
+            throw new Exception("Configuração para a tabela '{$slug}' não encontrada.");
+        }
     }
 
     public function render(): string

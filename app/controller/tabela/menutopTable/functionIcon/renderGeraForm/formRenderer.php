@@ -155,7 +155,7 @@ class FormRenderer
     private static function renderDatabaseOptions($rel, $deps, $slug, $name): string
     {
         $extraSQL = !empty($deps) ? ", " . implode(', ', array_filter($deps)) : "";
-        $sql = "SELECT {$rel['value']}, {$rel['coluna']} $extraSQL FROM {$rel['tabela']} ORDER BY LENGTH({$rel['coluna']}) ASC, {$rel['coluna']} ASC LIMIT 50";
+        $sql = "SELECT DISTINCT {$rel['value']}, {$rel['coluna']} $extraSQL FROM {$rel['tabela']} ORDER BY LENGTH({$rel['coluna']}) ASC, {$rel['coluna']} ASC LIMIT 50";
         $res = Database::connects()->query($sql);
 
         $html = "";

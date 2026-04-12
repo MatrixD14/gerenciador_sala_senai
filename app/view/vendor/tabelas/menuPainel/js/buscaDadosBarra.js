@@ -8,11 +8,9 @@ document.addEventListener('input', function (e) {
             input.searchTimeout = setTimeout(() => {
                 if (typeof window.pesquisarTabela === 'function') {
                     window.pesquisarTabela(termo);
-                } else {
-                    if (window.tabelaState) {
-                        window.tabelaState.search = termo;
-                        window.initTabela(window.tabelaState.slug);
-                    }
+                } else if (window.tabelaState) {
+                    window.tabelaState.search = termo;
+                    window.initTabela(window.tabelaState.slug);
                 }
             }, 400);
         }
@@ -21,8 +19,8 @@ document.addEventListener('input', function (e) {
 function toggleSearch() {
     const wrapper = document.getElementById('search-wrapper');
     const input = document.getElementById('search');
-    wrapper.classList.toggle('escondido');
     if (!wrapper || !input) return;
+    wrapper.classList.toggle('escondido');
     if (!wrapper.classList.contains('escondido')) {
         input.focus();
     } else {

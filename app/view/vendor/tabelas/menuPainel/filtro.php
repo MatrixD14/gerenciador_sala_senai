@@ -14,7 +14,8 @@ try {
 }
 ?>
 <div class="painel-wrapper">
-    <form action="/<?= $table ?>" method="post" id="formFiltro" class="Painel" onsubmit="filtraTabele(e)">
+    <form action="/<?= $table ?>" method="post" id="formFiltro" class="Painel">
+        <!-- onsubmit="filtraTabele(e)"> -->
         <div class="top-Painel">
             <h2>Filtros:<?= ucfirst($table) ?></h2>
             <hr>
@@ -26,7 +27,7 @@ try {
         </div>
         <div class="buttons-cal-conf">
             <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
-            <button id="confirm">Confirmar</button>
+            <button type="button" id="confirm" onclick="filtraTabele(event)">Confirmar</button>
         </div>
     </form>
 </div>

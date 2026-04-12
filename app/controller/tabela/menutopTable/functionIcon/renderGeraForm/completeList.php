@@ -3,10 +3,15 @@ class completeList
 {
     private static $inforDate;
 
-    private static function loadConfig()
+    private static function loadConfig($tipo = 'crud')
     {
-        if (!self::$inforDate)
-            self::$inforDate = require_once __DIR__ . '/../../../arrayTables.php';
+        if (!self::$inforDate) {
+            if ($tipo === 'filtro') {
+                self::$inforDate = require_once __DIR__ . '/../../../filtrotabele/arrayTabelaFiltro.php';
+            } else {
+                self::$inforDate = require_once __DIR__ . '/../../../arrayTables.php';
+            }
+        }
     }
     public static function buscaDadosList()
     {
@@ -37,8 +42,8 @@ class completeList
                 $count = 0;
 
                 while ($row = $res->fetch_assoc()) {
-                    $val = $row[$colValue];
-                    $labelPrincipal = $row[$colLabel];
+                    $val = htmlspecialchars($row[$colValue]);
+                    $labelPrincipal = htmlspecialchars($row[$colLabel]);
 
                     $labelAdicional = "";
                     $dataAttrs = "";

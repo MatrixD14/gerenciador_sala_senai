@@ -149,11 +149,11 @@ class Tabelas
     {
         $condicoes = [];
         $filtroConfigPath = __DIR__ . '/menutopTable/functionIcon/filtrotabele/arrayTabelaFiltro.php';
-
         if (!file_exists($filtroConfigPath)) return [];
 
         $allFiltros = require $filtroConfigPath;
         $colsFiltro = $allFiltros[$slug]['colunas'] ?? [];
+        // error_log("Verificando existência do arquivo de filtros em: " . json_encode($_POST));
 
         foreach ($colsFiltro as $nomeCampo => $info) {
             if ($info['type'] === 'date-range') {
@@ -180,6 +180,7 @@ class Tabelas
                         $condicoes[] = "$tabelaPrincipal.$nomeCampo = '$valorLimpo'";
                 }
             }
+            error_log("Processando campo: $nomeCampo, valor: " . ($_POST[$nomeCampo] ?? 'NULL'));
         }
 
         return $condicoes;
