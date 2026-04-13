@@ -1,23 +1,35 @@
-function obterFiltrosForm() {
+function filtraTabele(event) {
+    event.preventDefault();
+
     const form = document.getElementById('formFiltro');
-    if (!form) return {};
     const formData = new FormData(form);
+    const tabela = formData.get('tabela');
+    const urlDestino = '/' + tabela;
     const filtros = {};
-    for (let [key, value] of formData.entries()) {
-        // Ignorar campos que não são filtros (ex: 'tabela', 'order_by', 'order_direction', 'show_cols[]')
-        if (key === 'tabela' || key === 'order_by' || key === 'order_direction' || key === 'show_cols[]') {
-            if (!filtros['_meta']) filtros['_meta'] = {};
-            if (!filtros['_meta'][key]) filtros['_meta'][key] = [];
-            filtros['_meta'][key].push(value);
-            continue;
-        }
-        // Para campos com múltiplos valores (checkboxes)
-        if (filtros[key]) {
-            if (!Array.isArray(filtros[key])) filtros[key] = [filtros[key]];
-            filtros[key].push(value);
+    formData.forEach((value, key) => {
+        if (key.endsWith('[]')) {
+            const cleanKey = key.slice(0, -2);
+            if (!filtros[cleanKey]) filtros[cleanKey] = [];
+            filtros[cleanKey].push(value);
         } else {
             filtros[key] = value;
         }
-    }
-    return filtros;
+    });
+
+    loadPagePost(urlDestino, formData, true);
+    setTimeout(() => {
+        const container = document.getElementById('carregaTabela');
+        if (container) {
+            container.dataset.filtros = JSON.stringify(filtros);
+            container.dataset.slug = tabela;
+            if (window.tabelaState) {
+                window.tabelaState.slug = tabela;
+                window.tabelaState.filtros = filtros;
+                window.tabelaState.blocosCarregados.clear();
+                window.tabelaState.hasMoreUp = false;
+                window.tabelaState.hasMoreDown = true;
+            }
+            window.initTabela(tabela, '', filtros);
+        }
+    }, 300);
 }

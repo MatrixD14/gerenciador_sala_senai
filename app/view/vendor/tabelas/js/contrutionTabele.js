@@ -11,10 +11,10 @@ class TabelaConstrutor {
             html += `<tr data-id="${id}" class="${rowClass}">`;
 
             let colunas = [];
-            if (config.especifico && Array.isArray(config.especifico)) {
-                colunas = config.especifico;
-            } else if (config.colunas) {
+            if (config.colunas && Object.keys(config.colunas).length > 0) {
                 colunas = Object.keys(config.colunas);
+            } else if (config.especifico && Array.isArray(config.especifico)) {
+                colunas = config.especifico;
             }
 
             colunas.forEach((col, index) => {

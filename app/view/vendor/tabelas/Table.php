@@ -1,5 +1,12 @@
 <?php
 $tipoTabela = $Tabelas ?? '';
+$filtrosPost = $_POST;
+$filtrosParaOJS = $filtrosPost;
+
+unset($filtrosParaOJS['get_fragmento'], $filtrosParaOJS['tabela'], $filtrosParaOJS['slug']);
+
+$jsonFiltros = json_encode($filtrosParaOJS);
+
 if (isset($_POST['get_fragmento']) && $_POST['get_fragmento'] == '1') {
     Tabelas::geraBodyTabela2($tipoTabela);
     exit;
@@ -23,7 +30,7 @@ $Toptabela = Tabelas::geraTopTabela($tipoTabela);
                     <thead>
                         <?= $Toptabela ?>
                     </thead>
-                    <tbody class="carregaTable" id="carregaTabela" data-slug="<?= htmlspecialchars($tipoTabela) ?>">
+                    <tbody class="carregaTable" id="carregaTabela" data-slug="<?= htmlspecialchars($tipoTabela) ?>" data-filtros='<?= htmlspecialchars($jsonFiltros, ENT_QUOTES, 'UTF-8') ?>'>
                         <tr id="spacer-top" style="height: 0px; border: none;">
                             <td colspan="100%" style="padding: 0; border: none; height: 0;"></td>
                         </tr>
@@ -40,11 +47,22 @@ $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 </div>" ?>
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const slug = '<?= addslashes($tipoTabela) ?>';
+        const container = document.getElementById('carregaTabela');
+        const slug = container.getAttribute('data-slug');
+        console.log('Iniciando tabela para o slug:', slug);
+        let filtrosIniciais = {};
+        try {
+            filtrosIniciais = JSON.parse(container.getAttribute('data-filtros') || '{}');
+            console.log('Filtros carregados:', filtrosIniciais);
+        } catch (e) {
+            console.error("Erro ao ler filtros iniciais");
+        }
+
         if (slug && typeof window.initTabela === 'function') {
-            window.initTabela(slug);
+            window.initTabela(slug, '', filtrosIniciais);
         } else {
             console.error('initTabela não carregada ou slug vazio');
         }

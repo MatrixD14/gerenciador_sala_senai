@@ -1,20 +1,13 @@
 import { MARGEM_OBSERVER } from './constantsScroll.js';
 import { proximoOffsetUp, proximoOffsetDown } from './ScrollCore.js';
 export function getReferenciaScroll(container) {
-    const trs = container.children;
+    const trs = container.querySelectorAll('tr[data-id]');
+    if (trs.length === 0) return null;
+
     for (let i = 0; i < trs.length; i++) {
-        const tr = trs[i];
-        if (tr.dataset && tr.dataset.id) {
-            const rect = tr.getBoundingClientRect();
-            if (rect.top >= 0 && rect.top < window.innerHeight) {
-                return { tr, posTop: rect.top };
-            }
-        }
-    }
-    for (let i = 0; i < trs.length; i++) {
-        const tr = trs[i];
-        if (tr.dataset && tr.dataset.id) {
-            return { tr, posTop: tr.getBoundingClientRect().top };
+        const rect = trs[i].getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom > 0) {
+            return { tr: trs[i], posTop: rect.top };
         }
     }
     return null;
@@ -47,21 +40,39 @@ export function removerBloco(tabelaState, offset, scrollContainer, containerTabe
         }
     }
 }
+
 export function inseirirLinhas(container, html, direcao) {
+    const tempDiv = document.createElement('tbody');
+    tempDiv.innerHTML = html;
+    const fragmento = document.createDocumentFragment();
+
+    while (tempDiv.firstChild) {
+        fragmento.appendChild(tempDiv.firstChild);
+    }
+
+    const scrollContainer = document.querySelector('.table-center');
+    if (!scrollContainer) throw new Error('Container .table-center não encontrado');
+
     if (direcao === 'down') {
         const sentinelaBaixo = container.querySelector('.sentinel-bottom');
-        if (sentinelaBaixo) sentinelaBaixo.remove();
-        container.insertAdjacentHTML('beforeend', html);
+        if (sentinelaBaixo) {
+            container.insertBefore(fragmento, sentinelaBaixo);
+            sentinelaBaixo.remove();
+        } else {
+            container.appendChild(fragmento);
+        }
     } else {
-        const scrollContainer = document.querySelector('.table-center');
-        if (!scrollContainer) throw new Error('Container .table-center não encontrado');
         const referencia = getReferenciaScroll(container);
+
         const sentinelaTopo = container.querySelector('.sentinel-top');
         if (sentinelaTopo) sentinelaTopo.remove();
-        container.insertAdjacentHTML('afterbegin', html);
+
+        container.insertBefore(fragmento, container.firstChild);
+
         ajustarScrollAposInsercao(scrollContainer, referencia);
     }
 }
+
 export function criarSentinelas(tabelaState) {
     const container = document.getElementById('carregaTabela');
     if (!container) return;
@@ -94,15 +105,15 @@ export function configurarObserver(tabelaState, callbackCarregarBloco) {
         tabelaState.observer.disconnect();
         tabelaState.observer = null;
     }
-
+    if (tabelaState.isLoading || tabelaState.isSearching) return;
     const sentinelas = document.querySelectorAll('.sentinel-top, .sentinel-bottom');
     if (sentinelas.length === 0) return;
 
     const observer = new IntersectionObserver(
         async (entries) => {
-            if (tabelaState.isLoading || tabelaState.isSearching) return;
             for (const entry of entries) {
-                if (!entry.isIntersecting) continue;
+                if (!entry.isIntersecting || !entry.target.isConnected) continue;
+                if (tabelaState.isLoading || tabelaState.isSearching) continue;
                 const sentinel = entry.target;
                 const offset = parseInt(sentinel.dataset.offset);
                 if (isNaN(offset)) continue;
@@ -121,4 +132,10 @@ export function configurarObserver(tabelaState, callbackCarregarBloco) {
 
     sentinelas.forEach((s) => observer.observe(s));
     tabelaState.observer = observer;
+}
+export function salvarFiltrosNoDOM(filtros) {
+    const container = document.getElementById('carregaTabela');
+    if (container) {
+        container.dataset.filtros = JSON.stringify(filtros);
+    }
 }

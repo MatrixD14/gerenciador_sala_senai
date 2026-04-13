@@ -14,6 +14,7 @@ if (typeof window.tabelaState !== 'undefined') {
         hasMoreDown: true,
         observer: null,
         search: '',
+        filtros: {},
         blocosCarregados: new Set(),
         ultimoBlocoCompleto: true,
         isSearching: false,

@@ -72,17 +72,30 @@ class Tabelas
         self::loadConfig();
         $config = self::$inforDate[$slug] ?? null;
         if (!$config) return json_encode(['erro' => 'Config não encontrada']);
+        $configExibicao = $config;
+        $colunasSolicitadas = $_POST['show_cols'] ?? null;
+        $colunasConfiguradas = $config['colunas'] ?? null;
+
+        if ($colunasSolicitadas && is_array($colunasSolicitadas) && $colunasConfiguradas) {
+            $novasColunas = [];
+            foreach ($colunasSolicitadas as $colNome) {
+                if (isset($colunasConfiguradas[$colNome])) {
+                    $novasColunas[$colNome] = $colunasConfiguradas[$colNome];
+                }
+            }
+            $configExibicao['colunas'] = $novasColunas;
+        }
 
         $offset = isset($_POST['offset']) ? (int)$_POST['offset'] : 0;
         $limit = 50;
 
-        $sql = self::searchTabela($slug, $config, $UserLogin, $limit, $offset);
+        $sql = self::searchTabela($slug, $configExibicao, $UserLogin, $limit, $offset);
         $result = Tabelas::list_All($sql);
 
         $dados = [];
         while ($linha = $result->fetch_assoc()) {
             // O PHP só faz o cálculo lógico, sem HTML
-            $linha['is_locked'] = self::checkIsLocked($linha, $config);
+            $linha['is_locked'] = self::checkIsLocked($linha, $configExibicao);
             $dados[] = $linha;
         }
         $has_more = ($result->num_rows === $limit);
@@ -91,8 +104,8 @@ class Tabelas
         echo json_encode([
             'dados' => $dados,
             'config' => [
-                'especifico' => $config['especifico'] ?? null,
-                'colunas' => $config['colunas'] ?? null
+                'especifico' => $configExibicao['especifico'] ?? null,
+                'colunas' => $configExibicao['colunas'] ?? null
             ],
             'offset' => $offset,
             'limit' => $limit,
@@ -153,7 +166,8 @@ class Tabelas
 
         $allFiltros = require $filtroConfigPath;
         $colsFiltro = $allFiltros[$slug]['colunas'] ?? [];
-        // error_log("Verificando existência do arquivo de filtros em: " . json_encode($_POST));
+        error_log("Verificando existência do arquivo de filtros em: " . json_encode($_POST));
+        error_log("POST RECEBIDO: " . print_r($_POST, true));
 
         foreach ($colsFiltro as $nomeCampo => $info) {
             if ($info['type'] === 'date-range') {

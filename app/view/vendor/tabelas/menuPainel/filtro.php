@@ -15,7 +15,6 @@ try {
 ?>
 <div class="painel-wrapper">
     <form action="/<?= $table ?>" method="post" id="formFiltro" class="Painel">
-        <!-- onsubmit="filtraTabele(e)"> -->
         <div class="top-Painel">
             <h2>Filtros:<?= ucfirst($table) ?></h2>
             <hr>

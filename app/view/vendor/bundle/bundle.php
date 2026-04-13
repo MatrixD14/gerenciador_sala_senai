@@ -9,7 +9,6 @@
 <script src="/app/view/vendor/agendamentos/js/envioDadosPostCalendario.js"></script>
 <script src="/app/view/vendor/tabelas/js/contrutionTabele.js"></script>
 <script type="module" src="/app/view/vendor/tabelas/js/scrollInfinity/constantsScroll.js"></script>
-<script type="module" src="/app/view/vendor/tabelas/js/scrollInfinity/utilsScroll.js"></script>
 <script type="module" src="/app/view/vendor/tabelas/js/scrollInfinity/initScrollInfinity.js"></script>
 <script src="/app/view/vendor/tabelas/js/geraMaisList.js"></script>
 <script src="/app/view/vendor/agendamentos/js/revindicarSelect.js"></script>

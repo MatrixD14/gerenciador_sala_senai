@@ -2,20 +2,14 @@ import { TAMANHO_PAGINA, LIMITE_LINHAS } from './constantsScroll.js';
 import { removerBloco, inseirirLinhas, criarSentinelas, configurarObserver } from './domScroll.js';
 
 export function gerenciarLimite(tabelaState, direcao, scrollContainer, containerTabela) {
-    if (!containerTabela) return;
-    const linhas = containerTabela.querySelectorAll('tr[data-id]');
-    if (linhas.length <= LIMITE_LINHAS) return;
-
-    const excedente = linhas.length - LIMITE_LINHAS;
-    const blocosRemover = Math.ceil(excedente / TAMANHO_PAGINA);
+    if (!containerTabela || !scrollContainer) return;
+    const blocosAtuais = tabelaState.blocosCarregados.size;
+    const limiteDeBlocos = Math.floor(LIMITE_LINHAS / TAMANHO_PAGINA);
+    if (blocosAtuais <= limiteDeBlocos) return;
+    const blocosParaRemover = blocosAtuais - limiteDeBlocos;
     const offsetsOrdenados = Array.from(tabelaState.blocosCarregados).sort((a, b) => a - b);
-
-    let remover = [];
-    if (direcao === 'down') {
-        remover = offsetsOrdenados.slice(0, blocosRemover);
-    } else {
-        remover = offsetsOrdenados.slice(-blocosRemover);
-    }
+    let remover =
+        direcao === 'down' ? offsetsOrdenados.slice(0, blocosParaRemover) : offsetsOrdenados.slice(-blocosParaRemover);
 
     for (const offset of remover) {
         removerBloco(tabelaState, offset, scrollContainer, containerTabela);
@@ -101,15 +95,38 @@ export async function buscarDados(tabelaState, offset) {
     if (tabelaState.search) {
         formData.append('search', tabelaState.search);
     }
+    let filtros = tabelaState.filtros;
+    if (!filtros || Object.keys(filtros).length === 0) {
+        const container = document.getElementById('carregaTabela');
+        if (container && container.dataset.filtros) {
+            try {
+                filtros = JSON.parse(container.dataset.filtros);
+                tabelaState.filtros = filtros;
+            } catch (e) {}
+        }
+    }
 
-    const response = await fetch(window.location.href, {
+    for (const [key, value] of Object.entries(filtros)) {
+        if (Array.isArray(value)) {
+            value.forEach((v) => formData.append(`${key}[]`, v));
+        } else if (value !== undefined && value !== '') {
+            formData.append(key, value);
+        }
+    }
+    const urlBase = '/' + tabelaState.slug;
+    const response = await fetch(urlBase, {
         method: 'POST',
         body: formData,
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
     });
 
-    const json = await response.json();
-    if (json.erro) throw new Error(json.erro);
+    const text = await response.text();
+    if (text.trim().startsWith('<')) {
+        throw new Error('Servidor retornou HTML em vez de JSON. Verifique o backend.');
+    }
+    const json = JSON.parse(text);
+    // const json = await response.json();
+    // if (json.erro) throw new Error(json.erro);
 
     return json;
 }
@@ -155,10 +172,10 @@ export async function carregarBloco(tabelaState, offset, direcao) {
         finalizarLoading(tabelaState);
 
         if (tabelaState.pendingSearch !== null) {
-            const term = tabelaState.pendingSearch;
+            const pending = tabelaState.pendingSearch;
             tabelaState.pendingSearch = null;
-            window.pesquisarTabela(term);
-            return;
+            if (pending.type === 'search') window.pesquisarTabela(pending.termo);
+            else if (pending.type === 'filter') window.aplicarFiltros(pending.filtros);
         }
 
         const scrollContainer = document.querySelector('.table-center');
@@ -168,4 +185,15 @@ export async function carregarBloco(tabelaState, offset, direcao) {
             configurarObserver(tabelaState, carregarBloco);
         });
     }
+}
+export function carregarFiltrosDoDOM() {
+    const container = document.getElementById('carregaTabela');
+    if (container && container.dataset.filtros) {
+        try {
+            return JSON.parse(container.dataset.filtros);
+        } catch (e) {
+            return {};
+        }
+    }
+    return {};
 }
