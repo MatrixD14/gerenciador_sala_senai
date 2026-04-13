@@ -33,9 +33,7 @@ function executarAcao(acao, tabela, id, name) {
             // -webkit-overflow-scrolling: touch;
             break;
         case 'reload':
-            const urlOriginal = '/' + tabela;
-            loadPagePost(urlOriginal, null, true);
-            // location.reload();
+            location.reload();
             break;
     }
 }

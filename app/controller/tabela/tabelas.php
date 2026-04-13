@@ -147,8 +147,9 @@ class Tabelas
 
     private static function getCleanColumnName($nome): string
     {
-        if (strpos($nome, ' as ') !== false) {
-            $parts = explode(' as ', $nome);
+        $nomeLower = strtolower($nome);
+        if (strpos($nomeLower, ' as ') !== false) {
+            $parts = explode('/\s+as|s+', $nome);
             return trim(end($parts));
         }
         if (strpos($nome, '.') !== false) {

@@ -2,24 +2,24 @@
 return [
     "agendamentos" => [
         "searchable" => [
-            "usuario.name",
-            "sala.name",
+            "usuario.nome",
+            "sala.nome",
             "sala.bloco",
             "agendar_sala.periodo"
         ]
     ],
     "salas" => [
-        "searchable" => ["name", "bloco", "descricao"]
+        "searchable" => ["nome", "bloco", "descricao"]
     ],
 
     "usuarios" => [
-        "searchable" => ["name", "email", "privilegio"]
+        "searchable" => ["nome", "email", "privilegio"]
     ],
     "menssagem" => [
         "searchable" => [
-            "user1.name",
-            "user2.name",
-            "sala.name",
+            "user1.nome",
+            "user2.nome",
+            "sala.nome",
             "agendar_sala.periodo"
         ]
     ],

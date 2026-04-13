@@ -1,29 +1,50 @@
+//drop database gerenciadorSala;
 create database gerenciadorSala;
 use gerenciadorSala;
 create table usuario(
     id int auto_increment primary KEY,
-    name varchar(100) not null,
+    nome varchar(100) not null,
     email varchar(255) not null unique,
     senha varchar(255) not null,
     privilegio varchar(100) not null
     );
 create table sala(
     id int auto_increment primary key,
-    name varchar(100) not null,
+    nome varchar(100) not null,
     bloco varchar(50) not null,
     descricao varchar(100) not null,
-    unique(name,bloco)
+    unique(nome,bloco)
     );
+create table cursos(
+     id int auto_increment primary key,
+     nome varchar(200),
+     descricao varchar(255),
+     unique(nome)
+);
+create table turmas(
+     id int auto_increment primary key,
+     nome varchar(200),
+     idCurso int,
+     semestre varchar(100),
+     turno ENUM('manha', 'tarde', 'noite') not null,
+     quantidade int,
+     foreign key(idCurso) references cursos(id)
+);
+
 create table agendar_sala(
     id int auto_increment primary key,
     dia date,
-    periodo varchar(100) not null,
+    periodo ENUM('manha', 'tarde', 'noite') not null,
     idUser int,
     idSala int,
+    idTurma int,
     foreign key(idSala) references sala(id),
     foreign key(idUser) references usuario(id),
+    foreign key(idTurma) references turmas(id),
     unique (dia, periodo, idSala)
     );
+
+
 create table recuperacao_token(
     id int auto_increment primary key,
     idUser int not null,

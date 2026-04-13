@@ -17,6 +17,8 @@ return [
                 on agendar_sala.idUser = usuario.id
             inner join sala 
                 on agendar_sala.idSala = sala.id
+            inner join turmas 
+                on agendar_sala.idTurma = turmas.id
         ",
         "colunas" => [
             "id" => [
@@ -28,8 +30,16 @@ return [
                 'type' => 'select',
                 'relation' => [
                     "tabela" => "usuario",
-                    "coluna" => "name",
+                    "coluna" => "nome",
                     "value" => "id"
+                ]
+            ],
+            'turmas' => [
+                'type' => 'select',
+                'relation' => [
+                    'tabela' => 'turmas',
+                    'coluna' => 'nome',
+                    'value' => 'id'
                 ]
             ],
             "sala"    => [
@@ -37,7 +47,7 @@ return [
                 'type' => 'select',
                 'relation' => [
                     "tabela" => "sala",
-                    "coluna" => "name",
+                    "coluna" => "nome",
                     "value" => "id"
                 ]
             ],
@@ -57,12 +67,12 @@ return [
             ],
 
         ],
-        "especifico" => ["agendar_sala.id", "usuario.name as usuario", "sala.name as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.periodo"]
+        "especifico" => ["agendar_sala.id", "usuario.nome as usuario", "turmas.nome as turmas", "sala.nome as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.periodo"]
     ],
     "usuarios" => [
         "tabela" => "usuario",
         "owner_column" => "id",
-        'no-repeat' => ["name", "email"],
+        'no-repeat' => ["nome", "email"],
         "dependencias" => [
             [
                 "tabela" => "agendar_sala",
@@ -73,14 +83,14 @@ return [
         ],
         "colunas" => [
             "id" => ['type' => 'number', 'primary' => true],
-            "name" => ['type' => 'text'],
+            "nome" => ['type' => 'text'],
             "email" => ['type' => 'email',],
             'privilegio' => ['type' => 'select', 'options' => ['normal', 'admin']]
         ]
     ],
     "salas" => [
         "tabela" => "sala",
-        'no-repeat' => ["name", "bloco"],
+        'no-repeat' => ["nome", "bloco"],
         "dependencias" => [
             [
                 "tabela" => "agendar_sala",
@@ -89,7 +99,7 @@ return [
                 "mensagem" => "agendamentos"
             ]
         ],
-        "colunas" => ["id" => ['type' => 'number', 'primary' => true], "name" => ['type' => 'text'], "bloco" => ['type' => 'text'], "descricao" => ['type' => 'text']]
+        "colunas" => ["id" => ['type' => 'number', 'primary' => true], "nome" => ['type' => 'text'], "bloco" => ['type' => 'text'], "descricao" => ['type' => 'text']]
     ],
     "menssagem" => [
         "tabela" => 'revindicados',
@@ -117,14 +127,13 @@ return [
             "id" => [
                 "type" => "number",
                 "primary" => true,
-                "virtual" => true
             ],
             "remetente" => [
                 "maskname" => "id_remetente",
                 "type" => "readonly",
                 "relation" => [
                     "tabela" => "usuario",
-                    "coluna" => "name",
+                    "coluna" => "nome",
                     "value" => 'id',
                 ]
 
@@ -134,11 +143,11 @@ return [
                 'type' => "readonly",
                 "relation" => [
                     "tabela" => "usuario",
-                    "coluna" => "name",
+                    "coluna" => "nome",
                     "value" => 'id',
                     "tableConnection" => [
                         ["tabela" => "agendar_sala", 'buscar' => "idUser", "onde" => "id"],
-                        ["tabela" => "usuario", "buscar" => "name", "onde" => "id"]
+                        ["tabela" => "usuario", "buscar" => "nome", "onde" => "id"]
                     ]
                 ]
             ],
@@ -147,11 +156,11 @@ return [
                 'type' => "readonly",
                 "relation" => [
                     "tabela" => "sala",
-                    "coluna" => "name",
+                    "coluna" => "nome",
                     "value" => 'id',
                     "tableConnection" => [
                         ["tabela" => "agendar_sala", 'buscar' => "idSala", "onde" => "id"],
-                        ["tabela" => "sala", "buscar" => "name", "onde" => "id"]
+                        ["tabela" => "sala", "buscar" => "nome", "onde" => "id"]
                     ]
                 ]
             ],
@@ -160,7 +169,7 @@ return [
                 'type' => "readonly",
                 "relation" => [
                     "tabela" => "sala",
-                    "coluna" => "name",
+                    "coluna" => "nome",
                     "value" => 'id',
                     "tableConnection" => [
                         ["tabela" => "agendar_sala", 'buscar' => "periodo", "onde" => "id"],
@@ -177,9 +186,9 @@ return [
             'revindicados.id',
             'revindicados.status as reivindicado',
             "revindicados.data_envio as Enviado",
-            "user1.name as rementente",
-            "user2.name as destinatario",
-            "sala.name as sala",
+            "user1.nome as rementente",
+            "user2.nome as destinatario",
+            "sala.nome as sala",
             "agendar_sala.dia as agendado",
             "agendar_sala.periodo",
             "revindicados.mensagem"

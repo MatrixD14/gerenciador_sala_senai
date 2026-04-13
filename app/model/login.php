@@ -4,7 +4,7 @@ class User
     public static function SelectUsercheck(string $campo, string $valor)
     {
         $connect = Database::connects();
-        $permitidos = ['name', 'email'];
+        $permitidos = ['nome', 'email'];
         if (!in_array($campo, $permitidos)) {
             die("Campo inválido");
         }
@@ -18,21 +18,21 @@ class User
     }
     public static function checkPrivilegio(string $user): string
     {
-        $result = User::SelectUsercheck("name", $user);
+        $result = User::SelectUsercheck("nome", $user);
         if ($result->num_rows != 1) return  "normal";
         $data = $result->fetch_assoc();
         return $data["privilegio"];
     }
     public static function checkPassword(string $user, string $pass): bool
     {
-        $result = User::SelectUsercheck("name", $user);
+        $result = User::SelectUsercheck("nome", $user);
         if ($result->num_rows != 1) return false;
         $data = $result->fetch_assoc();
         return password_verify($pass, $data["senha"]);
     }
     public static function userID(string $user): int
     {
-        $result = User::SelectUsercheck("name", $user);
+        $result = User::SelectUsercheck("nome", $user);
         if ($result->num_rows != 1) return 0;
         $data = $result->fetch_assoc();
         return $data["id"];
@@ -41,7 +41,7 @@ class User
     {
         $connect = Database::connects();
         $password = password_hash($pass, PASSWORD_DEFAULT);
-        $sql = "insert into usuario(name,email,senha,privilegio)values(?,?,?,?)";
+        $sql = "insert into usuario(nome,email,senha,privilegio)values(?,?,?,?)";
         $tmg = $connect->prepare($sql);
         $priv = 'normal';
         $tmg->bind_param("ssss", $user, $email, $password, $priv);

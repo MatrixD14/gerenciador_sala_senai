@@ -47,24 +47,3 @@ $Toptabela = Tabelas::geraTopTabela($tipoTabela);
 </div>" ?>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('carregaTabela');
-        const slug = container.getAttribute('data-slug');
-        console.log('Iniciando tabela para o slug:', slug);
-        let filtrosIniciais = {};
-        try {
-            filtrosIniciais = JSON.parse(container.getAttribute('data-filtros') || '{}');
-            console.log('Filtros carregados:', filtrosIniciais);
-        } catch (e) {
-            console.error("Erro ao ler filtros iniciais");
-        }
-
-        if (slug && typeof window.initTabela === 'function') {
-            window.initTabela(slug, '', filtrosIniciais);
-        } else {
-            console.error('initTabela não carregada ou slug vazio');
-        }
-    });
-</script>

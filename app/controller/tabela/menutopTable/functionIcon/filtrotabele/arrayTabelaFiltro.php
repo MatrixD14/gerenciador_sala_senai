@@ -2,7 +2,7 @@
    <?php
     return [
         "agendamentos" => [
-            "orderna" => ['bloco', "dia", "usuario", "sala", "periodo"],
+            "orderna" => ['bloco', "dia", "usuario", "sala", "periodo", 'turmas'],
             "colunas" => [
                 "idSala" => [
                     "label" => "bloco",
@@ -23,10 +23,10 @@
                     "type" => "date-range"
                 ]
             ],
-            "colunas_visiveis" => ["id", "usuario", "sala", "bloco", "dia", "periodo"]
+            "colunas_visiveis" => ["id", "usuario", 'turmas', "sala", "bloco", "dia", "periodo"]
         ],
         "salas" => [
-            "orderna" => ["name", 'bloco'],
+            "orderna" => ["nome", 'bloco'],
             "colunas" => [
                 "bloco" => [
                     "label" => "Bloco",
@@ -38,10 +38,10 @@
                     ]
                 ]
             ],
-            "colunas_visiveis" => ["id", 'name', "bloco", "descricao"]
+            "colunas_visiveis" => ["id", 'nome', "bloco", "descricao"]
         ],
         "usuarios" => [
-            "orderna" => ["name", 'email'],
+            "orderna" => ["nome", 'email'],
             "colunas" => [
                 "privilegio" => [
                     "label" => "privilegio",
@@ -49,7 +49,7 @@
                     "options" => ["admin", "normal"],
                 ]
             ],
-            "colunas_visiveis" => ["id", 'name', "email", "privilegio"]
+            "colunas_visiveis" => ["id", 'nome', "email", "privilegio"]
         ],
         "menssagem" => [
             "orderna" => ["remetente", "destinatario", 'sala'],

@@ -64,7 +64,7 @@ class AuthLogin
             else if (strlen($pass) == 0) self::log_error("preenchao campo senha");
             else if (strlen($email) == 0) self::log_error("preenchao campo email");
             else {
-                if (User::SelectUsercheck("name", $user)->num_rows > 0 || User::SelectUsercheck("email", $email)->num_rows > 0) {
+                if (User::SelectUsercheck("nome", $user)->num_rows > 0 || User::SelectUsercheck("email", $email)->num_rows > 0) {
                     $_SESSION["log_create"] = "usuario ja existe";
                     header('Location: /cadastrar');
                     exit;

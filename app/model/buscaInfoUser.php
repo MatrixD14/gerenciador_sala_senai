@@ -31,7 +31,7 @@ class BuscaInfoUser
     public static function buscaIdName($id): ?array
     {
         $db = Database::connects();
-        $stmtUser = $db->prepare("SELECT name FROM usuario WHERE id = ?");
+        $stmtUser = $db->prepare("SELECT nome FROM usuario WHERE id = ?");
         $stmtUser->bind_param("i", $id);
         $stmtUser->execute();
         $resUser = $stmtUser->get_result()->fetch_assoc();
@@ -40,7 +40,7 @@ class BuscaInfoUser
     public static function buscaDonoAgendamento($id_agendamento): ?array
     {
         $db = Database::connects();
-        $sql = "SELECT s.id as usuario_id,s.email, s.name as usuario, sl.name as sala
+        $sql = "SELECT s.id as usuario_id,s.email, s.nome as usuario, sl.nome as sala
             FROM usuario s
             INNER JOIN agendar_sala a ON a.idUser = s.id 
             INNER JOIN sala sl ON a.idSala = sl.id 

@@ -18,7 +18,7 @@ class Delete
         $connect = Database::connects();
         $table = $_POST["table"];
         $id = $_POST["id"];
-        $name = $_POST["name"];
+        $name = $_POST["nome"];
         if (!isset(self::$inforDate[$table])) {
             Tabelas::log_error_table("Tabela não encontrada");
             header("Location: /$table");
