@@ -62,7 +62,7 @@ if ($uri === '/cadastro') {
     exit;
 }
 
-$rotasAdmin = ['/usuarios', '/salas', '/agendamentos'];
+$rotasAdmin = ['/usuarios', '/salas', '/agendamentos', '/cursos', '/turmas'];
 $rotaAcao = ['/delete', '/editar', '/insert', '/confirma', "/filtro"];
 $HomeGenciador = __DIR__ . '/app/view/vendor/layout/main.php';
 if ($uri === "/gerenciado_de_Sala") {
