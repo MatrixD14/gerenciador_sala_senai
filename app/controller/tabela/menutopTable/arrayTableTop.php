@@ -21,7 +21,16 @@ return [
             'delete',
             "filtro"
         ],
-        "normal" => [
+        "professor" => [
+            'view',
+            'agenda',
+            'reload',
+            "edite",
+            'revindicar',
+            'delete',
+            "filtro"
+        ],
+        "aluno" => [
             'view',
             'agenda',
             'reload',
@@ -40,7 +49,8 @@ return [
             'delete',
             "filtro"
         ],
-        "normal" => []
+
+        "aluno" => []
     ],
     "salas" => [
         "admin" => [
@@ -51,7 +61,12 @@ return [
             'delete',
             "filtro"
         ],
-        "normal" => [
+        "professor" => [
+            'view',
+            'reload',
+            "filtro"
+        ],
+        "aluno" => [
             'view',
             'reload',
             "filtro"
@@ -61,14 +76,59 @@ return [
         "admin" => [
             'view',
             'reload',
-            "confirma",
             'delete',
             "filtro"
         ],
-        "normal" => [
+        "professor" => [
             'view',
             'reload',
             "confirma",
+            "filtro"
+        ],
+        "aluno" => [
+            'view',
+            'reload',
+            "confirma",
+            "filtro"
+        ]
+    ],
+    'cursos' => [
+        "admin" => [
+            'view',
+            'add',
+            'reload',
+            "edite",
+            'delete',
+            "filtro"
+        ],
+        "professor" => [
+            'view',
+            'reload',
+            "filtro"
+        ],
+        "aluno" => [
+            'view',
+            'reload',
+            "filtro"
+        ]
+    ],
+    'turmas' => [
+        "admin" => [
+            'view',
+            'add',
+            'reload',
+            "edite",
+            'delete',
+            "filtro"
+        ],
+        "professor" => [
+            'view',
+            'reload',
+            "filtro"
+        ],
+        "aluno" => [
+            'view',
+            'reload',
             "filtro"
         ]
     ]

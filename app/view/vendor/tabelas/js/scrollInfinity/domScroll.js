@@ -76,7 +76,7 @@ export function inseirirLinhas(container, html, direcao) {
 export function criarSentinelas(tabelaState) {
     const container = document.getElementById('carregaTabela');
     if (!container) return;
-    container.querySelectorAll('.sentinel-top, .sentinel-bottom').forEach((el) => el.remove());
+    container.querySelectorAll('.sentinel-top, .sentinel-bottom, .sentinel-end').forEach((el) => el.remove());
 
     const nextUp = proximoOffsetUp(tabelaState);
     if (nextUp !== null && !tabelaState.isLoading && !tabelaState.isSearching) {
@@ -95,6 +95,7 @@ export function criarSentinelas(tabelaState) {
         container.appendChild(bottomSentinel);
     } else if (!tabelaState.hasMoreDown && !tabelaState.isLoading && tabelaState.blocosCarregados.size > 0) {
         const fimMsg = document.createElement('tr');
+        fimMsg.className = 'sentinel-end';
         fimMsg.innerHTML = '<td colspan="100%" style="text-align:center; color:#aaa;">Fim dos resultados</td>';
         container.appendChild(fimMsg);
     }

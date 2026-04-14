@@ -43,7 +43,7 @@ class User
         $password = password_hash($pass, PASSWORD_DEFAULT);
         $sql = "insert into usuario(nome,email,senha,privilegio)values(?,?,?,?)";
         $tmg = $connect->prepare($sql);
-        $priv = 'normal';
+        $priv = 'aluno';
         $tmg->bind_param("ssss", $user, $email, $password, $priv);
         $result = $tmg->execute();
         $tmg->close();

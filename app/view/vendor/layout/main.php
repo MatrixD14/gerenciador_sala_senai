@@ -29,13 +29,21 @@ if (!$isAjax) {
 
     <body>
     <?php
+
+    if ($_SESSION['privilegio'] === 'admin') {
+        $urls = 'Top_admin';
+    } elseif ($_SESSION['privilegio'] === 'professor') {
+        $urls = 'Top_professor';
+    } else {
+        $urls = 'Top_aluno';
+    }
     require_once __DIR__ . '/../../../../icon/newiconbase.html';
-    require_once __DIR__ . '/../../../../app/view/vendor/layout/' . (($_SESSION['privilegio'] === 'admin') ? 'Top_admin' : 'Top_public') . '.php';
+    require_once __DIR__ . '/../../../../app/view/vendor/layout/' . $urls . '.php';
 } ?>
     <main class="content">
         <?php
         $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-        $rotasValidas = ['/usuarios', '/salas', '/agendamentos'];
+        $rotasValidas = ['/usuarios', '/salas', '/agendamentos', '/cursos', '/turmas'];
 
         if (in_array($uri, $rotasValidas)) {
             require __DIR__ . "/../tabelas/Table.php";

@@ -5,21 +5,28 @@ document.addEventListener('contentUpdated', function () {
     if (!tbody) return;
     const slug = tbody.dataset.slug;
     if (!slug) return;
-    if (window.tabelaState && window.tabelaState.slug !== slug) {
-        console.log('Slug alterado, resetando tabelaState');
-        window.tabelaState.blocosCarregados.clear();
-        window.tabelaState.hasMoreUp = false;
-        window.tabelaState.hasMoreDown = true;
-        window.tabelaState.slug = slug;
-    }
+
     clearTimeout(timeoutContentUpdated);
     timeoutContentUpdated = setTimeout(() => {
+        if (window.tabelaState && window.tabelaState.slug !== slug) {
+            console.log('Slug alterado, resetando tabelaState');
+            window.tabelaState.blocosCarregados.clear();
+            window.tabelaState.hasMoreUp = false;
+            window.tabelaState.hasMoreDown = true;
+            window.tabelaState.slug = slug;
+        }
+
         if (window.tabelaState && window.tabelaState.slug === slug && window.tabelaState.blocosCarregados.has(0)) {
             return;
         }
         ultimoSlugProcessado = slug;
         const currentSearch = window.tabelaState ? window.tabelaState.search : '';
         const filtros = tbody.dataset.filtros ? JSON.parse(tbody.dataset.filtros) : {};
+
+        if (window.tabelaState && window.tabelaState.observer) {
+            window.tabelaState.observer.disconnect();
+            window.tabelaState.observer = null;
+        }
         window.initTabela(slug, currentSearch, filtros);
     }, 100);
 });

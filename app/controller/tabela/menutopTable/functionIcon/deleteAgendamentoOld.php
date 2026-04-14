@@ -16,7 +16,7 @@ class TabelaCleanup
         date_default_timezone_set('America/Sao_Paulo');
         $db = Database::connects();
         $dataCorte = date('Y-m-d', strtotime("-$dias days"));
-        $stmt = $db->prepare("delete from revindicados WHERE data_envio < ?");
+        $stmt = $db->prepare("delete from requisicoes_troca WHERE data_envio < ?");
         $stmt->bind_param("s", $dataCorte);
         $stmt->execute();
         $stmt->close();

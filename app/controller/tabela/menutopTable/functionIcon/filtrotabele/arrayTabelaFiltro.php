@@ -66,4 +66,14 @@
             ],
             "colunas_visiveis" => ["id", 'remetente', "destinatario", "sala", "periodo", "menssagem"]
         ],
+        'cursos' => [
+            'orderna' => ['nome'],
+            'colunas' => [],
+            'colunas_visiveis' => ['id', 'nome', 'descricão']
+        ],
+        'turmas' => [
+            'orderna' => ['nome', 'semestre', 'turno', 'alunos'],
+            'colunas' => [],
+            'colunas_visiveis' => ['id', 'turma', 'curso',  'semestre', 'turno', 'alunos']
+        ]
     ];

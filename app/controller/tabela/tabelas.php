@@ -105,7 +105,8 @@ class Tabelas
             'dados' => $dados,
             'config' => [
                 'especifico' => $configExibicao['especifico'] ?? null,
-                'colunas' => $configExibicao['colunas'] ?? null
+                'colunas' => $configExibicao['colunas'] ?? null,
+                'colunas_visiveis' => $_POST['show_cols'] ?? null
             ],
             'offset' => $offset,
             'limit' => $limit,
@@ -149,7 +150,7 @@ class Tabelas
     {
         $nomeLower = strtolower($nome);
         if (strpos($nomeLower, ' as ') !== false) {
-            $parts = explode('/\s+as|s+', $nome);
+            $parts = explode(' as ', $nome);
             return trim(end($parts));
         }
         if (strpos($nome, '.') !== false) {
@@ -159,7 +160,34 @@ class Tabelas
         return $nome;
     }
 
-    private static function applyCustomFilters($slug, $db, $tabelaPrincipal): array
+    private static function getSelectAliasMap($config): array
+    {
+        $map = [];
+        if (!empty($config['especifico'])) {
+            foreach ($config['especifico'] as $expr) {
+                // Extrai o alias: "tabela.coluna as alias" ou "tabela.coluna"
+                if (stripos($expr, ' as ') !== false) {
+                    $parts = preg_split('/\s+as\s+/i', $expr);
+                    $alias = trim(end($parts));
+                    $expression = trim($parts[0]);
+                } else {
+                    // Sem alias, usa o último segmento após o ponto
+                    $alias = self::getCleanColumnName($expr);
+                    $expression = $expr;
+                }
+                $map[$alias] = $expression;
+            }
+        } else {
+            $tabelaPrincipal = $config['tabela'];
+            foreach ($config['colunas'] as $col => $info) {
+                $colunaReal = $info['maskname'] ?? $col;
+                $map[$col] = "$tabelaPrincipal.$colunaReal";
+            }
+        }
+        return $map;
+    }
+
+    private static function applyCustomFilters($slug, $db, $tabelaPrincipal, $aliasMap): array
     {
         $condicoes = [];
         $filtroConfigPath = __DIR__ . '/menutopTable/functionIcon/filtrotabele/arrayTabelaFiltro.php';
@@ -171,17 +199,26 @@ class Tabelas
         error_log("POST RECEBIDO: " . print_r($_POST, true));
 
         foreach ($colsFiltro as $nomeCampo => $info) {
+            $expressaoSQL = $aliasMap[$nomeCampo] ?? "$tabelaPrincipal.$nomeCampo";
             if ($info['type'] === 'date-range') {
                 $de = $_POST["{$nomeCampo}_de"] ?? null;
                 $ate = $_POST["{$nomeCampo}_ate"] ?? null;
 
+                // if (!empty($de)) {
+                //     $de = $db->real_escape_string($de);
+                //     $condicoes[] = "$tabelaPrincipal.$nomeCampo >= '$de'";
+                // }
+                // if (!empty($ate)) {
+                //     $ate = $db->real_escape_string($ate);
+                //     $condicoes[] = "$tabelaPrincipal.$nomeCampo <= '$ate'";
+                // }
                 if (!empty($de)) {
                     $de = $db->real_escape_string($de);
-                    $condicoes[] = "$tabelaPrincipal.$nomeCampo >= '$de'";
+                    $condicoes[] = "$expressaoSQL >= '$de'";
                 }
                 if (!empty($ate)) {
                     $ate = $db->real_escape_string($ate);
-                    $condicoes[] = "$tabelaPrincipal.$nomeCampo <= '$ate'";
+                    $condicoes[] = "$expressaoSQL <= '$ate'";
                 }
             } else {
                 $valor = $_POST[$nomeCampo] ?? null;
@@ -191,8 +228,10 @@ class Tabelas
                         $tabelaRelacao = $info['relation']['tabela'];
                         $colunaRelacao = $info['relation']['value'] ?? $info['relation']['coluna'];
                         $condicoes[] = "$tabelaRelacao.$colunaRelacao = '$valorLimpo'";
-                    } else
-                        $condicoes[] = "$tabelaPrincipal.$nomeCampo = '$valorLimpo'";
+                    } else {
+                        // $condicoes[] = "$tabelaPrincipal.$nomeCampo = '$valorLimpo'";
+                        $condicoes[] = "$expressaoSQL = '$valorLimpo'";
+                    }
                 }
             }
             error_log("Processando campo: $nomeCampo, valor: " . ($_POST[$nomeCampo] ?? 'NULL'));
@@ -201,7 +240,7 @@ class Tabelas
         return $condicoes;
     }
 
-    private static function applyOrder($slug, $config, $tabelaPrincipal): string
+    private static function applyOrder($slug, $config, $tabelaPrincipal, $aliasMap): string
     {
         $orderBy = $_POST['order_by'] ?? 'id';
         $direction = ($_POST['order_direction'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
@@ -210,9 +249,9 @@ class Tabelas
         $colunasPermitidas = $allFiltros[$slug]['orderna'] ?? ['id'];
 
         if (in_array($orderBy, $colunasPermitidas)) {
-            if ($orderBy === 'id')
-                $orderBy = " $tabelaPrincipal.id";
-
+            // if ($orderBy === 'id')
+            //     $orderBy = " $tabelaPrincipal.id";
+            $orderByExpr = $aliasMap[$orderBy] ?? "$tabelaPrincipal.$orderBy";
             return " ORDER BY $orderBy $direction ";
         }
 
@@ -225,14 +264,15 @@ class Tabelas
         $db = Database::connects();
         $condicoes = [];
 
-        $filtrosCustom = self::applyCustomFilters($slug, $db, $tabelaPrincipal);
+        $aliasMap = self::getSelectAliasMap($config);
+        $filtrosCustom = self::applyCustomFilters($slug, $db, $tabelaPrincipal, $aliasMap);
         if (!empty($filtrosCustom)) $condicoes = array_merge($condicoes, $filtrosCustom);
 
         $searchTerm = $_POST['search'] ?? '';
 
 
         if ($UserLogin != null && $slug === 'menssagem') {
-            $condicoes[] = "(revindicados.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
+            $condicoes[] = "(requisicoes_troca.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
 
         $searchCond = searchTabelas::buildSearch($slug, $searchTerm, $tabelaPrincipal);
@@ -242,7 +282,7 @@ class Tabelas
         }
 
         $where = !empty($condicoes) ? " WHERE " . implode(" AND ", $condicoes) : "";
-        $order = self::applyOrder($slug, $config, $tabelaPrincipal);
+        $order = self::applyOrder($slug, $config, $tabelaPrincipal, $aliasMap);
         $joins = $config["join"] ?? "";
 
         $select = !empty($config["especifico"]) ? implode(", ", $config["especifico"]) : "$tabelaPrincipal.*";

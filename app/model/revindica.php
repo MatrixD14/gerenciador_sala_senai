@@ -10,7 +10,7 @@ class revindicando
         if (!$db) throw new Exception("Falha na conexão com o banco.");
 
         $stmt = $db->prepare("
-            INSERT INTO revindicados 
+            INSERT INTO requisicoes_troca 
             (id_remetente, id_agendamento_revindicado, mensagem) 
             VALUES (?, ?, ?)
         ");
@@ -28,7 +28,7 @@ class revindicando
     ) {
         $db = Database::connects();
         if (!$db) throw new Exception("Falha na conexão com o banco.");
-        $stmtCheck = $db->prepare("SELECT status FROM revindicados WHERE id = ?");
+        $stmtCheck = $db->prepare("SELECT status FROM requisicoes_troca WHERE id = ?");
         $stmtCheck->bind_param("i", $id);
         $stmtCheck->execute();
         $resultado = $stmtCheck->get_result()->fetch_assoc();
@@ -41,7 +41,7 @@ class revindicando
         if ($resultado['status'] === 'expiro') return "já expiro";
 
         $stmt = $db->prepare("
-        UPDATE revindicados 
+        UPDATE requisicoes_troca 
         SET status = ? 
         WHERE id = ? 
          AND status = 'pendente'

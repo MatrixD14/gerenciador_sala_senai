@@ -16,6 +16,19 @@ async function loadPagePost(url, formData = null, saveHistory = true) {
         const html = await response.text();
         mainContent.innerHTML = html;
         mainContent.style.opacity = '1';
+        if (window.tabelaState) {
+            window.tabelaState.blocosCarregados.clear();
+            window.tabelaState.hasMoreUp = false;
+            window.tabelaState.hasMoreDown = true;
+            window.tabelaState.isLoading = false;
+            window.tabelaState.isSearching = false;
+            window.tabelaState.loadingUp = false;
+            window.tabelaState.loadingDown = false;
+            if (window.tabelaState.observer) {
+                window.tabelaState.observer.disconnect();
+                window.tabelaState.observer = null;
+            }
+        }
         let dataToSave = null;
         if (formData instanceof FormData) dataToSave = Object.fromEntries(formData.entries());
         else dataToSave = formData;

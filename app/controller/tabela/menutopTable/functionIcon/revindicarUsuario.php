@@ -46,7 +46,7 @@ class revindicar
         date_default_timezone_set('America/Sao_Paulo');
         $db = Database::connects();
         $hoje = date('Y-m-d');
-        $stmtAntigos = $db->prepare("UPDATE revindicados SET status = 'expiro' WHERE DATE(data_envio) < ? AND status = 'pendente'");
+        $stmtAntigos = $db->prepare("UPDATE requisicoes_troca SET status = 'expiro' WHERE DATE(data_envio) < ? AND status = 'pendente'");
         $stmtAntigos->bind_param("s", $hoje);
         $stmtAntigos->execute();
         $stmtAntigos->close();

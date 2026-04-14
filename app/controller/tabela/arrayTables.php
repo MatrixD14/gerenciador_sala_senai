@@ -6,7 +6,7 @@ return [
         "no-repeat" => ["sala", 'bloco', "dia", 'periodo'],
         "dependencias" => [
             [
-                "tabela" => "revindicados",
+                "tabela" => "requisicoes_troca",
                 "coluna" => "id_agendamento_revindicado",
                 "link" => "menssagem",
                 "mensagem" => "reivindicações"
@@ -35,6 +35,7 @@ return [
                 ]
             ],
             'turmas' => [
+                'maskname' => 'idTurma',
                 'type' => 'select',
                 'relation' => [
                     'tabela' => 'turmas',
@@ -85,7 +86,7 @@ return [
             "id" => ['type' => 'number', 'primary' => true],
             "nome" => ['type' => 'text'],
             "email" => ['type' => 'email',],
-            'privilegio' => ['type' => 'select', 'options' => ['normal', 'admin']]
+            'privilegio' => ['type' => 'select', 'options' => ['aluno', 'professor', 'admin']]
         ]
     ],
     "salas" => [
@@ -99,10 +100,19 @@ return [
                 "mensagem" => "agendamentos"
             ]
         ],
-        "colunas" => ["id" => ['type' => 'number', 'primary' => true], "nome" => ['type' => 'text'], "bloco" => ['type' => 'text'], "descricao" => ['type' => 'text']]
+        "colunas" => [
+            "id" => [
+                'type' => 'number',
+                'primary' => true
+            ],
+            "nome" => ['type' => 'text'],
+            "bloco" => ['type' => 'text'],
+            'capacidade' => ['type' => 'number'],
+            "descricao" => ['type' => 'text']
+        ]
     ],
     "menssagem" => [
-        "tabela" => 'revindicados',
+        "tabela" => 'requisicoes_troca',
         'owner_relation' => [
             "tabela" => "agendar_sala",
             "coluna" => "id_agendamento_revindicado",
@@ -111,10 +121,10 @@ return [
         ],
         "join" => "
             INNER JOIN usuario user1
-            ON revindicados.id_remetente = user1.id
+            ON requisicoes_troca.id_remetente = user1.id
             
             INNER JOIN agendar_sala
-            ON revindicados.id_agendamento_revindicado = agendar_sala.id
+            ON requisicoes_troca.id_agendamento_revindicado = agendar_sala.id
             
             INNER JOIN usuario user2
             ON agendar_sala.idUser = user2.id
@@ -183,15 +193,94 @@ return [
 
         ],
         "especifico" => [
-            'revindicados.id',
-            'revindicados.status as reivindicado',
-            "revindicados.data_envio as Enviado",
+            'requisicoes_troca.id',
+            'requisicoes_troca.status as reivindicado',
+            "requisicoes_troca.data_envio as Enviado",
             "user1.nome as rementente",
             "user2.nome as destinatario",
             "sala.nome as sala",
             "agendar_sala.dia as agendado",
             "agendar_sala.periodo",
-            "revindicados.mensagem"
+            "requisicoes_troca.mensagem"
         ],
+    ],
+    "cursos" => [
+        'tabela' => 'cursos',
+        'colunas' => [
+            "id" => [
+                "type" => "number",
+                "primary" => true,
+            ],
+            'nome' => [
+                'type' => 'select',
+                'relation' => [
+                    'tabela' => 'cursos',
+                    'coluna' => 'nome',
+                    'value' => 'id',
+                ],
+            ],
+            'descricao' => [
+                'type' => 'text'
+            ]
+        ]
+    ],
+    'turmas' => [
+        'tabela' => 'turmas',
+        'join' => '
+            inner join cursos
+            on turmas.idCurso = cursos.id
+        ',
+        'colunas' => [
+            "id" => [
+                "type" => "number",
+                "primary" => true,
+            ],
+            'nome' => [
+                'type' => 'select',
+                'relation' => [
+                    'tabela' => 'turmas',
+                    'coluna' => 'nome',
+                    'value' => 'id',
+                ],
+            ],
+            'curso' => [
+                'maskname' => 'idCurso',
+                'type' => 'select',
+                'relation' => [
+                    'tabela' => 'cursos',
+                    'coluna' => 'nome',
+                    'value' => 'id'
+                ]
+            ],
+            'semestre' => [
+                'type' => 'text',
+            ],
+            "ano" => [
+                'type' => 'hidden',
+                'depends' => 'semestre',
+                'virtual' => true
+            ],
+            'turno' => [
+                'type' => 'select',
+                'options' => [
+                    'tarde',
+                    'noite',
+                    'manha'
+                ]
+            ],
+            'alunos' => [
+                'maskname' => 'quantidade',
+                'type' => 'number'
+            ]
+        ],
+        'especifico' => [
+            'turmas.id',
+            'turmas.nome as turma',
+            'cursos.nome as curso',
+            'turmas.ano as ano',
+            'turmas.semestre as semestre',
+            'turmas.turno as turno',
+            'turmas.quantidade as alunos'
+        ]
     ]
 ];

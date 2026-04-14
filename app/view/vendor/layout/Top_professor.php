@@ -52,11 +52,9 @@
             </p>
             <ul class=" menu-list menu-tabela-list">
                 <li><a class="effect-button-link ajax-link" href="/agendamentos">agendamentos</a></li>
-                <li><a class="effect-button-link ajax-link" href="/usuarios">usuários</a></li>
                 <li><a class="effect-button-link ajax-link" href="/salas">salas</a></li>
                 <li><a class="effect-button-link ajax-link" href="/cursos">cursos</a></li>
                 <li><a class="effect-button-link ajax-link" href="/turmas">turmas</a></li>
-
             </ul>
         </div>
         <div class="menu-sms">

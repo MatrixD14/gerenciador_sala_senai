@@ -15,21 +15,12 @@ function filtraTabele(event) {
             filtros[key] = value;
         }
     });
-
+    if (window.tabelaState) {
+        window.tabelaState.slug = tabela;
+        window.tabelaState.filtros = filtros;
+        window.tabelaState.blocosCarregados.clear();
+        window.tabelaState.hasMoreUp = false;
+        window.tabelaState.hasMoreDown = true;
+    }
     loadPagePost(urlDestino, formData, true);
-    setTimeout(() => {
-        const container = document.getElementById('carregaTabela');
-        if (container) {
-            container.dataset.filtros = JSON.stringify(filtros);
-            container.dataset.slug = tabela;
-            if (window.tabelaState) {
-                window.tabelaState.slug = tabela;
-                window.tabelaState.filtros = filtros;
-                window.tabelaState.blocosCarregados.clear();
-                window.tabelaState.hasMoreUp = false;
-                window.tabelaState.hasMoreDown = true;
-            }
-            window.initTabela(tabela, '', filtros);
-        }
-    }, 300);
 }

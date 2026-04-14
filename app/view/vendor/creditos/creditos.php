@@ -1,5 +1,5 @@
 <div class="painel-wrapper">
-    <form action="/deleted" method="post" class="Painel">
+    <form class="Painel">
         <div class="top-Painel">
             <h2>Créditos</h2>
             <hr>
