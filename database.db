@@ -1,4 +1,4 @@
-//drop database gerenciadorSala;
+#drop database gerenciadorSala;
 create database gerenciadorSala;
 use gerenciadorSala;
 create table usuario(
@@ -6,42 +6,45 @@ create table usuario(
     nome varchar(100) not null,
     email varchar(255) not null unique,
     senha varchar(255) not null,
-    privilegio varchar(100) not null
+    privilegio enum('admin','professor','aluno') not null
     );
 create table sala(
     id int auto_increment primary key,
     nome varchar(100) not null,
     bloco varchar(50) not null,
     descricao varchar(100) not null,
+    capacidade int,
     unique(nome,bloco)
     );
 create table cursos(
      id int auto_increment primary key,
-     nome varchar(200),
-     descricao varchar(255),
-     unique(nome)
+     nome varchar(200) not null unique,
+     descricao varchar(255)
 );
 create table turmas(
      id int auto_increment primary key,
-     nome varchar(200),
-     idCurso int,
-     semestre varchar(100),
+     nome varchar(200) not null,
      turno ENUM('manha', 'tarde', 'noite') not null,
-     quantidade int,
-     foreign key(idCurso) references cursos(id)
+     quantidade int not null,
+     ano int not null,
+     idCurso int not null,
+     semestre TINYINT not null check (semestre IN (1,2)),
+     periodo_curso TINYINT not null,
+     foreign key(idCurso) references cursos(id),
+     unique(nome, idCurso, ano, semestre)
 );
 
 create table agendar_sala(
     id int auto_increment primary key,
-    dia date,
-    periodo ENUM('manha', 'tarde', 'noite') not null,
-    idUser int,
-    idSala int,
-    idTurma int,
+    hora_inicio time not null,
+    hora_fim time not null,
+    dia date not null,
+    idUser int not null,
+    idSala int not null,
+    idTurma int not null,
     foreign key(idSala) references sala(id),
     foreign key(idUser) references usuario(id),
-    foreign key(idTurma) references turmas(id),
-    unique (dia, periodo, idSala)
+    foreign key(idTurma) references turmas(id)
     );
 
 
@@ -51,16 +54,20 @@ create table recuperacao_token(
     token varchar(255) not null,
     expiracao datetime not null,
     usado tinyint(1) default 0,
+    created_at  datetime default current_timestamp,
     foreign key (idUser) references usuario(id) on delete cascade,
     INDEX idx_token (token)
     );
-create table revindicados(
+create table requisicoes_troca(
     id int auto_increment primary key,
     id_remetente int,
     id_agendamento_revindicado int,
     mensagem varchar(255),
-    status varchar(50) default 'pendente',
+    status enum('pendente', 'aprovado', 'recusado') DEFAULT 'pendente',
     data_envio datetime default current_timestamp,
     foreign key (id_remetente) references usuario(id),
     foreign key (id_agendamento_revindicado) references agendar_sala(id)
 );
+create index idx_agendamento_dia on agendar_sala(dia);
+create index idx_agendamento_user on agendar_sala(idUser);
+create index idx_agendamento_sala on agendar_sala(idSala);
