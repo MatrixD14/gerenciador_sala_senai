@@ -27,6 +27,7 @@ foreach ($staticDirs as $dir) {
                 'jpg'  => 'image/jpeg',
                 'jpeg' => 'image/jpeg',
                 'gif'  => 'image/gif',
+                'pdf'  => 'image/pdf',
                 'svg'  => 'image/svg+xml',
             ];
 
@@ -61,9 +62,13 @@ if ($uri === '/cadastro') {
     AuthLogin::cadastro();
     exit;
 }
+if ($uri === '/pdf') {
+    require __DIR__ . '/fpdf/fpdf.php';
+    exit;
+}
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos', '/cursos', '/turmas'];
-$rotaAcao = ['/delete', '/editar', '/insert', '/confirma', "/filtro"];
+$rotaAcao = ['/delete', '/editar', '/insert', '/confirma', "/filtro", "/download"];
 $HomeGenciador = __DIR__ . '/app/view/vendor/layout/main.php';
 if ($uri === "/gerenciado_de_Sala") {
     AuthLogin::check();
