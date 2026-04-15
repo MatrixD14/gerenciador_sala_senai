@@ -1,3 +1,6 @@
+<?php
+$privilegio = $_SESSION['privilegio'] ?? 'Nenhum';
+?>
 <nav class="topbar"><a class="NameSite" href="/gerenciado_de_Sala">Gerenciador de Sala</a>
     <p class="menu-oculto"><svg class="menu-icon">
             <use href="#icon-menu"></use>
@@ -18,7 +21,7 @@
                         </svg>
                         <?php echo $_SESSION['nome'] ?? 'Login'; ?></p>
                     <p class="menu-privilegio">
-                        privilegio: <?php echo $_SESSION['privilegio'] ?? 'Nenhum'; ?></p>
+                        privilegio: <?= $privilegio ?></p>
                 </li>
                 <li> <a class="effect-button-link" href="/config">
                         <svg class="icon">
@@ -52,20 +55,30 @@
             </p>
             <ul class=" menu-list menu-tabela-list">
                 <li><a class="effect-button-link ajax-link" href="/agendamentos">agendamentos</a></li>
-                <li><a class="effect-button-link ajax-link" href="/usuarios">usuários</a></li>
                 <li><a class="effect-button-link ajax-link" href="/salas">salas</a></li>
                 <li><a class="effect-button-link ajax-link" href="/cursos">cursos</a></li>
-                <li><a class="effect-button-link ajax-link" href="/turmas">turmas</a></li>
-
+                <?php
+                if ($privilegio === 'admin') {
+                ?>
+                    <li><a class="effect-button-link ajax-link" href="/usuarios">usuários</a></li>
+                <?php
+                }
+                if ($privilegio === 'admin' || $privilegio === 'professor') {
+                ?>
+                    <li><a class="effect-button-link ajax-link" href="/turmas">turmas</a></li>
+                <?php } ?>
             </ul>
         </div>
-        <div class="menu-sms">
-            <p><a class="effect-button-link button-menu ajax-link" href="/menssagem">
-                    <svg class="icon">
-                        <use href="#icon-sinio"></use>
-                    </svg> menssagem
-                </a></p>
-        </div>
+        <?php
+        if ($privilegio !== 'admin') {
+        ?>
+            <div class="menu-sms">
+                <p><a class="effect-button-link button-menu ajax-link" href="/menssagem">
+                        <svg class="icon">
+                            <use href="#icon-sinio"></use>
+                        </svg> menssagem
+                    </a></p>
+            </div><?php } ?>
         <div class="menu-calendario">
             <p><a class="effect-button-link button-menu ajax-link" href="/calendario">
                     <svg class="icon">

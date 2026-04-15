@@ -3,7 +3,7 @@ return [
     "agendamentos" => [
         "tabela" => "agendar_sala",
         "owner_column" => "idUser",
-        "no-repeat" => ["sala", 'bloco', "dia", 'periodo'],
+        "no-repeat" => ["sala", 'bloco', "dia"],
         "dependencias" => [
             [
                 "tabela" => "requisicoes_troca",
@@ -58,17 +58,14 @@ return [
                 'virtual' => true
             ],
             "dia" => ['type' => 'date'],
-            "periodo" => [
-                'type' => 'select',
-                'options' => [
-                    'manhã' => ["min" => 5, "max" => 7],
-                    'tarde' => ["min" => 7, "max" => 11],
-                    'noite' => ["min" => 7, "max" => 18]
-                ]
+            "hora_inicio" => [
+                'type' => 'time',
             ],
-
+            "hora_fim" => [
+                'type' => 'time',
+            ],
         ],
-        "especifico" => ["agendar_sala.id", "usuario.nome as usuario", "turmas.nome as turmas", "sala.nome as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.periodo"]
+        "especifico" => ["agendar_sala.id", "usuario.nome as usuario", "turmas.nome as turmas", "sala.nome as sala", "sala.bloco", "agendar_sala.dia", "agendar_sala.hora_inicio", "agendar_sala.hora_fim"]
     ],
     "usuarios" => [
         "tabela" => "usuario",
@@ -152,12 +149,12 @@ return [
                 "maskname" => "id_agendamento_revindicado",
                 'type' => "readonly",
                 "relation" => [
-                    "tabela" => "usuario",
-                    "coluna" => "nome",
+                    "tabela" => "turmas",
+                    "coluna" => "turno",
                     "value" => 'id',
                     "tableConnection" => [
                         ["tabela" => "agendar_sala", 'buscar' => "idUser", "onde" => "id"],
-                        ["tabela" => "usuario", "buscar" => "nome", "onde" => "id"]
+                        ["tabela" => "turmas", "buscar" => "turno", "onde" => "id"]
                     ]
                 ]
             ],
@@ -174,7 +171,7 @@ return [
                     ]
                 ]
             ],
-            "periodo" => [
+            "hora_inicio" => [
                 "maskname" => "id_agendamento_revindicado",
                 'type' => "readonly",
                 "relation" => [
@@ -182,7 +179,19 @@ return [
                     "coluna" => "nome",
                     "value" => 'id',
                     "tableConnection" => [
-                        ["tabela" => "agendar_sala", 'buscar' => "periodo", "onde" => "id"],
+                        ["tabela" => "agendar_sala", 'buscar' => "hora_inicio", "onde" => "id"],
+                    ]
+                ]
+            ],
+            "hora_fim" => [
+                "maskname" => "id_agendamento_revindicado",
+                'type' => "readonly",
+                "relation" => [
+                    "tabela" => "sala",
+                    "coluna" => "nome",
+                    "value" => 'id',
+                    "tableConnection" => [
+                        ["tabela" => "agendar_sala", 'buscar' => "hora_fim", "onde" => "id"],
                     ]
                 ]
             ],
@@ -200,7 +209,8 @@ return [
             "user2.nome as destinatario",
             "sala.nome as sala",
             "agendar_sala.dia as agendado",
-            "agendar_sala.periodo",
+            "agendar_sala.hora_inicio",
+            "agendar_sala.hora_fim",
             "requisicoes_troca.mensagem"
         ],
     ],

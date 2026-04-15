@@ -63,7 +63,7 @@ class FormEngine
             $value = $this->dbData[$fieldName] ?? '';
 
             // Lógica especial para idUser em novos registros
-            if ($fieldName === 'idUser' && empty($value) && $this->user['privilegio'] === 'normal') {
+            if ($fieldName === 'idUser' && empty($value) && ($this->user['privilegio'] === 'aluno' || $this->user['privilegio'] === 'professor')) {
                 $value = $this->user['id'];
                 $colConfig['type'] = 'readonly_user';
             }
@@ -92,12 +92,15 @@ class FormEngine
         if ($dataRef < $hoje) return false;
         if ($dataRef === $hoje) {
             $regras = $this->config['colunas']['periodo']['options'] ?? [];
-
+            if (!is_array($regras)) return true;
             $maiorMax = 0;
             foreach ($regras as $periodo) {
-                if ($periodo['max'] > $maiorMax) {
-                    $maiorMax = $periodo['max'];
-                }
+                if (is_array($periodo)) {
+                    $valorMax = $periodo['max'] ?? 0;
+                    if ($valorMax > $maiorMax) {
+                        $maiorMax = $valorMax;
+                    }
+                } else $maiorMax = 22;
             }
             if ($horaAtual >= $maiorMax) {
                 return false;

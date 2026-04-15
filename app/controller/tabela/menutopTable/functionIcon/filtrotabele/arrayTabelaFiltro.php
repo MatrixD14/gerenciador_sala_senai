@@ -13,11 +13,6 @@
                         "value" => "bloco",
                     ],
                 ],
-                "periodo" => [
-                    "label" => "Período",
-                    "type" => "select",
-                    "options" => ["manhã", "tarde", "noite"]
-                ],
                 "dia" => [
                     "label" => "Data do Agendamento",
                     "type" => "date-range"
@@ -46,7 +41,7 @@
                 "privilegio" => [
                     "label" => "privilegio",
                     "type" => "select",
-                    "options" => ["admin", "normal"],
+                    "options" => ["admin", "aluno", "professor"],
                 ]
             ],
             "colunas_visiveis" => ["id", 'nome', "email", "privilegio"]

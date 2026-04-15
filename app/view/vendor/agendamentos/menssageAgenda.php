@@ -18,7 +18,8 @@ $id_user = $_POST["id"] ?? [];
 $nomes = $_POST["nomes"] ?? [];
 $periodos = $_POST["periodos"] ?? [];
 $salas = $_POST["salas"] ?? [];
-
+$privilegioUsuario = $_SESSION['privilegio'] ?? 'admin';
+$podeReivindicar = ($privilegioUsuario === 'aluno' || $privilegioUsuario === 'professor');
 $existePeriodoDisponivel = false;
 if ($realmenteHoje) {
     foreach ($regrasPeriodo as $p => $regra) {
@@ -43,15 +44,18 @@ $agendamentosLiberados = 0;
             <?php
             if (!empty($nomes)) {
                 foreach ($nomes as $i => $nome) {
-                    $periodo = $periodos[$i] ?? 'null';
+                    $periodoCompleto = $periodos[$i] ?? '';
                     $id = $id_user[$i] ?? $i;
                     $sala = $salas[$i] ?? 'null';
+                    $turnoSimples = mb_strtolower(explode(' ', $periodoCompleto)[0]);
                     $itemBloqueado = $isPassado;
                     $motivo = "";
-
-                    if ($realmenteHoje && isset($regrasPeriodo[$periodo])) {
-                        $min = $regrasPeriodo[$periodo]['min'];
-                        $max = $regrasPeriodo[$periodo]['max'];
+                    if (!$podeReivindicar) {
+                        $itemBloqueado = true;
+                        $motivo = " (Apenas  professor e aluno podem reivindicar)";
+                    } elseif ($realmenteHoje && isset($regrasPeriodo[$turnoSimples])) {
+                        $min = $regrasPeriodo[$turnoSimples]['min'];
+                        $max = $regrasPeriodo[$turnoSimples]['max'];
                         if ($horaAtual < $min || $horaAtual >= $max) {
                             $itemBloqueado = true;
                             $motivo = " (Fora do horário: $min:00h às $max:00h)";
@@ -61,7 +65,7 @@ $agendamentosLiberados = 0;
                         $agendamentosLiberados++;
 
                     $id_html = "agendamento_" . $id;
-                    $label = htmlspecialchars(($salas[$i] ?? '') . " - $nome - " . ($periodos[$i] ?? ''));
+                    $label = htmlspecialchars("$sala - $nome - $periodoCompleto");
             ?>
 
                     <div class="item-selecionavel" style="<?= $itemBloqueado ? 'opacity: 0.9; cursor: not-allowed;padding:5px' : '' ?>">
@@ -77,7 +81,7 @@ $agendamentosLiberados = 0;
             } else {
                 echo "<p>Nenhum agendamento encontrado.</p>";
             } ?>
-            <?php if ($existePeriodoDisponivel) { ?>
+            <?php if ($existePeriodoDisponivel && $podeReivindicar) { ?>
                 <div class="item-adicionar" onclick="novoAgendamentoDesteDia()">
                     <div class="btn-add-inline">
                         <svg class='icon-adicionar'>

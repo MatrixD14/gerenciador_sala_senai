@@ -1,4 +1,5 @@
 use gerenciadorSala;
+SET FOREIGN_KEY_CHECKS = 0;
 DELETE FROM requisicoes_troca;
 DELETE FROM recuperacao_token;
 DELETE FROM agendar_sala;
@@ -13,6 +14,7 @@ ALTER TABLE sala AUTO_INCREMENT = 1;
 ALTER TABLE usuario AUTO_INCREMENT = 1;
 ALTER TABLE turmas AUTO_INCREMENT = 1;
 ALTER TABLE cursos AUTO_INCREMENT = 1;
+SET FOREIGN_KEY_CHECKS = 1;
 INSERT INTO sala (nome, bloco, descricao,capacidade) 
 SELECT CONCAT('Sala', n), 
 CASE 
@@ -123,18 +125,18 @@ INSERT INTO agendar_sala (dia, hora_inicio, hora_fim, idUser,idTurma, idSala)
 SELECT 
 DATE_ADD('2026-03-01', INTERVAL (FLOOR((n-1) / 3)) DAY),
 CASE
-WHEN n % 5 = 0 THEN '07:00:00'
-WHEN n % 5 = 1 THEN '08:50:00'
-WHEN n % 5 = 2 THEN '10:40:00'
-WHEN n % 5 = 3 THEN '13:30:00'
-ELSE '15:20:00'
+WHEN n % 5 = 0 THEN '07:00'
+WHEN n % 5 = 1 THEN '08:50'
+WHEN n % 5 = 2 THEN '10:40'
+WHEN n % 5 = 3 THEN '13:30'
+ELSE '15:20'
 END,
 CASE 
-WHEN n % 5 = 0 THEN '08:40:00'
-WHEN n % 5 = 1 THEN '10:30:00'
-WHEN n % 5 = 2 THEN '12:20:00'
-WHEN n % 5 = 3 THEN '15:10:00'
-ELSE '17:00:00'
+WHEN n % 5 = 0 THEN '08:40'
+WHEN n % 5 = 1 THEN '10:30'
+WHEN n % 5 = 2 THEN '12:20'
+WHEN n % 5 = 3 THEN '15:10'
+ELSE '17:00'
 END,
 ((n - 1) % 25000) + 1,
 ((n - 1) % 25000) + 1,

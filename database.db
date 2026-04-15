@@ -18,9 +18,8 @@ create table sala(
     );
 create table cursos(
      id int auto_increment primary key,
-     nome varchar(200) not null,
-     descricao varchar(255),
-     unique(nome)
+     nome varchar(200) not null unique,
+     descricao varchar(255)
 );
 create table turmas(
      id int auto_increment primary key,
@@ -69,3 +68,6 @@ create table requisicoes_troca(
     foreign key (id_remetente) references usuario(id),
     foreign key (id_agendamento_revindicado) references agendar_sala(id)
 );
+create index idx_agendamento_dia on agendar_sala(dia);
+create index idx_agendamento_user on agendar_sala(idUser);
+create index idx_agendamento_sala on agendar_sala(idSala);

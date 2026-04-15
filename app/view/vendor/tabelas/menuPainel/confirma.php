@@ -9,7 +9,7 @@ if (!$table || !$id) {
 }
 $userAtivo = [
     'id' => $_SESSION['id'] ?? null,
-    'privilegio' => $_SESSION['privilegio'] ?? 'normal'
+    'privilegio' => $_SESSION['privilegio'] ?? 'aluno'
 ];
 try {
     $engine = new FormEngine($table, $id, $userAtivo, true);
@@ -38,7 +38,7 @@ $bloquearEdicao = !$engine->canSubmit() || $dono['usuario_id'] !== $userAtivo['i
             <button id="cancel" data-status="recusado">Cancelar</button>
             <?php if (!$engine->canSubmit()) echo "<p></p>";
             else { ?>
-                <button id="confirm" data-status="aceito">Confirmar</button>
+                <button id="confirm" data-status="aprovado">Confirmar</button>
             <?php } ?>
     </form>
 </div>

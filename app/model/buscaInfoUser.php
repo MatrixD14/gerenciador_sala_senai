@@ -22,7 +22,7 @@ class BuscaInfoUser
     public static function EnviaRevindicacao($id_remetente, $id_destinatario, $mensagem)
     {
         $db = Database::connects();
-        $stmt = $db->prepare("INSERT INTO revindicados (...) VALUES (?, ?, ?)");
+        $stmt = $db->prepare("INSERT INTO requisicoes_troca (...) VALUES (?, ?, ?)");
         $stmt->bind_param("iis", $id_remetente, $id_destinatario, $mensagem);
         $stmt->execute();
 

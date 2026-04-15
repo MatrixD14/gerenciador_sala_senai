@@ -29,16 +29,8 @@ if (!$isAjax) {
 
     <body>
     <?php
-
-    if ($_SESSION['privilegio'] === 'admin') {
-        $urls = 'Top_admin';
-    } elseif ($_SESSION['privilegio'] === 'professor') {
-        $urls = 'Top_professor';
-    } else {
-        $urls = 'Top_aluno';
-    }
     require_once __DIR__ . '/../../../../icon/newiconbase.html';
-    require_once __DIR__ . '/../../../../app/view/vendor/layout/' . $urls . '.php';
+    require_once __DIR__ . '/../../../../app/view/vendor/layout/Top.php';
 } ?>
     <main class="content">
         <?php

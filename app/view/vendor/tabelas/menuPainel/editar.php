@@ -9,7 +9,7 @@ if (!$table || !$id) {
 }
 $userAtivo = [
     'id' => $_SESSION['id'] ?? null,
-    'privilegio' => $_SESSION['privilegio'] ?? 'normal'
+    'privilegio' => $_SESSION['privilegio'] ?? 'aluno'
 ];
 try {
     $engine = new FormEngine($table, $id, $userAtivo, false);

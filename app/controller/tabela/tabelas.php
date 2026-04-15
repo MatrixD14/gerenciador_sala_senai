@@ -165,13 +165,11 @@ class Tabelas
         $map = [];
         if (!empty($config['especifico'])) {
             foreach ($config['especifico'] as $expr) {
-                // Extrai o alias: "tabela.coluna as alias" ou "tabela.coluna"
                 if (stripos($expr, ' as ') !== false) {
                     $parts = preg_split('/\s+as\s+/i', $expr);
                     $alias = trim(end($parts));
                     $expression = trim($parts[0]);
                 } else {
-                    // Sem alias, usa o último segmento após o ponto
                     $alias = self::getCleanColumnName($expr);
                     $expression = $expr;
                 }
@@ -204,14 +202,6 @@ class Tabelas
                 $de = $_POST["{$nomeCampo}_de"] ?? null;
                 $ate = $_POST["{$nomeCampo}_ate"] ?? null;
 
-                // if (!empty($de)) {
-                //     $de = $db->real_escape_string($de);
-                //     $condicoes[] = "$tabelaPrincipal.$nomeCampo >= '$de'";
-                // }
-                // if (!empty($ate)) {
-                //     $ate = $db->real_escape_string($ate);
-                //     $condicoes[] = "$tabelaPrincipal.$nomeCampo <= '$ate'";
-                // }
                 if (!empty($de)) {
                     $de = $db->real_escape_string($de);
                     $condicoes[] = "$expressaoSQL >= '$de'";
@@ -229,7 +219,6 @@ class Tabelas
                         $colunaRelacao = $info['relation']['value'] ?? $info['relation']['coluna'];
                         $condicoes[] = "$tabelaRelacao.$colunaRelacao = '$valorLimpo'";
                     } else {
-                        // $condicoes[] = "$tabelaPrincipal.$nomeCampo = '$valorLimpo'";
                         $condicoes[] = "$expressaoSQL = '$valorLimpo'";
                     }
                 }
@@ -249,10 +238,8 @@ class Tabelas
         $colunasPermitidas = $allFiltros[$slug]['orderna'] ?? ['id'];
 
         if (in_array($orderBy, $colunasPermitidas)) {
-            // if ($orderBy === 'id')
-            //     $orderBy = " $tabelaPrincipal.id";
             $orderByExpr = $aliasMap[$orderBy] ?? "$tabelaPrincipal.$orderBy";
-            return " ORDER BY $orderBy $direction ";
+            return " ORDER BY $orderByExpr $direction ";
         }
 
         return " ORDER BY $tabelaPrincipal.id ASC ";
