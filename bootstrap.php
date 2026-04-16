@@ -11,7 +11,6 @@ $subFolder = $isLocal ? '/app/view' : '';
 
 define('URL', $protocol . '://' . $host . $subFolder);
 define('URLs', $protocol . '://' . $host);
-// define('FPDF_FONTPATH', __DIR__ . '/fpdf/font');
 if (session_status() === PHP_SESSION_NONE) session_start();
 ini_set('memory_limit', '256M');
 ini_set('display_errors', '0');
@@ -22,7 +21,6 @@ require_once 'app/model/editorConf.php';
 
 Env::load(__DIR__ . '/.editorConf');
 //login
-// require_once __DIR__ . '/fpdf/fpdf.php';
 require_once __DIR__ . '/app/controller/login/auth_login.php';
 require_once __DIR__ . '/app/model/connectDataBase.php';
 require_once __DIR__ . '/app/model/buscaInfoUser.php';
@@ -47,8 +45,9 @@ require_once __DIR__ . '/app/controller/calendario/calendario.php';
 require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/filtrotabele/filtrotabelas.php";
 require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/searched/searchTabelas.php";
 
-require_once __DIR__ . "/app/controller/gerarPdf/TopENBottom.php";
-require_once __DIR__ . "/app/controller/gerarPdf/RelatorioController.php";
+require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/gerarPdf/TopENBottom.php";
+require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/gerarPdf/RelatorioController.php";
+require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/gerarPdf/RelatorioEngine.php";
 //essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
 TabelaCleanup::autoCleanupTableAgendamento(365);
 TabelaCleanup::autoCleanupReivindicacao(365);

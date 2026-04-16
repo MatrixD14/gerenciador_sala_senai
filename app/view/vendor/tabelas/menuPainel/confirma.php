@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 date_default_timezone_set('America/Sao_Paulo');
+unset($_SESSION['show_cols']);
 $table = $_POST["tabela"] ?? '';
 $id = $_POST["id"] ?? "";
 if (!$table || !$id) {

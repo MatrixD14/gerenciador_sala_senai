@@ -17,3 +17,4 @@
 <script src="/app/view/vendor/tabelas/menuPainel/js/buscaSelect.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/buscaDadosBarra.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/filtroTabela.js"></script>
+<script src="/app/view/vendor/tabelas/js/geraPDF.js"></script>

@@ -15,18 +15,33 @@ class Tabelas
     }
     public static function geraTopTabela($tabela): string
     {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         self::loadConfig();
         if (empty($tabela)) return "Nenhuma tabela selecionada";
         $config = self::$inforDate[$tabela] ?? null;
         if ($config === null) return "Tabela não encontrada";
         $html = "<tr>";
-        $colunasVisiveis = $_POST['show_cols'] ?? null;
-        if (is_string($colunasVisiveis)) {
-            $decoded = json_decode($colunasVisiveis, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $colunasVisiveis = $decoded;
-            } else {
-                $colunasVisiveis = explode(',', $colunasVisiveis);
+        $colunasVisiveis = null;
+        if (isset($_SESSION['show_cols'][$tabela])) {
+            $colunasVisiveis = $_SESSION['show_cols'][$tabela];
+            if (is_string($colunasVisiveis)) {
+                $decoded = json_decode($colunasVisiveis, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $colunasVisiveis = $decoded;
+                } else {
+                    $colunasVisiveis = explode(',', $colunasVisiveis);
+                }
+            }
+        }
+        if ($colunasVisiveis === null && isset($_POST['show_cols'])) {
+            $colunasVisiveis = $_POST['show_cols'];
+            if (is_string($colunasVisiveis)) {
+                $decoded = json_decode($colunasVisiveis, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $colunasVisiveis = $decoded;
+                } else {
+                    $colunasVisiveis = explode(',', $colunasVisiveis);
+                }
             }
         }
         if (!empty($config['especifico'])) {
@@ -79,10 +94,6 @@ class Tabelas
         if ($colunasSolicitadas && is_array($colunasSolicitadas) && $colunasConfiguradas) {
             $novasColunas = [];
             foreach ($colunasConfiguradas as $colNome => $prop) {
-                // foreach ($colunasSolicitadas as $colNome) {
-                // if (isset($colunasConfiguradas[$colNome])) {
-                //     $novasColunas[$colNome] = $colunasConfiguradas[$colNome];
-                // }
                 if (in_array($colNome, $colunasSolicitadas) || ($prop['ghost'] ?? false)) {
                     $novasColunas[$colNome] = $prop;
                 }
@@ -203,8 +214,8 @@ class Tabelas
         foreach ($colsFiltro as $nomeCampo => $info) {
             $expressaoSQL = $aliasMap[$nomeCampo] ?? "$tabelaPrincipal.$nomeCampo";
             if ($info['type'] === 'date-range') {
-                $de = $_POST["{$nomeCampo}_de"] ?? null;
-                $ate = $_POST["{$nomeCampo}_ate"] ?? null;
+                $de = $_REQUEST["{$nomeCampo}_de"] ?? null;
+                $ate = $_REQUEST["{$nomeCampo}_ate"] ?? null;
 
                 if (!empty($de)) {
                     $de = $db->real_escape_string($de);
@@ -215,7 +226,7 @@ class Tabelas
                     $condicoes[] = "$expressaoSQL <= '$ate'";
                 }
             } else {
-                $valor = $_POST[$nomeCampo] ?? null;
+                $valor = $_REQUEST[$nomeCampo] ?? null;
                 if ($valor !== null && $valor !== '') {
                     $valorLimpo = $db->real_escape_string($valor);
                     if (isset($info['relation']['tabela'])) {
@@ -235,13 +246,15 @@ class Tabelas
 
     private static function applyOrder($slug, $config, $tabelaPrincipal, $aliasMap): string
     {
-        $orderBy = $_POST['order_by'] ?? 'id';
-        $direction = ($_POST['order_direction'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
-        $filtroConfigPath = __DIR__ . '/menutopTable/functionIcon/filtrotabele/arrayTabelaFiltro.php';
+        $orderBy = $_REQUEST['order_by'] ?? 'id';
+        $direction = ($_REQUEST['order_direction'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
+        $defaultPath = __DIR__ . '/menutopTable/functionIcon/filtrotabele/arrayTabelaFiltro.php';
+        $pdfConfigPath = __DIR__ . '/app/controller/tabela/menutopTable/functionIcon/gerarPdf/arrayTabelafiltroPDF.php';
+        $filtroConfigPath = file_exists($pdfConfigPath) ? $pdfConfigPath : $defaultPath;
         $allFiltros = file_exists($filtroConfigPath) ? require $filtroConfigPath : [];
         $colunasPermitidas = $allFiltros[$slug]['orderna'] ?? ['id'];
 
-        if (in_array($orderBy, $colunasPermitidas)) {
+        if ($orderBy === 'id' || in_array($orderBy, $colunasPermitidas)) {
             $orderByExpr = $aliasMap[$orderBy] ?? "$tabelaPrincipal.$orderBy";
             return " ORDER BY $orderByExpr $direction ";
         }
@@ -259,7 +272,7 @@ class Tabelas
         $filtrosCustom = self::applyCustomFilters($slug, $db, $tabelaPrincipal, $aliasMap);
         if (!empty($filtrosCustom)) $condicoes = array_merge($condicoes, $filtrosCustom);
 
-        $searchTerm = $_POST['search'] ?? '';
+        $searchTerm = $_REQUEST['search'] ?? '';
 
 
         if ($UserLogin != null && $slug === 'menssagem') {
@@ -280,5 +293,28 @@ class Tabelas
         $query = "SELECT $select FROM $tabelaPrincipal $joins $where $order LIMIT $offset, $limit";
         error_log("QUERY GERADA: " . $query);
         return $query;
+    }
+    public static function getDadosParaPDF($slug, $UserLogin = null, $limit = 100, $offset = 0)
+    {
+        self::loadConfig();
+        $config = self::$inforDate[$slug] ?? null;
+        if (!$config) return ['erro' => 'Configuração não encontrada'];
+        $configExibicao = $config;
+        $sql = self::searchTabela($slug, $configExibicao, $UserLogin, $limit, $offset);
+        $result = Tabelas::list_All($sql);
+
+        $dados = [];
+        while ($linha = $result->fetch_assoc()) {
+            $linha['is_locked'] = self::checkIsLocked($linha, $configExibicao);
+            $dados[] = $linha;
+        }
+
+        return [
+            'dados' => $dados,
+            'config' => [
+                'especifico' => $configExibicao['especifico'] ?? null,
+                'colunas' => $configExibicao['colunas'] ?? null,
+            ]
+        ];
     }
 }

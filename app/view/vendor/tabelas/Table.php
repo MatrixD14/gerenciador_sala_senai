@@ -1,4 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tabela'])) {
+    $tabela = $_POST['tabela'];
+    if (isset($_POST['show_cols'])) {
+        $_SESSION['show_cols'][$tabela] = $_POST['show_cols'];
+    }
+}
 $tipoTabela = $Tabelas ?? '';
 $filtrosPost = $_POST;
 $filtrosParaOJS = $filtrosPost;

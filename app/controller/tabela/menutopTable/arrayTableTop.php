@@ -9,7 +9,7 @@ return [
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
         "revindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
         "confirma" => ["type" => "icon-afirma", 'menssage' => 'ele serve para aceita'],
-        "filtro" => ["type" => "icon-iconMutidirecao", 'menssage' => 'ele serve para aceita'],
+        "filtro" => ["type" => "icon-iconMutidirecao", 'menssage' => 'filtra a tabela para deter uma visao mais eficiente para dados especifico'],
         "ViewInPDF" => ["type" => "icon-setaMultidirecao", 'menssage' => "ver o pdf "]
     ],
 
@@ -77,12 +77,6 @@ return [
         ]
     ],
     "menssagem" => [
-        "admin" => [
-            'view',
-            'reload',
-            'delete',
-            "filtro"
-        ],
         "professor" => [
             'view',
             'reload',

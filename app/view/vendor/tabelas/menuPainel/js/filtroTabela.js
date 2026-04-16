@@ -15,6 +15,7 @@ function filtraTabele(event) {
             filtros[key] = value;
         }
     });
+    sessionStorage.setItem(`filtros_${tabela}`, JSON.stringify(filtros));
     if (window.tabelaState) {
         window.tabelaState.slug = tabela;
         window.tabelaState.filtros = filtros;

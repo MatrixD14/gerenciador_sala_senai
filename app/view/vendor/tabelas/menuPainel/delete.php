@@ -1,4 +1,6 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
+unset($_SESSION['show_cols']);
 $name = $_POST["name"] ?? "";
 $table = $_POST["tabela"] ?? "";
 $id = $_POST["id"] ?? "";

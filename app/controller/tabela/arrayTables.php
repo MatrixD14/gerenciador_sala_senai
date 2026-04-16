@@ -288,7 +288,7 @@ return [
         ],
         'especifico' => [
             'turmas.id',
-            'turmas.nome as turma',
+            'turmas.nome',
             'cursos.nome as curso',
             'turmas.ano as ano',
             'turmas.semestre as semestre',

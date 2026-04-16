@@ -7,13 +7,13 @@ if ($uri === '/ViewInPDF') {
     while (ob_get_level()) ob_end_clean();
     header_remove();
     header('Content-Type: application/pdf');
-    // header('Content-Disposition: inline; filename="relatorio.pdf"');
+    header('Content-Disposition: inline; filename="relatorio.pdf"');
     header('Cache-Control: private, max-age=0, must-revalidate');
 
     require_once __DIR__ . '/bootstrap.php';
     AuthLogin::check();
-
-    require_once __DIR__ . '/app/view/vendor/tabelas/menuPainel/viewPDF.php';
+    $controller = new RelatorioController();
+    $controller->gerarPDF();
     exit;
 }
 
@@ -82,7 +82,7 @@ if ($uri === '/cadastro') {
 }
 
 $rotasAdmin = ['/usuarios', '/salas', '/agendamentos', '/cursos', '/turmas'];
-$rotaAcao = ['/delete', '/editar', '/insert', '/confirma', "/filtro"];
+$rotaAcao = ['/delete', '/editar', '/insert', '/confirma', "/filtro", "/geraPDF"];
 $HomeGenciador = __DIR__ . '/app/view/vendor/layout/main.php';
 if ($uri === "/gerenciado_de_Sala") {
     AuthLogin::check();
@@ -135,6 +135,10 @@ if ($uri === "/deleted") {
 }
 if ($uri === '/edito') {
     editor::editoDados();
+    exit;
+}
+if ($uri === '/limpar_filtros') {
+    unset($_SESSION['show_cols']);
     exit;
 }
 if ($uri === '/inserted') {

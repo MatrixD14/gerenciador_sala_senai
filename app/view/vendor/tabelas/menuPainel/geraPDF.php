@@ -8,26 +8,24 @@ if (!$table) {
 }
 
 try {
-    $filtro = new FiltroEngine($table);
+    $relEngine = new RelatorioEngine($table);
 } catch (Exception $e) {
     echo "Erro: " . $e->getMessage();
     exit;
 }
 ?>
 <div class="painel-wrapper">
-    <form action="/<?= $table ?>" method="post" id="formFiltro" class="Painel">
+    <form id="formGerarPDF" action="/ViewInPDF" method="GET" target="_blank" class="Painel">
+        <input type='hidden' name='tabela' value="<?= $table ?>">
         <div class="top-Painel">
-            <h2>Filtros:<?= ucfirst($table) ?></h2>
+            <h2>Personalizar Relatório PDF: <?= ucfirst($table) ?></h2>
             <hr>
         </div>
-        <div class="editar-dados">
-            <input type='hidden' name='tabela' value="<?= $table ?>">
-            <?= $filtro->render() ?>
-            <div id="menssage-log" style="margin-top: 10px; text-align: center;"></div>
-        </div>
+
+        <?= $relEngine->renderForm(); ?>
         <div class="buttons-cal-conf">
             <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
-            <button type="button" id="confirm" onclick="filtraTabele(event)">Confirmar</button>
+            <button type="submit" id="confirm" class="btn-gerar">Gerar Relatório PDF</button>
         </div>
     </form>
 </div>
