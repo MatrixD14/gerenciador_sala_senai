@@ -9,7 +9,8 @@ return [
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
         "revindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
         "confirma" => ["type" => "icon-afirma", 'menssage' => 'ele serve para aceita'],
-        "filtro" => ["type" => "icon-iconMutidirecao", 'menssage' => 'ele serve para aceita']
+        "filtro" => ["type" => "icon-iconMutidirecao", 'menssage' => 'ele serve para aceita'],
+        "ViewInPDF" => ["type" => "icon-setaMultidirecao", 'menssage' => "ver o pdf "]
     ],
 
     "agendamentos" => [
@@ -19,7 +20,8 @@ return [
             'reload',
             "edite",
             'delete',
-            "filtro"
+            "filtro",
+            "ViewInPDF"
         ],
         "professor" => [
             'view',
@@ -28,7 +30,8 @@ return [
             "edite",
             'revindicar',
             'delete',
-            "filtro"
+            "filtro",
+            "ViewInPDF"
         ],
         "aluno" => [
             'view',
@@ -47,10 +50,10 @@ return [
             'reload',
             "edite",
             'delete',
-            "filtro"
+            "filtro",
+            "ViewInPDF"
         ],
 
-        "aluno" => []
     ],
     "salas" => [
         "admin" => [
@@ -59,7 +62,8 @@ return [
             'reload',
             "edite",
             'delete',
-            "filtro"
+            "filtro",
+            "ViewInPDF"
         ],
         "professor" => [
             'view',
@@ -99,7 +103,8 @@ return [
             'reload',
             "edite",
             'delete',
-            "filtro"
+            "filtro",
+            "ViewInPDF"
         ],
         "professor" => [
             'view',
@@ -119,7 +124,8 @@ return [
             'reload',
             "edite",
             'delete',
-            "filtro"
+            "filtro",
+            "ViewInPDF"
         ],
         "professor" => [
             'view',

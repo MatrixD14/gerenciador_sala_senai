@@ -12,7 +12,7 @@ class FormEngine
     {
         $allConfigs = require __DIR__ . '/../../../arrayTables.php';
         $this->config = $allConfigs[$tableKey] ?? throw new Exception("Tabela não configurada.");
-        $this->user = $user ?? ['privilegio' => 'normal', 'id' => null];
+        $this->user = $user ?? ['privilegio' => 'aluno', 'id' => null];
         $this->hoje = date('Y-m-d');
 
         if ($id) {

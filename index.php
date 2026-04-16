@@ -1,4 +1,22 @@
 <?php
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = rtrim($path, '/');
+if ($uri === '') $uri = '/';
+
+if ($uri === '/ViewInPDF') {
+    while (ob_get_level()) ob_end_clean();
+    header_remove();
+    header('Content-Type: application/pdf');
+    // header('Content-Disposition: inline; filename="relatorio.pdf"');
+    header('Cache-Control: private, max-age=0, must-revalidate');
+
+    require_once __DIR__ . '/bootstrap.php';
+    AuthLogin::check();
+
+    require_once __DIR__ . '/app/view/vendor/tabelas/menuPainel/viewPDF.php';
+    exit;
+}
+
 if (php_sapi_name() === 'cli-server') {
     $file = __DIR__ . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
     if (is_file($file))
@@ -10,7 +28,7 @@ define('APP', true);
 if (session_status() === PHP_SESSION_NONE)
     session_start();
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$staticDirs = ['css', 'js', 'img', 'fonts'];
+$staticDirs = ['css', 'js', 'img', 'fonts', 'pdf'];
 
 foreach ($staticDirs as $dir) {
     if (strpos($path, "/$dir/") !== false) {
@@ -23,6 +41,7 @@ foreach ($staticDirs as $dir) {
             $mime = [
                 'css'  => 'text/css; charset=UTF-8',
                 'js'   => 'application/javascript; charset=UTF-8',
+                'pdf'   => 'application/pdf',
                 'png'  => 'image/png',
                 'jpg'  => 'image/jpeg',
                 'jpeg' => 'image/jpeg',
@@ -94,6 +113,8 @@ if (in_array($uri, $rotasAdmin)) {
     }
     exit;
 }
+
+
 if ($uri === "/calendario") {
     AuthLogin::check();
     if ($isAjax) {

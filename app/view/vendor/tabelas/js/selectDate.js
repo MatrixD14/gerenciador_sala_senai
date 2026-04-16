@@ -18,7 +18,8 @@ document.addEventListener('click', function (e) {
             action !== 'reload' &&
             action !== 'agenda' &&
             action !== 'view' &&
-            action !== 'filtro'
+            action !== 'filtro' &&
+            action != 'ViewInPDF'
         ) {
             alert('Selecione uma linha primeiro!');
             return;

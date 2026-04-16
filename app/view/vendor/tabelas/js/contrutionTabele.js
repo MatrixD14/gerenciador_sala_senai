@@ -1,37 +1,4 @@
 class TabelaConstrutor {
-    // static construirLinhas(json) {
-    //     const { dados, config } = json;
-    //     if (!dados || dados.length === 0) return '';
-
-    //     let html = '';
-    //     dados.forEach((linha) => {
-    //         const id = linha.id || 0;
-    //         const rowClass = linha.is_locked ? 'row-locked' : '';
-
-    //         html += `<tr data-id="${id}" class="${rowClass}">`;
-
-    //         let colunas = [];
-    //         if (config.colunas && Object.keys(config.colunas).length > 0) {
-    //             colunas = Object.keys(config.colunas);
-    //         } else if (config.especifico && Array.isArray(config.especifico)) {
-    //             colunas = config.especifico;
-    //         }
-
-    //         colunas.forEach((col, index) => {
-    //             const key = this.limparNome(col);
-    //             let valor = linha[key] !== undefined ? linha[key] : '';
-
-    //             if (this.isData(valor)) valor = this.formatarData(valor);
-
-    //             const prefixo = index === 0 && linha.is_locked ? '⚠️ ' : '';
-    //             html += `<td>${prefixo}${valor}</td>`;
-    //         });
-
-    //         html += `</tr>`;
-    //     });
-    //     return html;
-    // }
-
     static construirLinhas(json) {
         const { dados, config } = json;
         if (!dados || dados.length === 0) return '';
@@ -53,6 +20,7 @@ class TabelaConstrutor {
                 colunasParaExibir = todasColunas;
             }
         }
+        let colunasParaRenderizar = config.colunas_visiveis || Object.keys(config.colunas);
 
         let html = '';
         dados.forEach((linha) => {
@@ -61,7 +29,7 @@ class TabelaConstrutor {
 
             html += `<tr data-id="${id}" class="${rowClass}">`;
 
-            colunasParaExibir.forEach((alias, index) => {
+            colunasParaRenderizar.forEach((alias, index) => {
                 let valor = linha[alias] !== undefined ? linha[alias] : '';
 
                 if (this.isData(valor)) valor = this.formatarData(valor);

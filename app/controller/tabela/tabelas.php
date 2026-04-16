@@ -78,9 +78,13 @@ class Tabelas
 
         if ($colunasSolicitadas && is_array($colunasSolicitadas) && $colunasConfiguradas) {
             $novasColunas = [];
-            foreach ($colunasSolicitadas as $colNome) {
-                if (isset($colunasConfiguradas[$colNome])) {
-                    $novasColunas[$colNome] = $colunasConfiguradas[$colNome];
+            foreach ($colunasConfiguradas as $colNome => $prop) {
+                // foreach ($colunasSolicitadas as $colNome) {
+                // if (isset($colunasConfiguradas[$colNome])) {
+                //     $novasColunas[$colNome] = $colunasConfiguradas[$colNome];
+                // }
+                if (in_array($colNome, $colunasSolicitadas) || ($prop['ghost'] ?? false)) {
+                    $novasColunas[$colNome] = $prop;
                 }
             }
             $configExibicao['colunas'] = $novasColunas;

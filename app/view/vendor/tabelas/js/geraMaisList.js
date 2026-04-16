@@ -32,6 +32,10 @@ document.addEventListener('contentUpdated', function () {
 });
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('carregaTabela');
+    if (!container) {
+        console.error('Elemento com id "carregaTabela" não encontrado no DOM.');
+        return;
+    }
     const slug = container.getAttribute('data-slug');
     console.log('Iniciando tabela para o slug:', slug);
     let filtrosIniciais = {};

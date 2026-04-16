@@ -63,7 +63,7 @@ create table requisicoes_troca(
     id_remetente int,
     id_agendamento_revindicado int,
     mensagem varchar(255),
-    status enum('pendente', 'aprovado', 'recusado') DEFAULT 'pendente',
+    status enum('pendente', 'aprovado', 'recusado','expirou') DEFAULT 'pendente',
     data_envio datetime default current_timestamp,
     foreign key (id_remetente) references usuario(id),
     foreign key (id_agendamento_revindicado) references agendar_sala(id)

@@ -57,7 +57,10 @@ return [
                 'depends' => 'sala',
                 'virtual' => true
             ],
-            "dia" => ['type' => 'date'],
+            "dia" => [
+                'type' => 'date',
+                'ghost' => true,
+            ],
             "hora_inicio" => [
                 'type' => 'time',
             ],

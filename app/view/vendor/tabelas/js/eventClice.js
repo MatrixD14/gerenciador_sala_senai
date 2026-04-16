@@ -27,10 +27,13 @@ function executarAcao(acao, tabela, id, name) {
         case 'filtro':
             loadPagePost('/filtro', dados, true);
             break;
-        case 'back':
-            //              overscroll-behavior: contain;
-            // touch-action: pan-x pan-y;
-            // -webkit-overflow-scrolling: touch;
+        case 'ViewInPDF':
+            const params = new URLSearchParams({
+                tabela: tabela,
+                id: id,
+                name: name,
+            }).toString();
+            window.open('/ViewInPDF?' + params, '_blank');
             break;
         case 'reload':
             location.reload();

@@ -18,7 +18,7 @@
                     "type" => "date-range"
                 ]
             ],
-            "colunas_visiveis" => ["id", "usuario", 'turmas', "sala", "bloco", "dia", "periodo"]
+            "colunas_visiveis" => ["id", "usuario", 'turmas', "sala", "bloco", "dia", "hora_inicio", "hora_fim"]
         ],
         "salas" => [
             "orderna" => ["nome", 'bloco'],

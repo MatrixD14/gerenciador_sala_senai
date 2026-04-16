@@ -35,10 +35,10 @@ class revindicando
 
         if (!$resultado) return "nao encontrado";
 
-        if ($resultado['status'] === 'aceito' || $resultado['status'] === 'recusado') {
+        if ($resultado['status'] === 'aprovado' || $resultado['status'] === 'recusado') {
             return "ja processado";
         }
-        if ($resultado['status'] === 'expiro') return "já expiro";
+        if ($resultado['status'] === 'expirou') return "já expiro";
 
         $stmt = $db->prepare("
         UPDATE requisicoes_troca 
