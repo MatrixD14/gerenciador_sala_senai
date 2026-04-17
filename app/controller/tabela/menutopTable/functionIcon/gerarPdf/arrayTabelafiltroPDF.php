@@ -1,11 +1,12 @@
 <?php
 return [
     "agendamentos" => [
-        "orderna" => ['bloco', "dia", "usuario", "sala", "periodo", 'turmas'],
+        "orderna" => ['bloco', "dia", "usuario", "sala", 'turmas'],
         "colunas" => [
-            "idSala" => [
+            "bloco" => [
                 "label" => "bloco",
                 "type" => "select",
+                'unique' => true,
                 "relation" => [
                     "tabela" => "sala",
                     "coluna" => "bloco",
@@ -25,6 +26,7 @@ return [
             "bloco" => [
                 "label" => "Bloco",
                 "type" => "select",
+                'unique' => true,
                 "relation" => [
                     "tabela" => "sala",
                     "coluna" => "bloco",
@@ -40,6 +42,7 @@ return [
             "privilegio" => [
                 "label" => "privilegio",
                 "type" => "select",
+                'unique' => true,
                 "options" => ["admin", "aluno", "professor"],
             ]
         ],
@@ -57,6 +60,7 @@ return [
             'turno' => [
                 "label" => "turno",
                 "type" => "select",
+                'unique' => true,
                 'options' => [
                     'manhã' => 'Manhã',
                     'tarde' => 'Tarde',

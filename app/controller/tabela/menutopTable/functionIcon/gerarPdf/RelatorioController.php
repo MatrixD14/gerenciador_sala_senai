@@ -9,6 +9,9 @@ class RelatorioController
         $slug = $_GET['tabela'] ?? 'agendamentos';
         $orientation = $_GET['pdf_orientation'] ?? 'L';
         $userLogin = $_SESSION['user_id'] ?? null;
+        $path = __DIR__ . '/arrayTabelafiltroPDF.php';
+        $allConfigs = file_exists($path) ? require $path : [];
+        $configDaTabela = $allConfigs[$slug]['colunas'] ?? [];
         $dadosTabela = Tabelas::getDadosParaPDF($slug, $userLogin, 500, 0);
 
         if (isset($dadosTabela['erro'])) {
@@ -20,6 +23,7 @@ class RelatorioController
         $colunas = $this->getColunasExibicao($config);
 
         $pdf = new AppPDF($orientation, 'mm', 'A4');
+        $pdf->setConfigFiltros($configDaTabela);
         $pdf->AliasNbPages();
         $pdf->AddPage($orientation);
 
@@ -97,21 +101,53 @@ class RelatorioController
                 }
             }
         }
+        $filtroConfigPath = __DIR__ . '/arrayTabelafiltroPDF.php';
+        $allFiltros = file_exists($filtroConfigPath) ? require $filtroConfigPath : [];
+        $slug = $_GET['tabela'] ?? '';
+        $configFiltro = $allFiltros[$slug]['colunas'] ?? [];
+        $colunasDoBanco = [];
         if (!empty($config['especifico'])) {
             foreach ($config['especifico'] as $expr) {
-                $alias = $this->extrairAlias($expr);
-                if ($permitidas !== null && !in_array($alias, $permitidas)) continue;
-                $titulo = ucfirst(str_replace('_', ' ', $alias));
-                $colunas[] = ['campo' => $alias, 'titulo' => $titulo];
+                $colunasDoBanco[] = $this->extrairAlias($expr);
             }
         } else {
-            foreach ($config['colunas'] as $campo => $info) {
-                if ($permitidas !== null && !in_array($campo, $permitidas)) continue;
-                if (!empty($info['encryption'])) continue;
-                $titulo = ucfirst(str_replace('_', ' ', $campo));
-                $colunas[] = ['campo' => $campo, 'titulo' => $titulo];
-            }
+            $colunasDoBanco = array_keys($config['colunas']);
         }
+
+        foreach ($colunasDoBanco as $campo) {
+            $infoFiltro = null;
+            if (isset($configFiltro[$campo])) {
+                $infoFiltro = $configFiltro[$campo];
+            } else {
+                foreach ($configFiltro as $keyFiltro => $detalhes) {
+                    if (strtolower($detalhes['label'] ?? '') === strtolower($campo) || strtolower($keyFiltro) === strtolower($campo)) {
+                        $infoFiltro = $detalhes;
+                        break;
+                    }
+                }
+            }
+
+            if ($infoFiltro && isset($infoFiltro['unique']) && $infoFiltro['unique'] === true) {
+                $nomeNaUrl = strtolower($infoFiltro['label'] ?? $campo);
+
+                $valorFiltro = null;
+                foreach ($_GET as $keyGet => $valGet) {
+                    if (strtolower($keyGet) === $nomeNaUrl) {
+                        $valorFiltro = $valGet;
+                        break;
+                    }
+                }
+
+                if (!empty($valorFiltro)) continue;
+            }
+
+            if ($permitidas !== null)
+                if (!in_array(strtolower($campo), $permitidas)) continue;
+
+            $titulo = $infoFiltro['label'] ?? ucfirst(str_replace('_', ' ', $campo));
+            $colunas[] = ['campo' => $campo, 'titulo' => $titulo];
+        }
+
         return $colunas;
     }
 

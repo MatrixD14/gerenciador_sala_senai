@@ -26,13 +26,8 @@ class RelatorioEngine
     {
 
         // 1. Orientação da Página
-        $html = "<div class='filtro-group'>";
-        $html .= "<label><strong>Orientação da Página:</strong></label><br>";
-        $html .= "<select name='pdf_orientation' class='select-dados'>";
-        $html .= "<option value='L'>Paisagem (Deitado - Melhor para tabelas)</option>";
-        $html .= "<option value='P'>Retrato (Em pé)</option>";
-        $html .= "</select>";
-        $html .= "</div><br>";
+        $html = $this->renaderOrientationPag();
+        $html .= "<br>";
         $html .= $this->renderOrderOptions();
         $html .= "<hr>";
 
@@ -60,6 +55,16 @@ class RelatorioEngine
                 <span>até</span>
                 <input type='date' name='{$name}_ate' class='input-dados' placeholder='Até'>
             </div>";
+    }
+    private function renaderOrientationPag(): string
+    {
+        $html = "<div class='filtro-group'>";
+        $html .= "<label><strong>Orientação da Página:</strong></label><br>";
+        $html .= "<select name='pdf_orientation' class='select-dados'>";
+        $html .= "<option value='L'>Paisagem (Deitado - Melhor para tabelas)</option>";
+        $html .= "<option value='P'>Retrato (Em pé)</option>";
+        $html .= "</select></div>";
+        return $html;
     }
 
     private function renderOrderOptions(): string
