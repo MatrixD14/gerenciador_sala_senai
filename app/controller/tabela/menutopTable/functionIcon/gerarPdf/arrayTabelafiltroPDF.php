@@ -3,7 +3,8 @@ return [
     "agendamentos" => [
         "orderna" => ['bloco', "dia", "usuario", "sala", 'turmas'],
         "colunas" => [
-            "bloco" => [
+            "idSala" => [
+                'maskname' => "bloco",
                 "label" => "bloco",
                 "type" => "select",
                 'unique' => true,

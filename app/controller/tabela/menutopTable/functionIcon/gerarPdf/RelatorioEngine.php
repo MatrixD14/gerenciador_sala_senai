@@ -28,6 +28,8 @@ class RelatorioEngine
         // 1. Orientação da Página
         $html = $this->renaderOrientationPag();
         $html .= "<br>";
+        $html .= $this->renderPageLimitOptions();
+        $html .= "<br>";
         $html .= $this->renderOrderOptions();
         $html .= "<hr>";
 
@@ -45,6 +47,19 @@ class RelatorioEngine
 
         $html .= $this->renderVisibilityCheckboxes();
 
+        return $html;
+    }
+    public function renderPageLimitOptions(): string
+    {
+        $html = "<div class='filtro-group'>";
+        $html .= "<label><strong>Quantidade de Páginas:</strong></label><br>";
+        $html .= "<select name='pags_limite' class='select-dados'>";
+        $html .= "<option value='0'>Todas (Máx: 50)</option>";
+        $html .= "<option value='1'>1 Página</option>";
+        for ($i = 5; $i <= 50; $i += 5) {
+            $html .= "<option value='$i'>$i Páginas</option>";
+        }
+        $html .= "</select></div>";
         return $html;
     }
     private function renderDateRange($name): string
