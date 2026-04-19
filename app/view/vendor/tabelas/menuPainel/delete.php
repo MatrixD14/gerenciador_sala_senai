@@ -19,11 +19,11 @@ try {
     echo "Erro: " . $e->getMessage();
     exit;
 }
-$dono = BuscaInfoUser::buscaDonoAgendamento($id);
+$donoId = BuscaInfoUser::buscaDonoPorTabela($table, $id);
+$isDono = ($donoId !== null && $donoId === (int)$userAtivo['id']);
+$isAdmin = ($userAtivo['privilegio'] === "admin");
 
-$bloquearEdicao =
-    !$engine->canSubmit() ||
-    ($dono['usuario_id'] !== $userAtivo['id'] && $userAtivo['privilegio'] !== "admin");
+$bloquearEdicao = !$engine->canSubmit() || (!$isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
     <form action="/deleted" method="post" class="Painel">
@@ -33,7 +33,7 @@ $bloquearEdicao =
         </div>
         <?php if (!$engine->canSubmit()) { ?>
             <p class="delete-info">esse agendamento não pode ser deletado já posso do dia</p>
-        <?php } elseif ($dono['usuario_id'] !== $userAtivo['id'] && $userAtivo['privilegio'] !== "admin") { ?>
+        <?php } elseif ($bloquearEdicao) { ?>
             <p class="delete-info">você não pode deleta esse agendameneto não e seu</p>
         <?php } else { ?>
             <p class="delete-info">"<?= $name ?>" serar deletado da tabela <?= $table ?></p>

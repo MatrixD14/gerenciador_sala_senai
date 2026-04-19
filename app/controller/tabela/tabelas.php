@@ -94,7 +94,7 @@ class Tabelas
         if ($colunasSolicitadas && is_array($colunasSolicitadas) && $colunasConfiguradas) {
             $novasColunas = [];
             foreach ($colunasConfiguradas as $colNome => $prop) {
-                if (in_array($colNome, $colunasSolicitadas) || ($prop['ghost'] ?? false)) {
+                if ((in_array($colNome, $colunasSolicitadas) || ($prop['ghost'] ?? false)) && empty($prop['ghost'])) {
                     $novasColunas[$colNome] = $prop;
                 }
             }

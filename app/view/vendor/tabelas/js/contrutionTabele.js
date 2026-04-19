@@ -26,8 +26,9 @@ class TabelaConstrutor {
         dados.forEach((linha) => {
             const id = linha.id || 0;
             const rowClass = linha.is_locked ? 'row-locked' : '';
+            const nomeParaExibicao = linha.nome || linha.titulo || Object.values(linha)[0];
 
-            html += `<tr data-id="${id}" class="${rowClass}">`;
+            html += `<tr data-id="${id}" data-name="${nomeParaExibicao}" class="${rowClass}">`;
 
             colunasParaRenderizar.forEach((alias, index) => {
                 let valor = linha[alias] !== undefined ? linha[alias] : '';

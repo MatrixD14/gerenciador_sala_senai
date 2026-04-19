@@ -5,8 +5,16 @@ class Inserted
 
     private static function loadConfig()
     {
-        if (!self::$inforDate)
-            self::$inforDate = require_once __DIR__ . '/../../arrayTables.php';
+        if (!self::$inforDate) {
+            $configPath = __DIR__ . '/../../arrayTables.php';
+            if (!file_exists($configPath)) {
+                throw new Exception("Arquivo de configuração não encontrado: $configPath");
+            }
+            self::$inforDate = require $configPath;
+            if (!is_array(self::$inforDate)) {
+                throw new Exception("arrayTables.php deve retornar um array");
+            }
+        }
     }
     public static function inserted()
     {
@@ -48,7 +56,6 @@ class Inserted
             $types = "";
 
             foreach ($config['no-repeat'] as $colunaRef) {
-                // Pegamos a configuração da coluna para saber o maskname (nome no banco)
                 $colConfig = $coluneSelect[$colunaRef] ?? null;
                 if (!$colConfig) continue;
 
@@ -100,6 +107,15 @@ class Inserted
         if (empty($colunasBanco)) return "Nenhum dado enviado para inserção.";
 
         $db = Database::connects();
+        if ($table === 'usuarios') {
+            $senhaProvisoria = bin2hex(random_bytes(8));
+            $hashSenha = password_hash($senhaProvisoria, PASSWORD_DEFAULT);
+            $colunasBanco[] = 'senha';
+            $placeholders[] = '?';
+            $valores[] = $hashSenha;
+            $tipos .= 's';
+            $_SESSION['temp_senha_usuario'] = $senhaProvisoria;
+        }
         $sql = "insert into $tabela (" . implode(", ", $colunasBanco) . ") values (" . implode(", ", $placeholders) . ")";
         $stmt = $db->prepare($sql);
         if (!$stmt) {
@@ -112,10 +128,38 @@ class Inserted
         if ($stmt->execute()) {
             $novoId = $db->insert_id;
             Tabelas::log_error_table("Inserido com sucesso na tabela $tabela, Novo ID: $novoId");
+            if ($table === 'usuarios') {
+                self::enviarConvitePorEmail($novoId);
+            }
         } else {
             Tabelas::log_error_table("Erro ao inserir na tabela: " . $stmt->error);
         }
         header("Location: /$table");
         exit;
+    }
+    private static function enviarConvitePorEmail($userId)
+    {
+        $db = Database::connects();
+        // Buscar email e nome
+        $stmt = $db->prepare("SELECT email, nome FROM usuario WHERE id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $user = $stmt->get_result()->fetch_assoc();
+        if (!$user) return;
+
+        $email = $user['email'];
+        $nome = $user['nome'];
+        $token = RecuperarPassWord::criaToken($userId);
+
+        if (class_exists('EnviaInfoEmail')) {
+            $enviado = EnviaInfoEmail::dispararEmailRecuperacao($email, $nome, $token);
+            if ($enviado) {
+                Tabelas::log_error_table("E-mail de definição de senha enviado para $email");
+            } else {
+                Tabelas::log_error_table("Falha ao enviar e-mail para $email");
+            }
+        } else {
+            $_SESSION['ultimo_token'] = $token;
+        }
     }
 }

@@ -63,6 +63,7 @@ if ($uri === '/') {
     exit;
 }
 if ($uri === '/login' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    RecuperarPassWord::limparTokensExpirados();
     AuthLogin::login();
     exit;
 }
@@ -72,12 +73,16 @@ if ($uri === '/logout') {
     exit;
 }
 if ($uri === '/cadastrar') {
-    require __DIR__ . '/app/view/vendor/cadastro/cadastar.php';
+    require __DIR__ . '/app/view/vendor/cadastro/cadastrar.php';
     exit;
 }
 if ($uri === '/cadastro') {
     Database::connects();
     AuthLogin::cadastro();
+    exit;
+}
+if ($uri === '/termos') {
+    require __DIR__ . '/app/view/vendor/cadastro/termos.php';
     exit;
 }
 
@@ -189,13 +194,17 @@ if ($uri === '/menssagem') {
 
 if ($uri === '/confirmaReivindica') {
     AuthLogin::check();
-    // var_dump($_REQUEST);
-    // die();
     revindicar::ConfirmoRevidicacao();
     header("Location: /menssagem");
     exit;
 }
-if ($uri === '/recuperarSenha') {
+
+
+if ($uri === '/geraToken') {
+    recuperar::geraToken();
+    exit;
+}
+if ($uri === '/verificarToken') {
     require __DIR__ . "/app/view/vendor/recuperaSenha/verificarToken.php";
     exit;
 }
@@ -203,6 +212,24 @@ if ($uri === '/EmailRecuperacao') {
     require __DIR__ . "/app/view/vendor/recuperaSenha/verificarEmail.php";
     exit;
 }
+if ($uri === '/mudar_password') {
+    require __DIR__ . "/app/view/vendor/recuperaSenha/mudarPassWord.php";
+    exit;
+}
+if ($uri === '/checkToken') {
+    RecuperarPassWord::verificarTokenPost();
+    exit;
+}
+if ($uri === '/regerar_token') {
+    recuperar::regerarToken();
+    exit;
+}
+if ($uri === '/verificarPassWord') {
+    RecuperarPassWord::mudarpassword();
+    exit;
+}
+
+
 if ($uri === '/creditos') {
     AuthLogin::check();
     if ($isAjax) {

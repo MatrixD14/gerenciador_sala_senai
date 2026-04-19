@@ -6,6 +6,7 @@ use PHPMailer\PHPMailer\Exception;
 
 class EnviaInfoEmail
 {
+    private static $password = "";
     public static function dispararEmailNotificacao($nameRemetente, $emailDestino, $SalaDestino, $textoCorpo, $id_nova_reivindicacao)
     {
         $mail = new PHPMailer(true);
@@ -18,7 +19,7 @@ class EnviaInfoEmail
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'deivisonjoeldesouzacaldas@gmail.com';
-            $mail->Password   = 'fkuq ooko salu hxhu';
+            $mail->Password   =  self::$password;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
@@ -56,7 +57,7 @@ class EnviaInfoEmail
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'seu-email@gmail.com';
-            $mail->Password   = 'sua-senha-de-app-aqui';
+            $mail->Password   =  self::$password;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
@@ -73,6 +74,40 @@ class EnviaInfoEmail
             return true;
         } catch (Exception $e) {
             echo "Erro ao enviar: {$mail->ErrorInfo}";
+            return false;
+        }
+    }
+
+    public static function dispararEmailRecuperacao($emailDestino, $nomeUsuario, $token)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'deivisonjoeldesouzacaldas@gmail.com';
+            $mail->Password   =  self::$password;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+            $mail->CharSet    = 'UTF-8';
+
+            $mail->setFrom('deivisonjoeldesouzacaldas@gmail.com', 'Sistema de Agendamento');
+            $mail->addAddress($emailDestino);
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Recuperação de Senha';
+            $mail->Body = "
+                        <h2>Olá, $nomeUsuario!</h2>
+                        <p>Seu código de recuperação de senha é:</p>
+                        <h1 style='background:#f4f4f4; padding:10px; text-align:center;'>$token</h1>
+                        <p>Digite esse código no formulário de verificação.</p>
+                        <p>Válido por 1 hora.</p>
+             ";
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Erro ao enviar e-mail de recuperação: " . $mail->ErrorInfo);
             return false;
         }
     }

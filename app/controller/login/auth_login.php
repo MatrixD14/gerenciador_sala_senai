@@ -59,10 +59,12 @@ class AuthLogin
         $user = $_POST['nome'] ?? '';
         $pass = $_POST['senha'] ?? '';
         $email = $_POST['email'] ?? '';
+        $termos = $_POST['termos'] ?? null;
         if (isset($user, $pass, $email)) {
             if (strlen($user) == 0) self::log_error("preencha o campo nome");
             else if (strlen($pass) == 0) self::log_error("preenchao campo senha");
             else if (strlen($email) == 0) self::log_error("preenchao campo email");
+            else if (!$termos) self::log_error("precisa aceitar os termosl");
             else {
                 if (User::SelectUsercheck("nome", $user)->num_rows > 0 || User::SelectUsercheck("email", $email)->num_rows > 0) {
                     $_SESSION["log_create"] = "usuario ja existe";

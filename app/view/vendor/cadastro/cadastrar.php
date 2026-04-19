@@ -29,11 +29,13 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
             </p>
             <form action="/cadastro" method="post" autocomplete="off">
                 <label for="nome">nome</label><br />
-                <input type="text" name="nome" id='nome' autocomplete="off" /><br />
+                <input type="text" name="nome" id='nome' autocomplete="off" required /><br />
                 <label for="email">email</label><br />
-                <input type="email" name="email" id='email' autocomplete="off" /><br />
+                <input type="email" name="email" id='email' autocomplete="off" required /><br />
                 <label for="senha">senha</label><br />
-                <input type="password" name="senha" id='senha' autocomplete="off" /><br /><br />
+                <input type="password" name="senha" id='senha' autocomplete="off" required /><br /><br>
+                <label for="termos">
+                    <input type="checkbox" name="termos" id='termos' autocomplete="off" required />Eu li e aceito os <br><a href="/termos" target="_blank">Termos de Uso</a></label><br /><br />
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>

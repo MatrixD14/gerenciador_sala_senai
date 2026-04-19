@@ -29,14 +29,14 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
             </p>
             <form action="/login" method="post">
                 <label for="nome">nome</label><br />
-                <input type="text" name="nome" id="nome" autocomplete="off" /><br />
+                <input type="text" name="nome" id="nome" autocomplete="off" required /><br />
                 <label for="senha">senha</label><br />
-                <input type="password" name="senha" id="senha" autocomplete="off" /><br /><br />
+                <input type="password" name="senha" id="senha" autocomplete="off" required /><br /><br />
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>
-                    <a class="link-a" href="/cadastrar">cadastar</a><br>
-                    <a class="link-a" href="/EmailRecuperacao">Esqueci minha senha</a>
+                    <a class="link-a" href="/cadastrar">cadastrar</a><br>
+                    <a class="link-a" href="/EmailRecuperacao">Esqueci a senha</a>
                 </div>
             </form>
         </div>

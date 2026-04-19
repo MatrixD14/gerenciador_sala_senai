@@ -4,7 +4,10 @@ class BuscaInfoUser
     public static function buscaEmail($email): ?array
     {
         $db = Database::connects();
-        $stmtUser = $db->prepare("SELECT id FROM usuario WHERE email = ?");
+        $stmtUser = $db->prepare("SELECT id FROM usuario WHERE LOWER(email) = LOWER(?)");
+        if (!$stmtUser) {
+            throw new Exception("Erro : " . $db->error);
+        }
         $stmtUser->bind_param("s", $email);
         $stmtUser->execute();
         $resUser = $stmtUser->get_result()->fetch_assoc();
@@ -14,6 +17,9 @@ class BuscaInfoUser
     {
         $db = Database::connects();
         $stmtUser = $db->prepare("SELECT email FROM usuario WHERE id = ?");
+        if (!$stmtUser) {
+            throw new Exception("Erro: " . $db->error);
+        }
         $stmtUser->bind_param("i", $id);
         $stmtUser->execute();
         $resUser = $stmtUser->get_result()->fetch_assoc();
@@ -23,6 +29,9 @@ class BuscaInfoUser
     {
         $db = Database::connects();
         $stmt = $db->prepare("INSERT INTO requisicoes_troca (...) VALUES (?, ?, ?)");
+        if (!$stmt) {
+            throw new Exception("Erro: " . $db->error);
+        }
         $stmt->bind_param("iis", $id_remetente, $id_destinatario, $mensagem);
         $stmt->execute();
 
@@ -32,6 +41,9 @@ class BuscaInfoUser
     {
         $db = Database::connects();
         $stmtUser = $db->prepare("SELECT nome FROM usuario WHERE id = ?");
+        if (!$stmtUser) {
+            throw new Exception("Erro: " . $db->error);
+        }
         $stmtUser->bind_param("i", $id);
         $stmtUser->execute();
         $resUser = $stmtUser->get_result()->fetch_assoc();
@@ -40,17 +52,45 @@ class BuscaInfoUser
     public static function buscaDonoAgendamento($id_agendamento): ?array
     {
         $db = Database::connects();
-        $sql = "SELECT s.id as usuario_id,s.email, s.nome as usuario, sl.nome as sala
-            FROM usuario s
-            INNER JOIN agendar_sala a ON a.idUser = s.id 
-            INNER JOIN sala sl ON a.idSala = sl.id 
-            WHERE a.id = ?";
+        $sql = "SELECT usuario.id as usuario_id,usuario.email, usuario.nome as usuario, sala.nome as sala
+            FROM usuario 
+            INNER JOIN agendar_sala ON agendar_sala.idUser = usuario.id 
+            INNER JOIN sala  ON agendar_sala.idSala = sala.id 
+            WHERE agendar_sala.id = ?";
 
         $stmt = $db->prepare($sql);
         if (!$stmt) throw new Exception("Erro no SQL: " . $db->error);
         $stmt->bind_param("i", $id_agendamento);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+    public static function buscaDonoPorTabela($tabela, $idRegistro): ?int
+    {
+        $db = Database::connects();
+
+        switch ($tabela) {
+            case 'usuarios':
+                $stmt = $db->prepare("SELECT id FROM usuario WHERE id = ?");
+                if (!$stmt) {
+                    throw new Exception("Erro: " . $db->error);
+                }
+                $stmt->bind_param("i", $idRegistro);
+                $stmt->execute();
+                $row = $stmt->get_result()->fetch_assoc();
+                return $row ? (int)$row['id'] : null;
+
+            case 'agendar_sala':
+                $stmt = $db->prepare("SELECT idUser FROM agendar_sala WHERE id = ?");
+                if (!$stmt) {
+                    throw new Exception("Erro: " . $db->error);
+                }
+                $stmt->bind_param("i", $idRegistro);
+                $stmt->execute();
+                $row = $stmt->get_result()->fetch_assoc();
+                return $row ? (int)$row['idUser'] : null;
+            default:
+                return null;
+        }
     }
     public static function buscaBancoInfo($tabela, $colValue, $colLabel, $offset, $limit, $extraCols = [], $search = '')
     {

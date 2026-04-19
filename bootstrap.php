@@ -28,6 +28,8 @@ require_once __DIR__ . '/app/model/login.php';
 require_once __DIR__ . "/app/model/revindica.php";
 require_once __DIR__ . '/app/model/loandPHPMailer.php';
 require_once __DIR__ . '/app/model/EnviaInforEmail.php';
+require_once __DIR__ . '/app/model/recuperar_senha.php';
+
 require_once __DIR__ . '/app/controller/tabela/tabelas.php';
 require_once __DIR__ . '/app/controller/tabela/menutopTable/TableTop.php';
 
@@ -48,6 +50,7 @@ require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/searche
 require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/gerarPdf/TopENBottom.php";
 require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/gerarPdf/RelatorioController.php";
 require_once __DIR__ . "/app/controller/tabela/menutopTable/functionIcon/gerarPdf/RelatorioEngine.php";
+require_once __DIR__ . "/app/controller/recuperar_senha/recuperar.php";
 //essa aria deleta os agendamento de 1 ano que passa que e no caso de 365dia
 TabelaCleanup::autoCleanupTableAgendamento(365);
 TabelaCleanup::autoCleanupReivindicacao(365);

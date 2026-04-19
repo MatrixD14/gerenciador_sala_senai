@@ -86,6 +86,7 @@ return [
             "id" => ['type' => 'number', 'primary' => true],
             "nome" => ['type' => 'text'],
             "email" => ['type' => 'email',],
+
             'privilegio' => ['type' => 'select', 'options' => ['aluno', 'professor', 'admin']]
         ]
     ],

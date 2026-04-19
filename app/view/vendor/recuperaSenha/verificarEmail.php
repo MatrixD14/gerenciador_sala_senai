@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
     <link rel="icon" href="data:," type="image/x-icon" />
     <link rel="stylesheet" href="<?= URL ?>/css/global.css" />
     <link rel="stylesheet" href="<?= URL ?>/css/component/button.css" />
-    <title>login</title>
+    <title>verificar Email</title>
     <style>
         input::-webkit-calendar-picker-indicator {
             display: none;
@@ -22,14 +22,15 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
         <h1 class="h1-center">recuperar senha</h1>
         <div class="center">
             <p style="color: red">
-                <?php if (isset($_SESSION["log_create"]))
-                    echo $_SESSION["log_create"];
-                session_destroy();
+                <?php if (isset($_SESSION["erro_token"])) {
+                    echo $_SESSION["erro_token"];
+                    unset($_SESSION["erro_token"]);
+                }
                 ?>
             </p>
-            <form action="/verificaToken" method="post">
+            <form action="/geraToken" method="post">
                 <label for="email">Email</label><br />
-                <input type="email" name="email" id="email" autocomplete="off" /><br><br>
+                <input type="email" name="email" id="email" autocomplete="off" required /><br><br>
                 <div class="box-center">
                     <input type="submit" value="enter" class="bt-enter" />
                     <p></p>

@@ -18,9 +18,11 @@ try {
     echo "Erro: " . $e->getMessage();
     exit;
 }
-$dono = BuscaInfoUser::buscaDonoAgendamento($id);
+$donoId = BuscaInfoUser::buscaDonoPorTabela($table, $id);
+$isDono = ($donoId !== null && $donoId === (int)$userAtivo['id']);
+$isAdmin = ($userAtivo['privilegio'] === "admin");
 
-$bloquearEdicao = ($dono && $dono['usuario_id'] === $userAtivo['id']) || !$engine->canSubmit();
+$bloquearEdicao = !$engine->canSubmit() || (!$isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
     <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiarevindicar(event)">
