@@ -6,11 +6,15 @@ use PHPMailer\PHPMailer\Exception;
 
 class EnviaInfoEmail
 {
-    private static $password = "";
+    private static function EnvInfo($key)
+    {
+        $env = Env::get('SMTP');
+        return $env[$key] ?? null;
+    }
     public static function dispararEmailNotificacao($nameRemetente, $emailDestino, $SalaDestino, $textoCorpo, $id_nova_reivindicacao)
     {
         $mail = new PHPMailer(true);
-        $urlAceitar = URLs . "/confirmaReivindica?id=$id_nova_reivindicacao&status=aceito";
+        $urlAceitar = URLs . "/confirmaReivindica?id=$id_nova_reivindicacao&status=aprovado";
         $urlRecusar = URLs . "/confirmaReivindica?id=$id_nova_reivindicacao&status=recusado";
 
         try {
@@ -18,13 +22,13 @@ class EnviaInfoEmail
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'deivisonjoeldesouzacaldas@gmail.com';
-            $mail->Password   =  self::$password;
+            $mail->Username   = self::EnvInfo('EMAIL');
+            $mail->Password   =  self::EnvInfo('EMAILPASSWORD');
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
 
-            $mail->setFrom('deivisonjoeldesouzacaldas@gmail.com', 'Sistema de Agendamento');
+            $mail->setFrom(self::EnvInfo('EMAIL'), 'Sistema de Agendamento');
             // $mail->addReplyTo('suporte@seusite.com', 'Suporte Técnico');
             $mail->addAddress($emailDestino);
 
@@ -57,7 +61,7 @@ class EnviaInfoEmail
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'seu-email@gmail.com';
-            $mail->Password   =  self::$password;
+            $mail->Password   =  self::EnvInfo('EMAILPASSWORD');;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
@@ -81,29 +85,33 @@ class EnviaInfoEmail
     public static function dispararEmailRecuperacao($emailDestino, $nomeUsuario, $token)
     {
         $mail = new PHPMailer(true);
+        $link = URLs . "/redefinir?token=$token";
 
         try {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'deivisonjoeldesouzacaldas@gmail.com';
-            $mail->Password   =  self::$password;
+            $mail->Username   = self::EnvInfo('EMAIL');
+            $mail->Password   =  self::EnvInfo('EMAILPASSWORD');;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             $mail->CharSet    = 'UTF-8';
 
-            $mail->setFrom('deivisonjoeldesouzacaldas@gmail.com', 'Sistema de Agendamento');
+            $mail->setFrom(self::EnvInfo('EMAIL'), 'Sistema de Agendamento');
             $mail->addAddress($emailDestino);
 
             $mail->isHTML(true);
             $mail->Subject = 'Recuperação de Senha';
             $mail->Body = "
                         <h2>Olá, $nomeUsuario!</h2>
-                        <p>Seu código de recuperação de senha é:</p>
-                        <h1 style='background:#f4f4f4; padding:10px; text-align:center;'>$token</h1>
-                        <p>Digite esse código no formulário de verificação.</p>
-                        <p>Válido por 1 hora.</p>
-             ";
+                        <p>Você solicitou a recuperação de senha. Clique no botão abaixo para prosseguir:</p>
+                        <div style='text-align:center; margin: 30px 0;'>
+                            <a href='$link' style='background:#007bff; color:white; padding:15px 25px; text-decoration:none; border-radius:5px;'>REDEFINIR SENHA</a>
+                        </div>
+                        <p>Se o botão não funcionar, copie e cole o link abaixo no seu navegador:</p>
+                        <p>$link</p>
+                        <p>Este link expira em 1 hora.</p>
+                    ";
             $mail->send();
             return true;
         } catch (Exception $e) {

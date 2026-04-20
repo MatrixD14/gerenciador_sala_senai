@@ -20,8 +20,6 @@ class Delete
     public static function delete()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        self::debug('=== INÍCIO DO PROCESSAMENTO ===');
-        self::debug('POST recebido', $_POST);
         $userLogadoId = $_SESSION['id'] ?? null;
         $userPrivilegio = $_SESSION['privilegio'] ?? 'aluno';
         self::loadConfig();
@@ -29,7 +27,6 @@ class Delete
         $table = $_POST["table"];
         $id = $_POST["id"];
         $name = $_POST["nome"];
-        self::debug('Parâmetros iniciais', ['table' => $table, 'id' => $id, 'nome' => $name]);
         if (!isset(self::$inforDate[$table])) {
             Tabelas::log_error_table("Tabela não encontrada");
             header("Location: /$table");
@@ -115,16 +112,5 @@ class Delete
         $row = $result->fetch_assoc();
         $stmt->close();
         return $row["total"];
-    }
-    private static function debug($message, $data = null)
-    {
-        $logFile = __DIR__ . '/../../debug_editor.log'; // ajuste o caminho conforme necessário
-        $timestamp = date('Y-m-d H:i:s');
-        $logMessage = "[$timestamp] $message";
-        if ($data !== null) {
-            $logMessage .= "\n" . print_r($data, true);
-        }
-        $logMessage .= "\n--------------------------------\n";
-        file_put_contents($logFile, $logMessage, FILE_APPEND);
     }
 }

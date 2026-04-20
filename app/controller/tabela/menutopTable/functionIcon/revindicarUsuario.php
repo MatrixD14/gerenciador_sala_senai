@@ -11,18 +11,22 @@ class revindicar
         $mensagem = !empty($_POST["menssage"]) ? $_POST["menssage"] : "Gostaria de usar essa sala.";
 
         if ($id_agendamento && $id_remetente) {
-            $id_nova_reivindicacao = revindicando::EnviaRevindicacao(
-                $id_remetente,
-                $id_agendamento,
-                $mensagem
-            );
-            $dadosEmail = BuscaInfoUser::buscaDonoAgendamento($id_agendamento);
-            $nomeQuemPede = $_SESSION["nome"] ?? "Alguém";
+            try {
+                $id_nova_reivindicacao = revindicando::EnviaRevindicacao(
+                    $id_remetente,
+                    $id_agendamento,
+                    $mensagem
+                );
+                $dadosEmail = BuscaInfoUser::buscaDonoAgendamento($id_agendamento);
+                $nomeQuemPede = $_SESSION["nome"] ?? "Alguém";
 
-            // if ($dadosEmail && isset($dadosEmail['email'])) {
-            //     EnviaInfoEmail::dispararEmailNotificacao($nomeQuemPede, $dadosEmail['email'], $dadosEmail['sala'], $mensagem, $id_nova_reivindicacao);
-            // }
-            Tabelas::log_error_table("Você requisito um agendamento com ID $nome,  sucesso!");
+                if ($dadosEmail && isset($dadosEmail['email'])) {
+                    EnviaInfoEmail::dispararEmailNotificacao($nomeQuemPede, $dadosEmail['email'], $dadosEmail['sala'], $mensagem, $id_nova_reivindicacao);
+                }
+                Tabelas::log_error_table("Você requisito um agendamento com ID $nome,  sucesso!");
+            } catch (Exception $e) {
+                Tabelas::log_error_table("Erro ao processar: " . $e->getMessage());
+            }
         } else {
             Tabelas::log_error_table("Erro: Dados insuficientes para requisitar a troca.");
         }

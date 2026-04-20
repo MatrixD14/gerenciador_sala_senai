@@ -228,7 +228,10 @@ if ($uri === '/verificarPassWord') {
     RecuperarPassWord::mudarpassword();
     exit;
 }
-
+if (strpos($uri, '/redefinir') === 0) {
+    RecuperarPassWord::redefinir();
+    exit;
+}
 
 if ($uri === '/creditos') {
     AuthLogin::check();

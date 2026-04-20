@@ -4,3 +4,8 @@ USER=root
 PASSWORD=
 DATABASE=gerenciadorSala
 PORT=3306
+[SMTP]
+EMAIL=deivisonjoeldesouzacaldas@gmail.com
+EMAILPASSWORD=odmg tjjx miip zxmy
+EMAILSUPORT=
+EMAILSUPORTPASSWORD=

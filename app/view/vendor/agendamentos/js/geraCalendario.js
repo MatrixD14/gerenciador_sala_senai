@@ -50,7 +50,12 @@ async function renderizarCalendario() {
         'Novembro',
         'Dezembro',
     ];
-    labelMes.innerText = `${ano}\n${meses[mesIndex]}`;
+    // labelMes.innerText = `${meses[mesIndex]} ${ano}`;
+    labelMes.innerHTML = selectOld(meses, mesIndex, ano);
+    document.getElementById('selectAno').onchange = (e) => {
+        dataControleCalendario.setFullYear(parseInt(e.target.value));
+        renderizarCalendario();
+    };
     let htmlFinal = ComponentesCalendario.gerarCabecalho();
 
     const primeiroDiaMes = new Date(ano, mesIndex, 1);
@@ -78,6 +83,17 @@ async function renderizarCalendario() {
 
     grid.innerHTML = htmlFinal;
     atualizarNavegacao(ano, mesIndex);
+}
+
+function selectOld(meses, mesIndex, ano) {
+    let seletorAno = `<select id="selectAno" style="font-size: 2.0rem; font-weight: 800; border: none; background: transparent; cursor: pointer;">`;
+    const anoAtualRef = new Date().getFullYear();
+
+    for (let i = anoAtualRef - 1; i <= anoAtualRef + 1; i++) {
+        seletorAno += `<option value="${i}" ${i === ano ? 'selected' : ''}>${i}</option>`;
+    }
+    seletorAno += `</select>`;
+    return `${meses[mesIndex]} ${seletorAno}`;
 }
 
 function atualizarNavegacao(ano, mes) {

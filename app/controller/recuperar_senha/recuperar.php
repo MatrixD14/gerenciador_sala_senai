@@ -35,7 +35,8 @@ class recuperar
         if ($enviado) {
             header('location: /verificarToken');
         } else {
-            echo "Erro ao enviar e-mail. Tente novamente mais tarde.";
+            self::log_error_token("Erro ao enviar e-mail. Tente novamente mais tarde.");
+            header('Location: /EmailRecuperacao');
         }
         exit;
     }
@@ -45,11 +46,10 @@ class recuperar
 
         $email = $_SESSION['reset_email'] ?? null;
         if (!$email) {
-            header('Location: /EmailRecuperacao?erro=sessao_expirada');
+            header('Location: /EmailRecuperacao');
             exit;
         }
 
-        // Limite de 5 minutos (300 segundos)
         $ultimoPedido = $_SESSION['last_request_time'] ?? 0;
         $agora = time();
         if ($agora - $ultimoPedido < 300) {
@@ -61,9 +61,8 @@ class recuperar
 
         $usuario = BuscaInfoUser::buscaEmail($email);
         if (!$usuario) {
-            // email não existe mais (inconsistência)
             unset($_SESSION['reset_email']);
-            header('Location: /EmailRecuperacao?erro=email_invalido');
+            header('Location: /EmailRecuperacao');
             exit;
         }
 
@@ -82,7 +81,9 @@ class recuperar
             $_SESSION['last_request_time'] = time(); // atualiza o timestamp
             $_SESSION['sucesso_token'] = "Um novo token foi enviado para seu e-mail.";
         } else {
-            $_SESSION['erro_token'] = "Erro ao enviar e-mail. Tente novamente mais tarde.";
+            self::log_error_token("Erro ao enviar e-mail. Tente novamente mais tarde.");
+            header('Location: /EmailRecuperacao');
+            exit;
         }
 
         header('Location: /geraToken');

@@ -26,24 +26,15 @@ body {
     position: relative;
     align-items: center;
     justify-content: flex-start;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
     width: 100%;
-
     min-height: 0;
 }
 
 @media (min-width: 1200px) {
     .content {
-        padding: 60px;
         max-width: 1400px;
         margin: 0 auto;
-    }
-}
-@media (max-width: 480px) {
-    .content {
-        padding: 10px;
-        justify-content: flex-start;
-        padding-top: 40px;
     }
 }

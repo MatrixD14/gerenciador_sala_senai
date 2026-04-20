@@ -8,7 +8,7 @@
     min-height: 0;
     height: 100%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
 }
 .calendar {
@@ -185,4 +185,31 @@
     height: 25px;
     color: #fff;
     fill: currentColor;
+}
+@media (max-height: 500px) and (orientation: landscape) {
+    .container {
+        padding: 0px;
+        /* height: auto; */
+    }
+
+    .calendar {
+        grid-auto-rows: minmax(35px, auto);
+    }
+}
+@media (orientation: portrait) {
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .calendar {
+        grid-auto-rows: minmax(auto, 100px);
+        height: auto;
+        width: 100%;
+        max-width: 100%;
+    }
+    .top-calendario {
+        margin-top: 0;
+    }
 }

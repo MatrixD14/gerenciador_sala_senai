@@ -207,7 +207,7 @@ return [
         ],
         "especifico" => [
             'requisicoes_troca.id',
-            'requisicoes_troca.status as reivindicado',
+            'requisicoes_troca.status',
             "requisicoes_troca.data_envio as Enviado",
             "user1.nome as rementente",
             "user2.nome as destinatario",

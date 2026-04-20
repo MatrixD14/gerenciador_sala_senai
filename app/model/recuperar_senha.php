@@ -18,7 +18,12 @@ class RecuperarPassWord
     }
     public static function redefinir()
     {
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $tokenURL = $_GET['token'];
+        if (!$tokenURL) {
+            header('Location: /EmailRecuperacao');
+            exit;
+        }
 
         $sql = "SELECT idUser FROM recuperacao_token
         WHERE token = ? AND usado = 0 AND expiracao > NOW()";
@@ -30,12 +35,13 @@ class RecuperarPassWord
         $resultado = $stmt->get_result()->fetch_assoc();
 
         if ($resultado) {
-            if (session_status() === PHP_SESSION_NONE) session_start();
             $_SESSION['reset_user_id'] = $resultado['idUser'];
             $_SESSION['reset_token'] = $tokenURL;
             header('location: /mudar_password');
         } else {
-            echo "Link inválido ou expirado.";
+
+            self::log_error_token("Link inválido ou expirado.");
+            header('Location: /EmailRecuperacao');
         }
         exit;
     }
