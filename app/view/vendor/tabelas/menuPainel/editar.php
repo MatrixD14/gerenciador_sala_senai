@@ -22,7 +22,7 @@ $donoId = BuscaInfoUser::buscaDonoPorTabela($table, $id);
 $isDono = ($donoId !== null && $donoId === (int)$userAtivo['id']);
 $isAdmin = ($userAtivo['privilegio'] === "admin");
 
-$bloquearEdicao = !$engine->canSubmit() || (!$isDono && !$isAdmin);
+$bloquearEdicao = !$engine->canSubmit() || ($isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
     <form action="/edito" method="post" class="Painel">

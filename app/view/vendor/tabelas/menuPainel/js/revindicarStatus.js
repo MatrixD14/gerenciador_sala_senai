@@ -4,7 +4,15 @@ function statusReivindica(event) {
     const inputData = document.querySelector('input[name="dia"]');
     const menssage = document.querySelector('#menssage-log');
 
+    const statusAtual = form.getAttribute('data-status-atual');
     const hoje = new Date().toISOString().split('T')[0];
+    if (statusAtual !== 'pendente') {
+        if (menssage) {
+            menssage.textContent = `Esta solicitação já está ${statusAtual.toUpperCase()} e não pode ser alterada.`;
+            menssage.style.color = 'orange';
+        }
+        return;
+    }
     if (inputData && inputData.value < hoje) {
         if (event) event.preventDefault();
         if (menssage) {

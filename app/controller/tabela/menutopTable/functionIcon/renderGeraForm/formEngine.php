@@ -108,4 +108,9 @@ class FormEngine
         }
         return true;
     }
+    // Dentro da classe FormEngine
+    public function getDados(): array
+    {
+        return $this->dbData;
+    }
 }

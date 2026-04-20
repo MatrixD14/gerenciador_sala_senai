@@ -88,9 +88,36 @@ class BuscaInfoUser
                 $stmt->execute();
                 $row = $stmt->get_result()->fetch_assoc();
                 return $row ? (int)$row['idUser'] : null;
+
+            case 'menssagem':
+            case 'requisicoes_troca':
+                // Aqui buscamos o dono do agendamento que está sendo reivindicado
+                $sql = "SELECT agendar_sala.idUser 
+                    FROM requisicoes_troca 
+                    INNER JOIN agendar_sala ON requisicoes_troca.id_agendamento_revindicado = agendar_sala.id 
+                    WHERE requisicoes_troca.id = ?";
+                $stmt = $db->prepare($sql);
+                if (!$stmt) throw new Exception("Erro: " . $db->error);
+                $stmt->bind_param("i", $idRegistro);
+                $stmt->execute();
+                $row = $stmt->get_result()->fetch_assoc();
+                // Retorna o ID do usuário que é o dono original da sala
+                return $row ? (int)$row['idUser'] : null;
             default:
                 return null;
         }
+    }
+    public static function buscaDataAgendamento($id_agendamento): ?string
+    {
+        $db = Database::connects();
+        $stmt = $db->prepare("SELECT dia FROM agendar_sala WHERE id = ?");
+        if (!$stmt) {
+            throw new Exception("Erro: " . $db->error);
+        }
+        $stmt->bind_param("i", $id_agendamento);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        return $row ? $row['dia'] : null;
     }
     public static function buscaBancoInfo($tabela, $colValue, $colLabel, $offset, $limit, $extraCols = [], $search = '')
     {

@@ -28,7 +28,13 @@ class revindicando
     ) {
         $db = Database::connects();
         if (!$db) throw new Exception("Falha na conexão com o banco.");
-        $stmtCheck = $db->prepare("SELECT status FROM requisicoes_troca WHERE id = ?");
+        // $stmtCheck = $db->prepare("SELECT status FROM requisicoes_troca WHERE id = ?");
+        $sql = "SELECT r.status, a.dia 
+            FROM requisicoes_troca r
+            INNER JOIN agendar_sala a ON r.id_agendamento_revindicado = a.id
+            WHERE r.id = ?";
+
+        $stmtCheck = $db->prepare($sql);
         $stmtCheck->bind_param("i", $id);
         $stmtCheck->execute();
         $resultado = $stmtCheck->get_result()->fetch_assoc();
@@ -38,7 +44,8 @@ class revindicando
         if ($resultado['status'] === 'aprovado' || $resultado['status'] === 'recusado') {
             return "ja processado";
         }
-        if ($resultado['status'] === 'expirou') return "já expiro";
+        $hoje = date('Y-m-d');
+        if ($resultado['dia'] < $hoje || $resultado['status'] === 'expirou') return "já expiro";
 
         $stmt = $db->prepare("
         UPDATE requisicoes_troca 

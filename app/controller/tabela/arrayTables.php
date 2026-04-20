@@ -139,6 +139,12 @@ return [
                 "type" => "number",
                 "primary" => true,
             ],
+            "status" => [
+                "type" => "hidden",
+            ],
+            "Enviado" => [
+                "type" => "hidden",
+            ],
             "remetente" => [
                 "maskname" => "id_remetente",
                 "type" => "readonly",
@@ -153,12 +159,12 @@ return [
                 "maskname" => "id_agendamento_revindicado",
                 'type' => "readonly",
                 "relation" => [
-                    "tabela" => "turmas",
-                    "coluna" => "turno",
+                    "tabela" => "agendar_sala",
+                    "coluna" => "idUser",
                     "value" => 'id',
                     "tableConnection" => [
                         ["tabela" => "agendar_sala", 'buscar' => "idUser", "onde" => "id"],
-                        ["tabela" => "turmas", "buscar" => "turno", "onde" => "id"]
+                        ["tabela" => "usuario", "buscar" => "nome", "onde" => "id"]
                     ]
                 ]
             ],
@@ -174,6 +180,9 @@ return [
                         ["tabela" => "sala", "buscar" => "nome", "onde" => "id"]
                     ]
                 ]
+            ],
+            "agendado" => [
+                'type' => "hidden",
             ],
             "hora_inicio" => [
                 "maskname" => "id_agendamento_revindicado",
@@ -199,17 +208,16 @@ return [
                     ]
                 ]
             ],
-            "menssagem" => [
+            "mensagem" => [
                 "maskname" => "mensagem",
                 "type" => "readonly"
-            ]
-
+            ],
         ],
         "especifico" => [
             'requisicoes_troca.id',
             'requisicoes_troca.status',
             "requisicoes_troca.data_envio as Enviado",
-            "user1.nome as rementente",
+            "user1.nome as remetente",
             "user2.nome as destinatario",
             "sala.nome as sala",
             "agendar_sala.dia as agendado",

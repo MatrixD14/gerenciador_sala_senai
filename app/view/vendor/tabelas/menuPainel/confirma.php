@@ -18,19 +18,31 @@ try {
     echo "Erro: " . $e->getMessage();
     exit;
 }
+$dadosForm = $engine->getDados();
+$statusAtual = $dadosForm['status'] ?? 'pendente';
+$dataAgendamento = $dadosForm['dia'] ?? '';
+$hoje = date('Y-m-d');
+$expirou = ($dataAgendamento < $hoje && $statusAtual === 'pendente');
+$jaProcessado = ($statusAtual !== 'pendente');
 
 $donoId = BuscaInfoUser::buscaDonoPorTabela($table, $id);
 $isDono = ($donoId !== null && $donoId === (int)$userAtivo['id']);
 $isAdmin = ($userAtivo['privilegio'] === "admin");
 
-$bloquearEdicao = !$engine->canSubmit() || (!$isDono && !$isAdmin);
+$bloquearEdicao = $jaProcessado || $expirou || !$engine->canSubmit() || ($isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
-    <form action="/confirmaReivindica" method="post" class="Painel" onsubmit="statusReivindica(event)">
+    <form action="/confirmaReivindica" method="post" class="Painel" onsubmit="statusReivindica(event)" data-status-atual="<?= $statusAtual ?>"
+        data-agendamento="<?= $dataAgendamento ?>">
         <div class="top-Painel">
             <h2>aceita reivindicar</h2>
             <hr>
-            <div id="menssage-log"></div>
+            <div id="menssage-log">
+                <?php
+                if ($statusAtual === 'aprovado') echo "<b style='color:green'>Esta solicitação já foi APROVADA.</b>";
+                elseif ($statusAtual === 'recusado') echo "<b style='color:red'>Esta solicitação já foi RECUSADA.</b>";
+                elseif ($statusAtual === 'expirou' || $expirou) echo "<b style='color:orange'>Esta solicitação EXPIROU.</b>"; ?>
+            </div>
         </div>
         <div class="editar-dados">
             <input type="hidden" name="id" id="id" value="<?= $id ?>">
@@ -38,11 +50,12 @@ $bloquearEdicao = !$engine->canSubmit() || (!$isDono && !$isAdmin);
             <?= $engine->render() ?>
         </div>
         <div class="buttons-cal-conf">
-            <?php if (!$engine->canSubmit()) echo "<p></p>"; ?>
-            <button id="cancel" data-status="recusado">Cancelar</button>
-            <?php if (!$engine->canSubmit()) echo "<p></p>";
-            else { ?>
-                <button id="confirm" data-status="aprovado">Confirmar</button>
-            <?php } ?>
+            <p></p>
+            <button type="button" onclick="buttonVoltar()" id="cancel">Voltar</button>
+            <p></p>
+            <?php if (!$bloquearEdicao): ?>
+                <button type="submit" id="deny" data-status="recusado" style="background:#ff4d4d">Recusar</button>
+                <button type="submit" id="confirm" data-status="aprovado">Aprovar</button>
+            <?php endif; ?>
     </form>
 </div>

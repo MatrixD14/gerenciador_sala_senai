@@ -34,15 +34,40 @@ class revindicar
     public static function ConfirmoRevidicacao()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        $id_agendamento = $_REQUEST["id"] ?? null;
-        $status = $_REQUEST["status"] ?? null;
 
-        if ($id_agendamento && $status) {
-            $repostaServe =  revindicando::confirmoRevindicacao($id_agendamento, $status);
-            $repost = $repostaServe === "sucesso" ? "Você $status com," : "";
-            Tabelas::log_error_table("$repost $repostaServe");
-        } elseif ($id_agendamento || $status) {
-            Tabelas::log_error_table("Erro: Dados insuficientes para reivindicar. ID: $id_agendamento");
+        $id_solicitacao = $_REQUEST["id"] ?? null;
+        $status = $_REQUEST["status"] ?? null;
+        $id_usuario_logado = $_SESSION["id"] ?? null;
+
+        if ($id_solicitacao && $status && $id_usuario_logado) {
+            try {
+                // SEGURANÇA: Verificar se quem está logado é realmente o dono da sala/agendamento
+                // Usamos o slug 'menssagem' para que o switch do BuscaInfoUser funcione
+                $id_dono_real = BuscaInfoUser::buscaDonoPorTabela('menssagem', $id_solicitacao);
+
+                if ($id_dono_real !== (int)$id_usuario_logado && $_SESSION['privilegio'] !== 'admin') {
+                    Tabelas::log_error_table("Erro: Você não tem permissão para processar esta solicitação.");
+                    return;
+                }
+
+                $repostaServe = revindicando::confirmoRevindicacao($id_solicitacao, $status);
+
+                // Formata a mensagem de retorno amigável
+                $mensagens = [
+                    "sucesso" => "Solicitação processada com sucesso: $status!",
+                    "ja processado" => "Esta solicitação já foi respondida anteriormente.",
+                    "já expiro" => "Não foi possível processar: O agendamento já expirou.",
+                    "nao encontrado" => "Erro: Solicitação não localizada no sistema.",
+                    "erro" => "Houve um erro técnico ao atualizar o status."
+                ];
+
+                $msgFinal = $mensagens[$repostaServe] ?? "Status desconhecido: $repostaServe";
+                Tabelas::log_error_table($msgFinal);
+            } catch (Exception $e) {
+                Tabelas::log_error_table("Erro crítico: " . $e->getMessage());
+            }
+        } else {
+            Tabelas::log_error_table("Erro: Dados insuficientes para completar a ação.");
         }
     }
     public static function ExperarReivindicacao()
@@ -50,9 +75,28 @@ class revindicar
         date_default_timezone_set('America/Sao_Paulo');
         $db = Database::connects();
         $hoje = date('Y-m-d');
-        $stmtAntigos = $db->prepare("UPDATE requisicoes_troca SET status = 'expirou' WHERE DATE(data_envio) < ? AND status = 'pendente'");
-        $stmtAntigos->bind_param("s", $hoje);
-        $stmtAntigos->execute();
-        $stmtAntigos->close();
+
+        $sqlDataAgendamento = "
+            UPDATE requisicoes_troca r
+            INNER JOIN agendar_sala a ON r.id_agendamento_revindicado = a.id
+            SET r.status = 'expirou'
+            WHERE a.dia < ? AND r.status = 'pendente'
+        ";
+
+        $stmt1 = $db->prepare($sqlDataAgendamento);
+        $stmt1->bind_param("s", $hoje);
+        $stmt1->execute();
+        $totalExpiradosData = $stmt1->affected_rows;
+        $stmt1->close();
+        $sqlAntigos = "UPDATE requisicoes_troca SET status = 'expirou' WHERE DATE(data_envio) < ? AND status = 'pendente'";
+        $dataLimite = date('Y-m-d', strtotime('-2 days'));
+
+        $stmt2 = $db->prepare($sqlAntigos);
+        $stmt2->bind_param("s", $dataLimite);
+        $stmt2->execute();
+        $totalExpiradosTempo = $stmt2->affected_rows;
+        $stmt2->close();
+
+        return ($totalExpiradosData + $totalExpiradosTempo);
     }
 }
