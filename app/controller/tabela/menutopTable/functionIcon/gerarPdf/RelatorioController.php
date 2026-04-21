@@ -8,13 +8,13 @@ class RelatorioController
     {
         $slug = $_GET['tabela'] ?? 'agendamentos';
         $orientation = $_GET['pdf_orientation'] ?? 'L';
-        $pagsLimite = (int)($_GET['pags_limite'] ?? 0);
+        $pagsLimite = (int)($_GET['pagsLimite'] ?? 0);
         $userLogin = $_SESSION['user_id'] ?? null;
         $path = __DIR__ . '/arrayTabelafiltroPDF.php';
         $allConfigs = file_exists($path) ? require $path : [];
         $configDaTabela = $allConfigs[$slug]['colunas'] ?? [];
-        $registrosPorPagina = ($orientation === 'L') ? 21 : 35;
-        $limitSQL = $pagsLimite > 0 ? $pagsLimite * $registrosPorPagina : 500;
+        $registrosPorPagina = ($orientation === 'L') ? 21 : 34;
+        $limitSQL = $pagsLimite > 0 ? $pagsLimite * $registrosPorPagina : 420;
 
         $dadosTabela = Tabelas::getDadosParaPDF($slug, $userLogin, $limitSQL, 0);
 
@@ -94,7 +94,9 @@ class RelatorioController
         $showCols = $_GET['show_cols'] ?? null;
         $permitidas = $this->normalizarPermitidas($showCols);
 
-
+        if ($permitidas === null && isset($configFiltro['colunas_visiveis'])) {
+            $permitidas = array_map('strtolower', $configFiltro['colunas_visiveis']);
+        }
         $colunasDoBanco = [];
         if (!empty($config['especifico'])) {
             foreach ($config['especifico'] as $expr) {
@@ -145,8 +147,9 @@ class RelatorioController
             $nomeNaUrl = strtolower($infoFiltro['label'] ?? $campo);
             $maskNameConfig = strtolower($infoFiltro['maskname'] ?? ($infoFiltro['masckname'] ?? ''));
             foreach ($_GET as $keyGet => $valGet) {
+                if ($valGet === '' || $valGet === null) continue;
                 $keyLower = strtolower($keyGet);
-                if ($keyLower === $nomeNaUrl || $keyLower === strtolower($chaveOriginalFiltro) || ($maskNameConfig && $keyLower === $maskNameConfig) && !empty($valGet))
+                if ($keyLower === $nomeNaUrl || $keyLower === strtolower($chaveOriginalFiltro) || ($maskNameConfig && $keyLower === $maskNameConfig))
                     return true;
             }
         }
@@ -154,7 +157,7 @@ class RelatorioController
     }
     private function normalizarPermitidas($showCols)
     {
-        if ($showCols)  return null;
+        if ($showCols === null)  return null;
         if (is_array($showCols)) return array_map('strtolower', $showCols);
         $decoded = json_decode($showCols, true);
         if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {

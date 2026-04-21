@@ -29,11 +29,13 @@ class FiltroEngine
         $html .= "<hr>";
         foreach ($this->config['colunas'] as $name => $col) {
             $html .= "<div class='filtro-group'>";
-            $html .= "<label><strong>" . ($col['label'] ?? ucfirst($name)) . "</strong></label><br>";
+            $labelText = $col['label'] ?? ucfirst($name);
 
             if ($col['type'] === 'date-range') {
-                $html .= $this->renderDateRange($name);
+                $html .= "<p><strong>$labelText:</strong></p>";
+                $html .= self::renderDateRange($name);
             } else {
+                $html .= "<label for='$name'><strong>$labelText:</strong></label><br>";
                 $html .= FormRenderer::renderField($name, $col, '', false, $this->config['colunas'], false, $this->slug);
             }
 
@@ -47,25 +49,26 @@ class FiltroEngine
 
     private function renderDateRange($name): string
     {
+        $idDe = "{$name}_de";
+        $idAte = "{$name}_ate";
         return "
-            <div class='range-container'>
-                <input type='date' name='{$name}_de' class='input-dados' placeholder='De'>
-                <span>até</span>
-                <input type='date' name='{$name}_ate' class='input-dados' placeholder='Até'>
-            </div>";
+        <div class='range-container'>
+            <label for='$idDe' style='margin-right:5px;'>De:</label>
+            <input type='date' name='{$name}_de' id='$idDe' class='input-dados'>
+            <label for='$idAte' style='margin-right:5px;'>Até:</label>
+            <input type='date' name='{$name}_ate' id='$idAte' class='input-dados'>
+        </div>";
     }
 
     private function renderVisibilityCheckboxes(): string
     {
         $options = $this->config['colunas_visiveis'] ?? [];
-        if (empty($options)) return "";
-
-        $html = "<div class='filtro-group'><b>Exibir Colunas:</b><div class='grid-check'>";
+        $html = "<div class='filtro-group'><b>Colunas no PDF:</b><div class='grid-check'>";
         foreach ($options as $col) {
-            $html .= "
-                <label class='check-label'>
-                    <input type='checkbox' name='show_cols[]' id='$col' value='$col' checked> " . ucfirst($col) . "
-                </label>";
+            $id = "show_cols_" . preg_replace('/[^a-zA-Z0-9_]/', '_', $col);
+            $html .= "<label class='check-label' for='$id'>";
+            $html .= "<input type='checkbox' name='show_cols[]' id='$id' value='$col' checked> " . ucfirst($col);
+            $html .= "</label>";
         }
         return $html . "</div></div>";
     }
@@ -75,16 +78,16 @@ class FiltroEngine
         if (empty($opcoes)) return "";
 
         $html = "<div class='filtro-group'>";
-        $html .= "<label><strong>Ordenar por:</strong></label><br>";
+        $html .= "<p><strong>Ordenar por:</strong></p>";
         $html .= "<div >";
 
-        $html .= "<select name='order_by' class='select-dados' >";
+        $html .= "<select name='order_by'  id='order_by' class='select-dados' >";
         $html .= "<option value='id'>Padrão (ID)</option>";
         foreach ($opcoes as $campo) {
             $html .= "<option value='$campo'>" . ucfirst($campo) . "</option>";
         }
         $html .= "</select>";
-        $html .= "<select name='order_direction' class='select-dados' >";
+        $html .= "<select name='order_direction' id='order_direction' class='select-dados' >";
         $html .= "<option value='ASC'>Crescente (A-Z, 0-9)</option>";
         $html .= "<option value='DESC'>Decrescente (Z-A, 9-0)</option>";
         $html .= "</select>";

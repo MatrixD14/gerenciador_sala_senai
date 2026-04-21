@@ -6,26 +6,27 @@ class FormRenderer
     {
         $type = $col['type'] ?? 'text';
         $valEsc = htmlspecialchars($val);
+        $id = self::sanitizeId($name);
 
         return match ($type) {
             'hidden' => "<input type='hidden' name='$name' value='$valEsc'>",
 
             'readonly_user' => "
                 <input type='hidden' name='$name' value='$valEsc'>
-                <input type='text' class='input-dados' value='{$_SESSION['nome']}' readonly>",
+                <input type='text' class='input-dados'  id='$id'  value='{$_SESSION['nome']}' readonly>",
 
             'readonly' => "
                 <input type='hidden' name='$name' value='$valEsc'>
-                <input type='text' class='input-dados' value='" . self::resolveLabel($val, $col) . "' readonly style='cursor:not-allowed;'>",
+                <input type='text' class='input-dados'  id='$id' value='" . self::resolveLabel($val, $col) . "' readonly style='cursor:not-allowed;'>",
 
-            'date' => self::renderDate($name, $valEsc, $isLocked),
+            'date' => self::renderDate($name, $id, $valEsc, $isLocked),
 
-            'select' => self::renderSelect($name, $col, $val, $isLocked, $allCols, $isHoje, $slug),
+            'select' => self::renderSelect($name, $id, $col, $val, $isLocked, $allCols, $isHoje, $slug),
 
             default => "<input type='$type' name='$name' id='$name' class='input-dados' value='$valEsc' " . ($isLocked ? "readonly style='cursor: not-allowed;'" : "") . ">"
         };
     }
-    private static function renderDate($name, $val, $isLocked): string
+    private static function renderDate($name, $id, $val, $isLocked): string
     {
         $hoje = date('Y-m-d');
         $min = !$isLocked ? "min='$hoje'" : "";
@@ -36,7 +37,7 @@ class FormRenderer
             $val = "{$p[2]}-{$p[1]}-{$p[0]}";
         }
 
-        return "<input type='date' name='$name' id='$name' class='input-dados' value='$val' placeholder='dd/mm/aaaa' $min $ro>";
+        return "<input type='date' name='$name' id='$id' class='input-dados' value='$val' placeholder='dd/mm/aaaa' $min $ro>";
     }
 
 
@@ -57,7 +58,7 @@ class FormRenderer
         return $found;
     }
 
-    private static function renderSelect($name, $col, $selected, $isLocked, $allCols, $isHoje, $slug = ''): string
+    private static function renderSelect($name, $id, $col, $selected, $isLocked, $allCols, $isHoje, $slug = ''): string
     {
         $horaAtual = (int)date('H');
         $rel = $col['relation'] ?? null;
@@ -66,7 +67,7 @@ class FormRenderer
         $displayLabel = self::getSelectDisplayLabel($name, $col, $selected, $deps);
         if ($isLocked) {
             return "<input type='hidden' name='$name' value='$selected'>
-                <input type='text' class='input-dados' value='$displayLabel' readonly style='cursor:not-allowed;'>";
+                <input type='text' id='$id'  class='input-dados' value='$displayLabel' readonly style='cursor:not-allowed;'>";
         }
 
         $relDataAttrs = $rel ? "data-tabela='{$rel['tabela']}' data-coluna='{$rel['coluna']}' data-value-col='{$rel['value']}' data-slug='$slug' data-nome-campo-origem='$name'" : "";
@@ -174,5 +175,9 @@ class FormRenderer
 
         $html .= "<div class='select-sentinel' data-tabela='{$rel['tabela']}' data-coluna='{$rel['coluna']}' data-value-col='{$rel['value']}' data-offset='50' data-slug='$slug' data-nome-campo-origem='$name'>Carregando mais...</div>";
         return $html;
+    }
+    private static function sanitizeId($name): string
+    {
+        return preg_replace('/[^A-Za-z0-9_-]/', '_', $name);
     }
 }

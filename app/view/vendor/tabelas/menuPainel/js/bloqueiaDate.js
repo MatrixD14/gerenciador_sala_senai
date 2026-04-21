@@ -6,7 +6,7 @@ document.addEventListener('focusin', (e) => {
         }
     }
 });
-function bloqueiarevindicar(event = null) {
+function bloqueiaSolicitacaoTrocaSala(event = null) {
     if (event) event.preventDefault();
     const form = event.currentTarget || event.target;
     const inputData = document.querySelector('input[name="dia"]');

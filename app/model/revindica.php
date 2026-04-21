@@ -1,7 +1,7 @@
 <?php
 class revindicando
 {
-    public static function EnviaRevindicacao(
+    public static function enviaRevindicacao(
         $id_remetente,
         $id_destinatario,
         $mensagem
@@ -28,10 +28,16 @@ class revindicando
     ) {
         $db = Database::connects();
         if (!$db) throw new Exception("Falha na conexão com o banco.");
-        // $stmtCheck = $db->prepare("SELECT status FROM requisicoes_troca WHERE id = ?");
-        $sql = "SELECT r.status, a.dia 
+        $sql = "SELECT r.status, a.dia, a.hora_inicio, a.hora_fim,
+                   u_remetente.email as email_remetente, u_remetente.nome as nome_remetente,
+                   u_dono.email as email_dono, 
+                   u_dono.nome as nome_dono, 
+                   s.nome as nome_sala
             FROM requisicoes_troca r
             INNER JOIN agendar_sala a ON r.id_agendamento_revindicado = a.id
+            INNER JOIN usuario u_remetente ON r.id_remetente = u_remetente.id
+            INNER JOIN usuario u_dono ON a.idUser = u_dono.id
+            INNER JOIN sala s ON a.idSala = s.id
             WHERE r.id = ?";
 
         $stmtCheck = $db->prepare($sql);
@@ -53,11 +59,20 @@ class revindicando
         WHERE id = ? 
          AND status = 'pendente'
     ");
-
         $stmt->bind_param("si", $status, $id);
-        if (!$stmt->execute()) {
-            throw new Exception("Erro no Execute: " . $stmt->error);
+        if ($stmt->execute()) {
+            return [
+                "res" => "sucesso",
+                "email_remetente" => $resultado['email_remetente'],
+                "nome_remetente" => $resultado['nome_remetente'],
+                "email_dono" => $resultado['email_dono'],
+                "nome_dono" => $resultado['nome_dono'],
+                "sala" => $resultado['nome_sala'],
+                "dia" => date('d/m/Y', strtotime($resultado['dia'])),
+                "hora" => $resultado['hora_inicio'] . " às " . $resultado['hora_fim'],
+                "decisao" => $status
+            ];
         }
-        return ($stmt->affected_rows > 0) ? "sucesso" : "erro";
+        return "erro";
     }
 }

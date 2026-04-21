@@ -25,10 +25,10 @@ $isAdmin = ($userAtivo['privilegio'] === "admin");
 $bloquearEdicao = !$engine->canSubmit() || ($isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
-    <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiarevindicar(event)">
+    <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiaSolicitacaoTrocaSala(event)">
         <input type="hidden" name="id" id="id" value="<?= $id ?>">
         <div class="top-Painel">
-            <h2>reivindicar </h2>
+            <h2>Solicitar Troca Sala </h2>
             <hr>
             <div id="menssage-log"></div>
         </div>

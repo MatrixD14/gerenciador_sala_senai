@@ -95,7 +95,7 @@ $agendamentosLiberados = 0;
             <?php if (!$agendamentosLiberados > 0) echo "<p></p>"; ?> <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
             <?php if (!$agendamentosLiberados > 0) echo "<p></p>";
             else { ?>
-                <button type="submit" id="confirm">Revindicar</button>
+                <button type="submit" id="confirm">Solicitacao Troca Sala</button>
             <?php  } ?>
         </div>
     </form>

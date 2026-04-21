@@ -20,28 +20,24 @@ try {
 }
 $dadosForm = $engine->getDados();
 $statusAtual = $dadosForm['status'] ?? 'pendente';
-$dataAgendamento = $dadosForm['dia'] ?? '';
-$hoje = date('Y-m-d');
-$expirou = ($dataAgendamento < $hoje && $statusAtual === 'pendente');
 $jaProcessado = ($statusAtual !== 'pendente');
 
 $donoId = BuscaInfoUser::buscaDonoPorTabela($table, $id);
 $isDono = ($donoId !== null && $donoId === (int)$userAtivo['id']);
 $isAdmin = ($userAtivo['privilegio'] === "admin");
 
-$bloquearEdicao = $jaProcessado || $expirou || !$engine->canSubmit() || ($isDono && !$isAdmin);
+$bloquearEdicao = $jaProcessado || (!$isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
-    <form action="/confirmaReivindica" method="post" class="Painel" onsubmit="statusReivindica(event)" data-status-atual="<?= $statusAtual ?>"
-        data-agendamento="<?= $dataAgendamento ?>">
+    <form action="/confirmaReivindica" method="post" class="Painel" onsubmit="statusReivindica(event)" data-status-atual="<?= $statusAtual ?>">
         <div class="top-Painel">
-            <h2>aceita reivindicar</h2>
+            <h2>aceita Solicitação Troca Sala</h2>
             <hr>
             <div id="menssage-log">
                 <?php
                 if ($statusAtual === 'aprovado') echo "<b style='color:green'>Esta solicitação já foi APROVADA.</b>";
                 elseif ($statusAtual === 'recusado') echo "<b style='color:red'>Esta solicitação já foi RECUSADA.</b>";
-                elseif ($statusAtual === 'expirou' || $expirou) echo "<b style='color:orange'>Esta solicitação EXPIROU.</b>"; ?>
+                elseif ($statusAtual === 'expirou') echo "<b style='color:orange'>Esta solicitação EXPIROU.</b>"; ?>
             </div>
         </div>
         <div class="editar-dados">
@@ -50,12 +46,13 @@ $bloquearEdicao = $jaProcessado || $expirou || !$engine->canSubmit() || ($isDono
             <?= $engine->render() ?>
         </div>
         <div class="buttons-cal-conf">
-            <p></p>
-            <button type="button" onclick="buttonVoltar()" id="cancel">Voltar</button>
-            <p></p>
-            <?php if (!$bloquearEdicao): ?>
-                <button type="submit" id="deny" data-status="recusado" style="background:#ff4d4d">Recusar</button>
+            <?php if ($bloquearEdicao) { ?>
+                <p></p>
+                <button type="button" onclick="buttonVoltar()" id="cancel">Voltar</button>
+                <p></p>
+            <?php } else { ?>
+                <button type="submit" id="fecha" data-status="recusado" style="background:#ff4d4d">Recusar</button>
                 <button type="submit" id="confirm" data-status="aprovado">Aprovar</button>
-            <?php endif; ?>
+            <?php } ?>
     </form>
 </div>

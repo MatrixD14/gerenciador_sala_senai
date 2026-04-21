@@ -5,7 +5,6 @@ function statusReivindica(event) {
     const menssage = document.querySelector('#menssage-log');
 
     const statusAtual = form.getAttribute('data-status-atual');
-    const hoje = new Date().toISOString().split('T')[0];
     if (statusAtual !== 'pendente') {
         if (menssage) {
             menssage.textContent = `Esta solicitação já está ${statusAtual.toUpperCase()} e não pode ser alterada.`;
@@ -13,15 +12,7 @@ function statusReivindica(event) {
         }
         return;
     }
-    if (inputData && inputData.value < hoje) {
-        if (event) event.preventDefault();
-        if (menssage) {
-            menssage.textContent = 'Esta reivindicação já expirou.';
-            menssage.style.color = 'red';
-            menssage.style.fontWeight = 'bold';
-        }
-        return;
-    }
+
     const url = form.getAttribute('action');
     const formData = new FormData(form);
     const acao = event.submitter ? event.submitter.getAttribute('data-status') : 'confirmado';

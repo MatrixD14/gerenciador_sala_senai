@@ -1,5 +1,4 @@
 <?php
-
 class revindicar
 {
     public static function EnviaRevindicacao()
@@ -12,7 +11,7 @@ class revindicar
 
         if ($id_agendamento && $id_remetente) {
             try {
-                $id_nova_reivindicacao = revindicando::EnviaRevindicacao(
+                $id_nova_reivindicacao = revindicando::enviaRevindicacao(
                     $id_remetente,
                     $id_agendamento,
                     $mensagem
@@ -41,8 +40,6 @@ class revindicar
 
         if ($id_solicitacao && $status && $id_usuario_logado) {
             try {
-                // SEGURANÇA: Verificar se quem está logado é realmente o dono da sala/agendamento
-                // Usamos o slug 'menssagem' para que o switch do BuscaInfoUser funcione
                 $id_dono_real = BuscaInfoUser::buscaDonoPorTabela('menssagem', $id_solicitacao);
 
                 if ($id_dono_real !== (int)$id_usuario_logado && $_SESSION['privilegio'] !== 'admin') {
@@ -50,19 +47,22 @@ class revindicar
                     return;
                 }
 
-                $repostaServe = revindicando::confirmoRevindicacao($id_solicitacao, $status);
+                $repostaServe =  revindicando::confirmoRevindicacao($id_solicitacao, $status);
 
-                // Formata a mensagem de retorno amigável
-                $mensagens = [
-                    "sucesso" => "Solicitação processada com sucesso: $status!",
-                    "ja processado" => "Esta solicitação já foi respondida anteriormente.",
-                    "já expiro" => "Não foi possível processar: O agendamento já expirou.",
-                    "nao encontrado" => "Erro: Solicitação não localizada no sistema.",
-                    "erro" => "Houve um erro técnico ao atualizar o status."
-                ];
+                if (is_array($repostaServe) && $repostaServe['res'] === "sucesso") {
+                    EnviaInfoEmail::dispararEmailResposta($repostaServe);
 
-                $msgFinal = $mensagens[$repostaServe] ?? "Status desconhecido: $repostaServe";
-                Tabelas::log_error_table($msgFinal);
+                    Tabelas::log_error_table("Solicitação de troca finalizada e comprovante enviado: $status!");
+                } else {
+                    $mensagens = [
+                        "sucesso" => "Solicitação processada com sucesso: $status!",
+                        "ja processado" => "Esta solicitação já foi respondida anteriormente.",
+                        "já expiro" => "Não foi possível processar: O agendamento já expirou.",
+                        "nao encontrado" => "Erro: Solicitação não localizada no sistema.",
+                        "erro" => "Houve um erro técnico ao atualizar o status."
+                    ];
+                    Tabelas::log_error_table($mensagens[$repostaServe] ?? "Erro desconhecido.");
+                }
             } catch (Exception $e) {
                 Tabelas::log_error_table("Erro crítico: " . $e->getMessage());
             }
