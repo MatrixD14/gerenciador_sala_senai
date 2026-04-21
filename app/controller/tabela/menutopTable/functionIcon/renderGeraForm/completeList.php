@@ -15,6 +15,7 @@ class completeList
     }
     public static function buscaDadosList()
     {
+        header('Content-Type: application/json');
         self::loadConfig();
         if (isset($_POST['acao']) && $_POST['acao'] === 'fetch_select_options') {
             try {
@@ -61,20 +62,11 @@ class completeList
                     $html .= "<div class='custom-option' data-value='$val' $dataAttrs>$labelFinal</div>";
                     $count++;
                 }
+                echo json_encode([
+                    'html' => $html,
+                    'has_more' => $count >= $limit
+                ]);
 
-                if ($count >= $limit) {
-                    $novoOffset = $offset + $limit;
-                    $html .= "<div class='select-sentinel' 
-                        data-tabela='$tabela' 
-                        data-coluna='$colLabel' 
-                        data-value-col='$colValue' 
-                        data-offset='$novoOffset'
-                        data-slug='$slug'
-                        data-search='" . htmlspecialchars($searchTerm) . "'
-                        data-nome-campo-origem='$nomeCampoOrigem'>Carregando mais...</div>";
-                }
-
-                echo $html;
                 exit;
             } catch (Exception $e) {
                 http_response_code(500);

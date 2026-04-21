@@ -13,7 +13,10 @@
 <script src="/app/view/vendor/tabelas/js/geraMaisList.js"></script>
 <script src="/app/view/vendor/agendamentos/js/revindicarSelect.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/revindicarStatus.js"></script>
-<script src="/app/view/vendor/tabelas/menuPainel/js/viewListSelect.js"></script>
+<script type="module" src="/app/view/vendor/tabelas/menuPainel/js/scrollInfinitySelect/constantsScrollSelect.js"></script>
+<script type="module" src="/app/view/vendor/tabelas/menuPainel/js/scrollInfinitySelect/initScrollInfinitySelect.js"></script>
+<script src="/app/view/vendor/tabelas/menuPainel/js/geraMaisListSelect.js"></script>
+<!-- <script src="/app/view/vendor/tabelas/menuPainel/js/viewListSelect.js"></script> -->
 <script src="/app/view/vendor/tabelas/menuPainel/js/buscaSelect.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/buscaDadosBarra.js"></script>
 <script src="/app/view/vendor/tabelas/menuPainel/js/filtroTabela.js"></script>

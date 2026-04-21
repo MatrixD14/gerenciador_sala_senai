@@ -46,19 +46,14 @@ return [
         "colunas_visiveis" => ["id", 'nome', "email", "privilegio"]
     ],
     "menssagem" => [
-        "orderna" => ["remetente", "destinatario", 'sala'],
+        "orderna" => ['status', "remetente", "destinatario", 'sala'],
         "colunas" => [
-            "id_agendamento_revindicado" => [
-                "label" => "periodo",
-                "type" => "select",
-                'options' => [
-                    'manhã' => ["min" => 5, "max" => 7],
-                    'tarde' => ["min" => 7, "max" => 11],
-                    'noite' => ["min" => 7, "max" => 18]
-                ]
+            "agendado" => [
+                "label" => "Data do Agendamento",
+                "type" => "date-range"
             ]
         ],
-        "colunas_visiveis" => ["id", 'remetente', "destinatario", "sala", "periodo", "menssagem"]
+        "colunas_visiveis" => ["id", 'status', 'enviado', 'remetente', "destinatario", "sala", 'agendado', "hora_inicio", "hora_fim", "mensagem"]
     ],
     'cursos' => [
         'orderna' => ['nome'],

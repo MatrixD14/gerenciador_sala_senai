@@ -115,8 +115,17 @@
 .options-scroll-area {
     max-height: 250px;
     overflow-y: auto;
+    /* display: block; */
+    display: flex;
+    flex-direction: column;
 }
-
+.default-option {
+    order: -10;
+    background-color: #fff;
+    z-index: 2;
+    position: sticky;
+    top: 0;
+}
 .selected-item-top-container {
     border: 1px solid #000;
 }

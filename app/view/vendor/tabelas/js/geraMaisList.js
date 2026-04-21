@@ -37,16 +37,13 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
     const slug = container.getAttribute('data-slug');
-    console.log('Iniciando tabela para o slug:', slug);
     let filtrosIniciais = {};
     try {
         const savedFiltros = sessionStorage.getItem(`filtros_${slug}`);
         if (savedFiltros) {
             filtrosIniciais = JSON.parse(savedFiltros);
-            console.log('Filtros restaurados do sessionStorage:', filtrosIniciais);
         } else {
             filtrosIniciais = JSON.parse(container.getAttribute('data-filtros') || '{}');
-            console.log('Filtros carregados:', filtrosIniciais);
         }
     } catch (e) {
         console.error('Erro ao ler filtros iniciais');

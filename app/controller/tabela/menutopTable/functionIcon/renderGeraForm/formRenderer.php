@@ -75,7 +75,9 @@ class FormRenderer
                 <input type='hidden' name='$name' id='hidden-$name' value='$selected'>
                 <input type='text' class='custom-select-trigger select-dados' id='$name' value='$displayLabel' readonly autocomplete='off' style='cursor: pointer;'>
                 <div class='custom-select-options'>
-                    <input class='custom-search input-dados' name='search-$name' id='search-$name' placeholder='digite dois caracteres...' autofocus>
+                    <input class='custom-search input-dados' name='search-$name' id='search-$name' placeholder='digite dois caracteres...' 
+                    oninput='pesquisarSelect(this.value)'
+                    autofocus>
                     <div class='selected-item-top-container'>";
 
         if (!empty($selected) && $displayLabel !== "Selecione...") {
@@ -155,27 +157,40 @@ class FormRenderer
 
     private static function renderDatabaseOptions($rel, $deps, $slug, $name): string
     {
-        $extraSQL = !empty($deps) ? ", " . implode(', ', array_filter($deps)) : "";
-        $sql = "SELECT DISTINCT {$rel['value']}, {$rel['coluna']} $extraSQL FROM {$rel['tabela']} ORDER BY LENGTH({$rel['coluna']}) ASC, {$rel['coluna']} ASC LIMIT 50";
+        $selectCols = [$rel['value'], $rel['coluna']];
+        if (!empty($deps)) {
+            $selectCols = array_merge($selectCols, $deps);
+        }
+        $colsSql = implode(', ', $selectCols);
+
+        $sql = "SELECT DISTINCT $colsSql 
+            FROM {$rel['tabela']} 
+            ORDER BY LENGTH({$rel['coluna']}) ASC LIMIT 50";
         $res = Database::connects()->query($sql);
+        if (!$res) return '';
 
         $html = "";
         while ($row = $res->fetch_assoc()) {
             $dataAttrs = "";
             $labelExtras = [];
+
+            // Adiciona data attributes para cada coluna dependente
             foreach ($deps as $d) {
-                $valExtra = htmlspecialchars($row[$d]);
-                $dataAttrs .= " data-{$d}=\"{$valExtra}\"";
-                if (!empty($valExtra)) $labelExtras[] = $valExtra;
+                $valExtra = htmlspecialchars($row[$d] ?? '');
+                if ($valExtra !== '') {
+                    $dataAttrs .= " data-{$d}=\"{$valExtra}\"";
+                    $labelExtras[] = $valExtra;
+                }
             }
+
+            // Exibe o label principal + os extras entre parênteses
             $textoExtra = !empty($labelExtras) ? " (" . implode(" - ", $labelExtras) . ")" : "";
             $labelFinal = htmlspecialchars($row[$rel['coluna']]) . $textoExtra;
             $html .= "<div class='custom-option' data-value='{$row[$rel['value']]}' $dataAttrs>$labelFinal</div>";
         }
-
-        $html .= "<div class='select-sentinel' data-tabela='{$rel['tabela']}' data-coluna='{$rel['coluna']}' data-value-col='{$rel['value']}' data-offset='50' data-slug='$slug' data-nome-campo-origem='$name'>Carregando mais...</div>";
         return $html;
     }
+
     private static function sanitizeId($name): string
     {
         return preg_replace('/[^A-Za-z0-9_-]/', '_', $name);

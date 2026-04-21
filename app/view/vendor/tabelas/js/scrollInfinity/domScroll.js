@@ -33,11 +33,7 @@ export function removerBloco(tabelaState, offset, scrollContainer, containerTabe
 
     if (removidos) {
         tabelaState.blocosCarregados.delete(offset);
-        if (referencia && referencia.tr.isConnected) {
-            const novaPos = referencia.tr.getBoundingClientRect().top;
-            const delta = novaPos - referencia.posTop;
-            scrollContainer.scrollTop += delta;
-        }
+        ajustarScrollAposInsercao(scrollContainer, referencia);
     }
 }
 
