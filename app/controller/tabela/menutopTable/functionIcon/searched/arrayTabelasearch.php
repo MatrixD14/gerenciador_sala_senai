@@ -16,7 +16,7 @@ return [
     "usuarios" => [
         "searchable" => ["nome", "email", "privilegio"]
     ],
-    "menssagem" => [
+    "Solicitacoes_de_troca" => [
         "searchable" => [
             "user1.nome",
             "user2.nome",

@@ -41,8 +41,8 @@ if (!$isAjax) {
             require __DIR__ . "/../tabelas/Table.php";
         } elseif ($uri === '/calendario') {
             require __DIR__ . '/../agendamentos/Calendario.php';
-        } elseif ($uri === '/menssagem') {
-            require __DIR__ . '/../menssagens/menssage.php';
+        } elseif ($uri === '/Solicitacoes_de_troca') {
+            require __DIR__ . '/../Solicitacoes_de_troca/Solicitacoes_de_troca.php';
         } else {
             echo "<div class='bem-vindo'><h1>Bem-vindo ao Agendamento de Sala</h1></div>";
         }

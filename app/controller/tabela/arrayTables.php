@@ -8,8 +8,8 @@ return [
             [
                 "tabela" => "requisicoes_troca",
                 "coluna" => "id_agendamento_revindicado",
-                "link" => "menssagem",
-                "mensagem" => "reivindicações"
+                "link" => "Solicitacoes_de_troca",
+                "Solicitacoes_de_troca" => "reivindicações"
             ]
         ],
         "join" => "
@@ -112,7 +112,7 @@ return [
             "descricao" => ['type' => 'text']
         ]
     ],
-    "menssagem" => [
+    "Solicitacoes_de_troca" => [
         "tabela" => 'requisicoes_troca',
         'owner_relation' => [
             "tabela" => "agendar_sala",

@@ -2,7 +2,7 @@
 $UserLogin = $_SESSION['id'] ?? null;
 if ($UserLogin === null) header("location: /gerenciado_de_Sala");
 
-$tipoTabela = "menssagem";
+$tipoTabela = "Solicitacoes_de_troca";
 $filtrosPost = $_POST;
 $filtrosParaOJS = $filtrosPost;
 

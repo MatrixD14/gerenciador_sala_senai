@@ -182,10 +182,10 @@ if ($uri === '/reivindicado') {
     header("Location: /agendamentos");
     exit;
 }
-if ($uri === '/menssagem') {
+if ($uri === '/Solicitacoes_de_troca') {
     AuthLogin::check();
     if ($isAjax) {
-        require __DIR__ . "/app/view/vendor/menssagens/menssage.php";
+        require __DIR__ . "/app/view/vendor/Solicitacoes_de_troca/Solicitacoes_de_troca.php";
     } else {
         require $HomeGenciador;
     }
@@ -195,7 +195,7 @@ if ($uri === '/menssagem') {
 if ($uri === '/confirmaReivindica') {
     AuthLogin::check();
     revindicar::ConfirmoRevidicacao();
-    header("Location: /menssagem");
+    header("Location: /Solicitacoes_de_troca");
     exit;
 }
 

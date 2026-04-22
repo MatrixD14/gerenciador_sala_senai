@@ -73,10 +73,10 @@ $privilegio = $_SESSION['privilegio'] ?? 'Nenhum';
         if ($privilegio !== 'admin') {
         ?>
             <div class="menu-sms">
-                <p><a class="effect-button-link button-menu ajax-link" href="/menssagem">
+                <p><a class="effect-button-link button-menu ajax-link" href="/Solicitacoes_de_troca">
                         <svg class="icon">
                             <use href="#icon-sinio"></use>
-                        </svg> menssagem
+                        </svg> Solicitações de troca
                     </a></p>
             </div><?php } ?>
         <div class="menu-calendario">

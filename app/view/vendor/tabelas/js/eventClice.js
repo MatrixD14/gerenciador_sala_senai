@@ -32,8 +32,8 @@ function executarAcao(acao, tabela, id, name) {
             if (!slug) return;
             sessionStorage.removeItem(`filtros_${slug}`);
             break;
-        case 'SolicitacaoTrocaSala':
-            loadPagePost('/SolicitacaoTrocaSala', dados, true);
+        case 'reivindicar':
+            loadPagePost('/reivindicar', dados, true);
             if (!slug) return;
             sessionStorage.removeItem(`filtros_${slug}`);
             break;

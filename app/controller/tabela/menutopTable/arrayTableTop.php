@@ -7,7 +7,7 @@ return [
         "edite" => ['type' => "icon-lapiz", 'menssage' => 'editar dados'],
         "delete" => ['type' => "icon-lixeira", 'menssage' => 'deletar itens'],
         "agenda" => ['type' => 'icon-anotacao', 'menssage' => 'agendar'],
-        "SolicitacaoTrocaSala" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
+        "reivindicar" => ['type' => 'icon-megafone', 'menssage' => 'negociar com o outro usuario que quer usar esse dia'],
         "confirma" => ["type" => "icon-afirma", 'menssage' => 'ele serve para aceita'],
         "filtro" => ["type" => "icon-iconMutidirecao", 'menssage' => 'filtra a tabela para deter uma visao mais eficiente para dados especifico'],
         "ViewInPDF" => ["type" => "icon-setaMultidirecao", 'menssage' => "ver o pdf "]
@@ -28,7 +28,7 @@ return [
             'agenda',
             'reload',
             "edite",
-            'SolicitacaoTrocaSala',
+            'reivindicar',
             'delete',
             "filtro",
             "ViewInPDF"
@@ -38,7 +38,7 @@ return [
             'agenda',
             'reload',
             "edite",
-            'SolicitacaoTrocaSala',
+            'reivindicar',
             'delete',
             "filtro"
         ]
@@ -76,7 +76,7 @@ return [
             "filtro"
         ]
     ],
-    "menssagem" => [
+    "Solicitacoes_de_troca" => [
         "professor" => [
             'view',
             'reload',

@@ -45,7 +45,7 @@ return [
         ],
         "colunas_visiveis" => ["id", 'nome', "email", "privilegio"]
     ],
-    "menssagem" => [
+    "Solicitacoes_de_troca" => [
         "orderna" => ['status', "remetente", "destinatario", 'sala'],
         "colunas" => [
             "agendado" => [
