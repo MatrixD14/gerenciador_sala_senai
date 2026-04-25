@@ -20,26 +20,24 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 <body class="body-center">
     <div class="center box-border">
         <h1 class="h1-center">Redefinir Senha</h1>
-        <div class="center">
-            <p style="color: red">
-                <?php if (isset($_SESSION["erro_token"])) {
-                    echo $_SESSION["erro_token"];
-                    unset($_SESSION["erro_token"]);
-                }
-                ?>
-            </p>
-            <form action="/verificarPassWord" method="post">
-                <label for="senha">Nova senha*</label><br />
-                <input type="password" name="senha" id="senha" autocomplete="off" required /><br>
-                <label for="confirmar_senha">Confirmar senha*</label><br />
-                <input type="password" name="confirmar_senha" id="confirmar_senha" autocomplete="off" required /><br><br>
-                <div class="box-center">
-                    <input type="submit" value="Alterar senha" class="bt-enter" />
-                    <p></p>
-                    <a class="link-a" href="/">logan</a><br>
-                </div>
-            </form>
-        </div>
+        <p class="error">
+            <?php if (isset($_SESSION["erro_token"])) {
+                echo $_SESSION["erro_token"];
+                unset($_SESSION["erro_token"]);
+            }
+            ?>
+        </p>
+        <form action="/verificarPassWord" method="post">
+            <label for="senha">Nova senha*</label><br />
+            <input type="password" name="senha" id="senha" autocomplete="off" required /><br>
+            <label for="confirmar_senha">Confirmar senha*</label><br />
+            <input type="password" name="confirmar_senha" id="confirmar_senha" autocomplete="off" required /><br><br>
+            <div class="box-center">
+                <input type="submit" value="Alterar senha" class="bt-enter" />
+                <p></p>
+                <a class="link-a" href="/">logan</a><br>
+            </div>
+        </form>
     </div>
 </body>
 
