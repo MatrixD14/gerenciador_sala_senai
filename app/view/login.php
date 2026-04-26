@@ -33,7 +33,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
 
             <div class="password-box">
                 <input type="password" name="senha" id="senha" required />
-                <button type="button" class="toggle-password" onclick="toggleSenha()">
+                <button type="button" class="toggle-password" onclick="toggleSenha(this)">
                     👀
                 </button>
             </div>
@@ -45,20 +45,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
             </div>
         </form>
     </div>
-    <script>
-        function toggleSenha() {
-            const input = document.getElementById("senha");
-            const button = document.querySelector(".toggle-password");
-
-            if (input.type === "password") {
-                input.type = "text";
-                button.textContent = "🙈";
-            } else {
-                input.type = "password";
-                button.textContent = "👀";
-            }
-        }
-    </script>
+    <script src="<?= URL ?>/js/global.js"></script>
 </body>
 
 </html>

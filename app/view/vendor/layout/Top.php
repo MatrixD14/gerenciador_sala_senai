@@ -23,7 +23,7 @@ $privilegio = $_SESSION['privilegio'] ?? 'Nenhum';
                     <p class="menu-privilegio">
                         privilegio: <?= $privilegio ?></p>
                 </li>
-                <li> <a class="effect-button-link" href="/config">
+                <li> <a class="effect-button-link ajax-link <?= $uri === '/config' ? 'active' : '' ?>" href="/config">
                         <svg class="icon">
                             <use href="#icon-config"></use>
                         </svg>
@@ -54,33 +54,31 @@ $privilegio = $_SESSION['privilegio'] ?? 'Nenhum';
                 </svg>
             </p>
             <ul class=" menu-list menu-tabela-list">
-                <li><a class="effect-button-link ajax-link" href="/agendamentos">agendamentos</a></li>
-                <li><a class="effect-button-link ajax-link" href="/salas">salas</a></li>
-                <li><a class="effect-button-link ajax-link" href="/cursos">cursos</a></li>
+                <li><a class="effect-button-link ajax-link <?= $uri === '/agendamentos' ? 'active' : '' ?>" href="/agendamentos">agendamentos</a></li>
+                <li><a class="effect-button-link ajax-link <?= $uri === '/salas' ? 'active' : '' ?>" href="/salas">salas</a></li>
+                <li><a class="effect-button-link ajax-link <?= $uri === '/cursos' ? 'active' : '' ?>" href="/cursos">cursos</a></li>
                 <?php
                 if ($privilegio === 'admin') {
                 ?>
-                    <li><a class="effect-button-link ajax-link" href="/usuarios">usuários</a></li>
+                    <li><a class="effect-button-link ajax-link <?= $uri === '/usuarios' ? 'active' : '' ?>" href="/usuarios">usuários</a></li>
                 <?php
                 }
                 if ($privilegio === 'admin' || $privilegio === 'professor') {
                 ?>
-                    <li><a class="effect-button-link ajax-link" href="/turmas">turmas</a></li>
+                    <li><a class="effect-button-link ajax-link <?= $uri === '/turmas' ? 'active' : '' ?>" href="/turmas">turmas</a></li>
                 <?php } ?>
             </ul>
         </div>
-        <?php
-        if ($privilegio !== 'admin') {
-        ?>
-            <div class="menu-sms">
-                <p><a class="effect-button-link button-menu ajax-link" href="/Solicitacoes_de_troca">
-                        <svg class="icon">
-                            <use href="#icon-sinio"></use>
-                        </svg> Solicitações de troca
-                    </a></p>
-            </div><?php } ?>
+
+        <div class="menu-sms">
+            <p><a class="effect-button-link button-menu ajax-link <?= $uri === '/Solicitacoes_de_troca' ? 'active' : '' ?>" href="/Solicitacoes_de_troca">
+                    <svg class="icon">
+                        <use href="#icon-sinio"></use>
+                    </svg> Solicitações de troca
+                </a></p>
+        </div>
         <div class="menu-calendario">
-            <p><a class="effect-button-link button-menu ajax-link" href="/calendario">
+            <p><a class="effect-button-link button-menu ajax-link <?= $uri === '/calendario' ? 'active' : '' ?>" href="/calendario">
                     <svg class="icon">
                         <use href="#icon-calendario"></use>
                     </svg> Calendario

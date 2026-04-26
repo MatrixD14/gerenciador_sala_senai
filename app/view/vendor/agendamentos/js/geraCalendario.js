@@ -86,7 +86,7 @@ async function renderizarCalendario() {
 }
 
 function selectOld(meses, mesIndex, ano) {
-    let seletorAno = `<select id="selectAno" style="font-size: 2.0rem; font-weight: 800; border: none; background: transparent; cursor: pointer;">`;
+    let seletorAno = `<select id="selectAno" >`;
     const anoAtualRef = new Date().getFullYear();
 
     for (let i = anoAtualRef - 1; i <= anoAtualRef + 1; i++) {

@@ -77,6 +77,12 @@ return [
         ]
     ],
     "Solicitacoes_de_troca" => [
+        "admin" => [
+            'view',
+            'reload',
+            "filtro",
+            "ViewInPDF"
+        ],
         "professor" => [
             'view',
             'reload',

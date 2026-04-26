@@ -1,3 +1,55 @@
+:root {
+    /* Cores do Tema Claro */
+    --bg-container: #f5f7fa;
+    --bg-calendar: #eef1f5;
+    --border-calendar: #e0e3e8;
+    --bg-day-name: #dde3ea;
+    --text-day-name: #4b5563;
+    --bg-dias: #ffffff;
+    --text-dias: #000000;
+    --bg-hover: #e8edf5;
+    --bg-passado: #374154;
+    --bg-passado-hove: #f5f5f5;
+    --text-passado: #fff;
+    --border-passado: #ddd;
+    --bg-today: #eaf2ff;
+    --border-today: #3b82f6;
+    --dot-evento: #f00;
+    --text-mes: #000000;
+    --bg-empty: #f9f9f9;
+    --btn-border: #000;
+    --btn-bg: #fff;
+    --btn-hover: #e5e7eb;
+    --dot-evento-inv: #0230d8;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Cores do Tema Escuro */
+        --bg-container: #0f172a;
+        --bg-calendar: #1e293b;
+        --border-calendar: #334155;
+        --bg-day-name: #334155;
+        --text-day-name: #e2e8f0;
+        --bg-dias: #1e293b;
+        --text-dias: #e5e7eb;
+        --bg-hover: #334155;
+        --bg-passado: #111827;
+        --bg-passado-hove: #10131b;
+        --text-passado: #6b7280;
+        --border-passado: #1f2937;
+        --bg-today: #1d4ed8;
+        --border-today: #60a5fa;
+        --dot-evento: #10b981;
+        --text-mes: #f1f5f9;
+        --bg-empty: #0f172a;
+        --btn-border: #475569;
+        --btn-bg: #1e293b;
+        --btn-hover: #334155;
+        --dot-evento-inv: #ff5500;
+    }
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -10,25 +62,29 @@
     margin: 0 auto;
     padding: 10px;
     box-sizing: border-box;
+    background-color: var(--bg-container);
 }
+
 .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-
+    grid-template-rows: auto repeat(6, 1fr);
     height: 100%;
     max-height: 780px;
     margin: 0 auto;
-    grid-auto-rows: 1fr;
     gap: 1px;
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-calendar);
+    background-color: var(--bg-calendar);
 }
+
 .day-name {
-    padding: 15px 0;
+    padding: 8px 0;
     text-align: center;
     font-size: 1rem;
     font-weight: bold;
-    background-color: #f8f9fa;
+    background-color: var(--bg-day-name);
+    color: var(--text-day-name);
 }
 
 .dias-btn {
@@ -36,108 +92,112 @@
     width: 100%;
     height: 100%;
     cursor: pointer;
-    background: white;
+    background: var(--bg-dias);
+    color: var(--text-dias);
     border: none;
     font-size: 1.2rem;
     transition: background 0.2s;
     &:hover {
-        background-color: #e9ecef;
+        background-color: var(--bg-hover);
     }
 }
-.top-calendario {
-    display: grid;
-    align-items: center;
-    grid-template-columns: auto 1fr auto;
-    width: 100%;
-    padding: 0 20px;
-    margin-bottom: 20px;
-}
-.btn-ant,
-.btn-pro {
-    padding: 10px 15px;
-    cursor: pointer;
-    font-weight: bold;
-    border: 2px solid black;
-    background: #fff;
 
+.today {
+    border: 2px solid var(--border-today);
+    background-color: var(--bg-today);
+}
+
+.dias-btn.passado,
+.dias-btn.passado-dados {
+    background-color: var(--bg-passado);
+    color: var(--text-passado);
+    cursor: not-allowed;
+    border: 1px solid var(--border-passado);
+}
+.dias-btn.passado:hover,
+.dias-btn.passado-dados:hover {
+    background-color: var(--bg-passado-hove);
+}
+.dias-btn span {
+    font-weight: bold;
+}
+.dias-btn.passado span.dot-evento,
+.dias-btn.passado-dados span.dot-evento {
+    background-color: var(--dot-evento-inv);
+    color: var(--text-passado);
+}
+.btn-add-inline {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-mes);
 }
+
+.dot-evento {
+    width: 6px;
+    height: 6px;
+    background-color: var(--dot-evento);
+    border-radius: 50%;
+    margin-top: 4px;
+    display: block;
+}
+
 .mes-top {
     text-align: center;
     margin: 0;
     font-size: 2rem;
     font-weight: 800;
     text-transform: uppercase;
-}
-.dias-btn.passado {
-    background-color: #f5f5f5;
-    color: #ccc;
-    cursor: not-allowed;
-    border: 1px solid #ddd;
+    color: var(--text-mes);
 }
 
-.dias-btn.passado:hover {
-    background-color: #f5f5f5;
-}
-.dias-btn.passado span {
-    background: none;
-    color: #ccc;
-}
-.dias-btn.passado-dados {
-    background-color: #f5f5f5;
-    color: #ccc;
-    cursor: not-allowed;
-    border: 1px solid #eee;
+.btn-ant,
+.btn-pro {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border: 2px solid var(--btn-border);
+    background: var(--btn-bg);
+    color: var(--text-dias);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+        background: var(--btn-hover);
+    }
 }
 
-.dias-btn.passado-dados:hover {
-    background-color: #f5f5f5;
-}
 .empty-slot {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f9f9f9;
+    background-color: var(--bg-empty);
     height: 100%;
 }
-
-.dot-evento {
-    width: 6px;
-    height: 6px;
-    background-color: #f00;
-    border-radius: 50%;
-    margin-top: 4px;
-    display: block;
-}
-.possui-evento span {
+#selectAno {
+    font-size: 2rem;
     font-weight: bold;
-    color: #2c3e50;
-}
-
-.today {
-    border: 2px solid #3498db;
-}
-.dias-btn:not(.possui-evento):not(.passado) {
-    cursor: copy;
-}
-.dias-btn.possui-evento {
-    cursor: help;
-}
-.lista-checkbox {
-    height: 250px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 20px 0;
-    box-sizing: border-box;
-    overflow-y: scroll;
-    &::-webkit-scrollbar {
-        display: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #fff;
+    & option {
+        color: var(--btn-border);
     }
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+}
+.item-adicionar {
+    margin-top: 15px;
+    padding: 5px;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.icon-adicionar {
+    width: 25px;
+    height: 25px;
+    color: #fff;
+    fill: currentColor;
 }
 .item-selecionavel {
     border: 1px solid #fff;
@@ -163,33 +223,31 @@
     color: #000;
     background-color: #00ff99;
 }
-.item-adicionar {
-    margin-top: 15px;
-    padding: 5px;
-    border-radius: 8px;
-    border: 2px solid #fff;
-    cursor: pointer;
-    opacity: 0.8;
-}
-.item-adicionar:hover {
-    opacity: 1;
-}
-.btn-add-inline {
+.lista-checkbox {
+    height: 250px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
-.icon-adicionar {
-    width: 25px;
-    height: 25px;
-    color: #fff;
-    fill: currentColor;
+.top-calendario {
+    display: grid;
+    align-items: center;
+    grid-template-columns: auto 1fr auto;
+    width: 100%;
+    padding: 0 20px;
+    margin-bottom: 20px;
 }
 @media (max-height: 500px) and (orientation: landscape) {
     .container {
         padding: 0px;
-        /* height: auto; */
     }
 
     .calendar {

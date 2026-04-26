@@ -1,4 +1,5 @@
 <script src="/app/view/vendor/layout/js/ajax-router.js"></script>
+<script src="/app/view/vendor/layout/js/marcaClick.js"></script>
 <script src="/app/view/vendor/layout/js/button.js"></script>
 <script src="/app/view/vendor/tabelas/js/selectDate.js"></script>
 <script src="/app/view/vendor/tabelas/js/enviaDadoPost.js"></script>

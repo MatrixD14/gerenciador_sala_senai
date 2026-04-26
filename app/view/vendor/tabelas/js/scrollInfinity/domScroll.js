@@ -92,7 +92,7 @@ export function criarSentinelas(tabelaState) {
     } else if (!tabelaState.hasMoreDown && !tabelaState.isLoading && tabelaState.blocosCarregados.size > 0) {
         const fimMsg = document.createElement('tr');
         fimMsg.className = 'sentinel-end';
-        fimMsg.innerHTML = '<td colspan="100%" style="text-align:center; color:#aaa;">Fim dos resultados</td>';
+        fimMsg.innerHTML = '<td colspan="100%">Fim dos resultados</td>';
         container.appendChild(fimMsg);
     }
 }

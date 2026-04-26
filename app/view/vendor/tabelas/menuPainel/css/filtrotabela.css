@@ -1,7 +1,7 @@
 .grid-check {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    border: 1px solid #ccc; /* borda geral */
+    border: 1px solid #444; /* borda geral */
     border-radius: 8px;
     overflow: hidden;
 }

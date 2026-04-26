@@ -33,7 +33,7 @@ document.addEventListener('contentUpdated', function () {
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('carregaTabela');
     if (!container) {
-        console.error('Elemento com id "carregaTabela" não encontrado no DOM.');
+        // console.error('Elemento com id "carregaTabela" não encontrado no DOM.');
         return;
     }
     const slug = container.getAttribute('data-slug');
