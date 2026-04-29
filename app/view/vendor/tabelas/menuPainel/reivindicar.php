@@ -1,5 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
+
 date_default_timezone_set('America/Sao_Paulo');
 unset($_SESSION['show_cols']);
 $id = $_POST["id"] ?? "";
@@ -26,23 +27,24 @@ $bloquearEdicao = !$engine->canSubmit() || ($isDono && !$isAdmin);
 ?>
 <div class="painel-wrapper">
     <form action="/reivindicado" method="post" class="Painel" onsubmit="bloqueiaSolicitacaoTrocaSala(event)">
+        <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
         <input type="hidden" name="id" id="id" value="<?= $id ?>">
         <div class="top-Painel">
-            <h2>Solicitar Troca Sala </h2>
+            <h2><?= $isAdmin ? 'Detalhes do Agendamento' : 'Solicitar Troca de Sala' ?></h2>
             <hr>
             <div id="menssage-log"></div>
         </div>
         <div class="editar-dados">
             <?= $engine->render() ?>
-            <?php if (!$bloquearEdicao) { ?>
+            <?php if (!$bloquearEdicao && !$isAdmin) { ?>
                 <label for="menssage">Mensagem (Opcional):</label>
                 <textarea name="menssage" class="input-dados textarea" id="menssage" placeholder="Gostaria de usar essa sala."></textarea>
             <?php } ?>
         </div>
         <div class="buttons-cal-conf">
-            <?php if ($bloquearEdicao) echo "<p></p>"; ?>
+            <?php if ($bloquearEdicao || $isAdmin) echo "<p></p>"; ?>
             <button type="button" onclick="buttonVoltar()" id="cancel">Cancelar</button>
-            <?php if ($bloquearEdicao) echo "<p></p>";
+            <?php if ($bloquearEdicao || $isAdmin) echo "<p></p>";
             else { ?>
                 <button id="confirm">Confirmar</button>
             <?php } ?>

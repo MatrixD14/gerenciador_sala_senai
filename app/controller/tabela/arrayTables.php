@@ -142,7 +142,7 @@ return [
             "status" => [
                 "type" => "hidden",
             ],
-            "Enviado" => [
+            "enviado" => [
                 "type" => "hidden",
             ],
             "remetente" => [
@@ -216,7 +216,7 @@ return [
         "especifico" => [
             'requisicoes_troca.id',
             'requisicoes_troca.status',
-            "requisicoes_troca.data_envio as Enviado",
+            "requisicoes_troca.data_envio as enviado",
             "user1.nome as remetente",
             "user2.nome as destinatario",
             "sala.nome as sala",

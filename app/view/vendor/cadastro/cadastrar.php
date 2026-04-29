@@ -1,5 +1,7 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) session_start(); ?>
+if (session_status() === PHP_SESSION_NONE) session_start();
+if (empty($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -28,6 +30,7 @@ if (session_status() === PHP_SESSION_NONE) session_start(); ?>
         </p>
         <!-- action="/cadastro"  -->
         <form method="post" autocomplete="off" onsubmit="confirmaPassword(event) ">
+            <input type="hidden" name="csrf_token" value="<?= Csrf::generate() ?>">
             <label for="nome">Nome</label><br />
             <input type="text" name="nome" id='nome' autocomplete="off" required /><br />
             <label for="email">Email</label><br />

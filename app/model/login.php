@@ -49,4 +49,15 @@ class User
         $tmg->close();
         return $result;
     }
+    public static function verifyOrFail($redirectUrl = '/cadastrar'): void
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            $_SESSION['log_create'] = "Token de segurança inválido. Tente novamente.";
+            unset($_SESSION['csrf_token']);
+            header("Location: $redirectUrl");
+            exit;
+        }
+        unset($_SESSION['csrf_token']);
+    }
 }

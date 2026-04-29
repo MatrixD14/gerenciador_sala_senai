@@ -273,9 +273,9 @@ class Tabelas
         if (!empty($filtrosCustom)) $condicoes = array_merge($condicoes, $filtrosCustom);
 
         $searchTerm = $_REQUEST['search'] ?? '';
+        $isAdmin = ($_SESSION['privilegio'] ?? '') === 'admin';
 
-
-        if ($UserLogin != null && $slug === 'menssagem') {
+        if ($UserLogin != null && $slug === 'Solicitacoes_de_troca' && !$isAdmin) {
             $condicoes[] = "(requisicoes_troca.id_remetente = $UserLogin OR agendar_sala.idUser = $UserLogin)";
         }
 

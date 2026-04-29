@@ -20,6 +20,8 @@ error_reporting(E_ALL);
 require_once 'app/model/editorConf.php';
 
 Env::load(__DIR__ . '/.editorConf');
+//token
+require_once __DIR__ . '/app/model/geraTokenCSRF.php';
 //login
 require_once __DIR__ . '/app/controller/login/auth_login.php';
 require_once __DIR__ . '/app/model/connectDataBase.php';

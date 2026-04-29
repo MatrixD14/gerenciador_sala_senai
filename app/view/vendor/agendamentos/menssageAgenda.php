@@ -1,79 +1,83 @@
 <?php
-
 $regrasPeriodo = [
-    'manhã' => ["min" => 5, "max" => 7],
-    'tarde' => ["min" => 7, "max" => 11],
-    'noite' => ["min" => 7, "max" => 18]
+    'manhã' => ['min' => 5, 'max' => 7],
+    'tarde' => ['min' => 7, 'max' => 11],
+    'noite' => ['min' => 7, 'max' => 18]
 ];
-$dia = (str_pad($_POST['dia'] ?? "", 2, "0", STR_PAD_LEFT) ?? '');
-$mes =  (str_pad($_POST['mes'] ?? "", 2, "0", STR_PAD_LEFT) ?? '');
-$ano = ($_POST['ano'] ?? '');
-$dataAgendamento = "$ano-$mes-$dia";
-$dataHoje = date('Y-m-d');
-$dataExibicao = $dia . "/" . $mes . "/" . $ano;
+
+// Sanitização e Preparação de Dados
+$dia = str_pad($_POST['dia'] ?? '', 2, "0", STR_PAD_LEFT);
+$mes = str_pad($_POST['mes'] ?? '', 2, "0", STR_PAD_LEFT);
+$ano = $_POST['ano'] ?? date('Y');
+
+$dataAgendamento = new DateTime("$ano-$mes-$dia");
+$dataHoje = new DateTime('today');
 $horaAtual = (int)date('H');
-$isPassado = ($dataAgendamento < $dataHoje);
-$realmenteHoje = ($dataAgendamento === $dataHoje);
-$id_user = $_POST["id"] ?? [];
-$nomes = $_POST["nomes"] ?? [];
-$periodos = $_POST["periodos"] ?? [];
-$salas = $_POST["salas"] ?? [];
-$privilegioUsuario = $_SESSION['privilegio'] ?? 'admin';
-$podeReivindicar = ($privilegioUsuario === 'aluno' || $privilegioUsuario === 'professor');
-$existePeriodoDisponivel = false;
-if ($realmenteHoje) {
-    foreach ($regrasPeriodo as $p => $regra) {
-        if ($horaAtual <= $regra['max']) {
-            $existePeriodoDisponivel = true;
-            break;
+
+$isPassado = $dataAgendamento < $dataHoje;
+$isHoje = $dataAgendamento == $dataHoje;
+$dataExibicao = $dataAgendamento->format('d/m/Y');
+
+// Usuário e Permissões
+$privilegioUsuario = $_SESSION['privilegio'] ?? '';
+$podeReivindicar = in_array($privilegioUsuario, ['aluno', 'professor']);
+if (empty($privilegioUsuario)) header("location: /calendario");
+
+// Dados do Formulário
+$agendamentos = $_POST['nomes'] ?? [];
+$agendamentosLiberados = 0;
+
+// Função auxiliar para validar bloqueio
+function verificarBloqueio($periodo, $isHoje, $isPassado, $regras)
+{
+    if ($isPassado) return "Data retroativa";
+
+    if ($isHoje) {
+        $turno = mb_strtolower(explode(' ', $periodo)[0]);
+        if (isset($regras[$turno])) {
+            $h = (int)date('H');
+            if ($h < $regras[$turno]['min'] || $h >= $regras[$turno]['max']) {
+                return "Fora do horário ({$regras[$turno]['min']}h às {$regras[$turno]['max']}h)";
+            }
         }
     }
-} else
-    $existePeriodoDisponivel = !$isPassado;
-$agendamentosLiberados = 0;
+    return null;
+}
 ?>
 <div class="painel-wrapper">
-    <form action="/reivindicar" method="post" class="Painel" id="formReivindicar" data-dia="<?= $dia ?>" data-mes="<?= $mes ?>" data-ano="<?= $ano ?>" onsubmit="enviaDadosRevindicar(event)" novalidate>
-        <div class="top-Painel">
-            <h3>pessoas que Agendo no <?= htmlspecialchars($dataExibicao) ?></span>:</h3>
-            <hr>
+    <form action="/reivindicar" method="post" class="Painel" id="formReivindicar"
+        data-dia="<?= $dia ?>" data-mes="<?= $mes ?>" data-ano="<?= $ano ?>"
+        onsubmit="enviaDadosRevindicar(event)" novalidate>
 
+        <div class="top-Painel">
+            <h3>Agendamentos para: <strong><?= htmlspecialchars($dataExibicao) ?></strong></h3>
+            <hr>
             <span class="menssagen"></span>
         </div>
+
         <div class="lista-checkbox">
-            <?php
-            if (!empty($nomes)) {
-                foreach ($nomes as $i => $nome) {
-                    $periodoCompleto = $periodos[$i] ?? '';
-                    $id = $id_user[$i] ?? $i;
-                    $sala = $salas[$i] ?? 'null';
-                    $turnoSimples = mb_strtolower(explode(' ', $periodoCompleto)[0]);
-                    $itemBloqueado = $isPassado;
-                    $motivo = "";
-                    if (!$podeReivindicar) {
-                        $itemBloqueado = true;
-                        $motivo = " (Apenas  professor e aluno podem reivindicar)";
-                    } elseif ($realmenteHoje && isset($regrasPeriodo[$turnoSimples])) {
-                        $min = $regrasPeriodo[$turnoSimples]['min'];
-                        $max = $regrasPeriodo[$turnoSimples]['max'];
-                        if ($horaAtual < $min || $horaAtual >= $max) {
-                            $itemBloqueado = true;
-                            $motivo = " (Fora do horário: $min:00h às $max:00h)";
-                        }
-                    }
-                    if (!$itemBloqueado)
-                        $agendamentosLiberados++;
+            <?php if (!empty($agendamentos)) { ?>
+                <?php foreach ($agendamentos as $i => $nome) {
+                    $id = $_POST['id'][$i] ?? $i;
+                    $sala = $_POST['salas'][$i] ?? 'N/A';
+                    $periodo = $_POST['periodos'][$i] ?? '';
 
-                    $id_html = "agendamento_" . $id;
-                    $label = htmlspecialchars("$sala - $nome - $periodoCompleto");
-            ?>
+                    $motivoBloqueio = verificarBloqueio($periodo, $isHoje, $isPassado, $regrasPeriodo);
+                    $bloqueado = $motivoBloqueio !== null;
 
-                    <div class="item-selecionavel" style="<?= $itemBloqueado ? 'opacity: 0.9; cursor: not-allowed;padding:5px' : '' ?>">
-                        <?php if ($itemBloqueado) { ?>
-                            <span style="color: #fff; font-weight: bold;"><?= $label ?> <br><small><?= $motivo ?></small> 🚫</span>
+                    if (!$bloqueado) $agendamentosLiberados++;
+
+                    $label = htmlspecialchars("$sala - $nome - $periodo");
+                ?>
+                    <div class="item-selecionavel <?= $bloqueado ? 'opacity: 0.9; cursor: not-allowed;padding:5px' : '' ?>">
+                        <?php if ($bloqueado && $podeReivindicar) { ?>
+                            <span class="txt-bloqueado" style="color: #fff; font-weight: bold;">
+                                <?= $label ?> <br>
+                                <small>🚫 <?= $motivoBloqueio ?></small>
+                            </span>
                         <?php } else { ?>
-                            <input type="radio" name="id" value="<?= htmlspecialchars($id) ?>" id="<?= $id_html ?>" required>
-                            <label for="<?= $id_html ?>"><?= $label ?></label>
+                            <input type="radio" name="id" value="<?= htmlspecialchars($id) ?>" id="<?= $id ?>" required>
+                            <label for="<?= $id ?>"><?= $label ?></label>
                         <?php } ?>
                     </div>
             <?php
@@ -81,7 +85,8 @@ $agendamentosLiberados = 0;
             } else {
                 echo "<p>Nenhum agendamento encontrado.</p>";
             } ?>
-            <?php if ($existePeriodoDisponivel && $podeReivindicar) { ?>
+
+            <?php if (!$isPassado && $podeReivindicar) { ?>
                 <div class="item-adicionar" onclick="novoAgendamentoDesteDia()">
                     <div class="btn-add-inline">
                         <svg class='icon-adicionar'>
@@ -91,12 +96,16 @@ $agendamentosLiberados = 0;
                 </div>
             <?php } ?>
         </div>
+
         <div class="buttons-cal-conf">
-            <?php if (!$agendamentosLiberados > 0) echo "<p></p>"; ?> <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
-            <?php if (!$agendamentosLiberados > 0) echo "<p></p>";
+            <?php if (!$agendamentosLiberados > 0 && $podeReivindicar) echo "<p></p>"; ?>
+            <button type="button" onclick="buttonVoltar()" id="cancel">Fechar</button>
+            <?php if (!$agendamentosLiberados > 0 && $podeReivindicar) echo "<p></p>";
             else { ?>
-                <button type="submit" id="confirm">Solicitacao Troca Sala</button>
-            <?php  } ?>
+                <button type="submit" id="confirm">
+                    <?= $podeReivindicar ? 'Solicitar Troca' : 'Visualizar' ?>
+                </button>
+            <?php } ?>
         </div>
     </form>
 </div>

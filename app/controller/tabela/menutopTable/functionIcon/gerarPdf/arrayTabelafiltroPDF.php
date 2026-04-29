@@ -70,5 +70,20 @@ return [
             ]
         ],
         'colunas_visiveis' => ['id', 'nome', 'curso',  'semestre', 'ano', 'turno', 'alunos']
-    ]
+    ],
+    "Solicitacoes_de_troca" => [
+        "orderna" => ['status', "remetente", "destinatario", 'sala'],
+        "colunas" => [
+            "agendado" => [
+                "label" => "Data do Agendamento",
+                "type" => "date-range"
+            ]
+        ],
+        "colunas_visiveis" => ["id", 'status', 'enviado', 'remetente', "destinatario", "sala", 'agendado', "hora_inicio", "hora_fim", "mensagem"]
+    ],
+    'cursos' => [
+        'orderna' => ['nome'],
+        'colunas' => [],
+        'colunas_visiveis' => ['id', 'nome', 'descricão']
+    ],
 ];

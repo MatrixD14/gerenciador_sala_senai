@@ -4,6 +4,7 @@ class revindicar
     public static function EnviaRevindicacao()
     {
         if (session_status() === PHP_SESSION_NONE) session_start();
+        Csrf::verify('/gerenciado_de_Sala');
         $id_agendamento = $_POST["id"] ?? null;
         $nome = $_POST["usuario"] ?? null;
         $id_remetente = $_SESSION["id"] ?? null;

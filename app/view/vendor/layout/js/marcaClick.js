@@ -18,6 +18,13 @@ function setActiveMenu(url) {
         }
     });
 }
+document.querySelectorAll('.ajax-link').forEach((link) => {
+    link.style.pointerEvents = 'none';
+});
+
+document.querySelectorAll('.ajax-link').forEach((link) => {
+    link.style.pointerEvents = '';
+});
 document.addEventListener('contentUpdated', () => {
     setActiveMenu(location.pathname);
 });
